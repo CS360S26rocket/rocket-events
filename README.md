@@ -15,6 +15,13 @@
 
 Discussed repository setup, documentation requirements, backlog management, and design expectations.
 
+#### Attendance
+- Mir Huzaifa Gujjar  
+- Muhammad Mahad Bhatti  
+- Aliza Khan  
+- Eman Anwer Qureshi  
+- Manal Haider  
+
 **Repository**
 - Keep group repo private.
 - Add instructors, TF, and TA as collaborators (read access).
