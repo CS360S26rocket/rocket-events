@@ -222,8 +222,8 @@ Reviewed stakeholder interview insights and discussed system requirements and re
 
 ### User Interface Mockups and Storyboard Sequences
 
-![Dev Mode Link]((https://www.figma.com/design/VitIeFiy6DKdKlLVFUzN8b/SE_mockup?node-id=12-2565&m=dev&t=cjnYJTEGlyDgrxgI-1))
-![Prototype Link](https://www.figma.com/proto/VitIeFiy6DKdKlLVFUzN8b/SE_mockup?node-id=12-2565&t=cjnYJTEGlyDgrxgI-1)
+![Dev Mode Link] https://www.figma.com/design/VitIeFiy6DKdKlLVFUzN8b/SE_mockup?node-id=0-1&t=RcgV61BjHdm0WIeU-1
+![Prototype Link] https://www.figma.com/design/LuBCRR1t9v1MjxZC1CxeFE/Wireframes?node-id=0-1&t=cFkM6xsTZhkY4S4i-1
 
 
 <img width="894" height="508" alt="Screenshot 2026-03-10 at 2 27 33 PM" src="https://github.com/user-attachments/assets/6182c74f-3b0a-4ba3-b379-40ba9a77e97d" />
