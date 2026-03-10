@@ -161,6 +161,16 @@ TO BE HELD
 
 -----------------------------------------------
 
+### User Interface Mockups and Storyboard Sequences
+
+![Dev Mode Link]((https://www.figma.com/design/VitIeFiy6DKdKlLVFUzN8b/SE_mockup?node-id=12-2565&m=dev&t=cjnYJTEGlyDgrxgI-1))
+![Prototype Link](https://www.figma.com/proto/VitIeFiy6DKdKlLVFUzN8b/SE_mockup?node-id=12-2565&t=cjnYJTEGlyDgrxgI-1)
+
+
+
+<img width="805" height="588" alt="Screenshot 2026-03-10 at 2 00 43 PM" src="https://github.com/user-attachments/assets/c800ac2f-65b8-4734-8d5e-1baffee50e64" />
+
+
 
 
 
