@@ -229,6 +229,8 @@ Reviewed stakeholder interview insights and discussed system requirements and re
 
 ### Wireframes
 
+![Dev Mode Link]((https://www.figma.com/design/LuBCRR1t9v1MjxZC1CxeFE/Wireframes?node-id=0-1&t=wdCMPFYvJ0dGgycn-1)
+
 ![Wireframes](wireframes_campus_flow_full.png)
 ![Wireframes](wireframes_organizer_flow_full.png)
 
