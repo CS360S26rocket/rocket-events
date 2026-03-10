@@ -191,6 +191,21 @@ Reviewed stakeholder interview insights and discussed system requirements and re
 
 ------------------------------------------------
 
+
+### CRC Card
+
+| Class | Responsibilities | Collaborators |
+|------|-----------------|---------------|
+| User | • Store user identity (id, name, email)<br>• Store user role (Student / Organizer)<br>• Provide permission context (what features the user can access) | AuthService, RSVP, NotificationService |
+| Event | • Store event details (title, description, category, date/time, location)<br>• Store event state (draft/published/cancelled)<br>• Store capacity limit and compute seats remaining<br>• Expose whether event is full | User (Organizer), RSVP, EventRepository, NotificationService, CalendarIntegrationService |
+| RSVP | • Link a Student (User) to an Event<br>• Track RSVP status (going/cancelled)<br>• Enforce one RSVP per user per event<br>• Support listing “My Events” and attendee lists (via queries) | User (Student), Event, RSVPService |
+| EventRepository | • Persist and retrieve events<br>• Query for browsing/search/filtering (category/date/keyword)<br>• Retrieve organizer’s events (dashboard)<br>• Update event changes (edit/cancel/publish) | Event, User (Organizer), Database |
+| RSVPService | • Handle RSVP and cancel workflows<br>• Check event capacity before confirming RSVP<br>• Trigger calendar integration on RSVP confirm/cancel<br>• Trigger notifications (confirmation + update broadcasts) | RSVP, Event, EventRepository, CalendarIntegrationService, NotificationService |
+| CalendarIntegrationService | • Convert Event into calendar-entry format<br>• Add RSVP’d event to student’s calendar<br>• Remove calendar entry when RSVP is cancelled<br>• Handle integration failures (retry/fallback/export ICS) | Event, User (Student), RSVPService, CalendarProviderAdapter (optional) |
+| NotificationService | • Send RSVP confirmation notifications<br>• Send event update notifications (time/location/cancelled)<br>• Support real-time push + stored history (if implemented) | User, Event, RSVPService, RealTimeGateway (optional) |
+
+------------------------------------------------
+
 ### UML Diagrams
 
 ### Use Case Diagram
