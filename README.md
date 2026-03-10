@@ -215,6 +215,13 @@ Reviewed stakeholder interview insights and discussed system requirements and re
 <img width="805" height="588" alt="Screenshot 2026-03-10 at 2 00 43 PM" src="https://github.com/user-attachments/assets/c800ac2f-65b8-4734-8d5e-1baffee50e64" />
 
 
+-----------------------------------------------
+
+### Wireframes
+
+![Wireframes](wireframes_campus_flow_full.png)
+![Wireframes](wireframes_organizer_flow_full.png)
+
 
 
 
