@@ -206,6 +206,214 @@ Reviewed stakeholder interview insights and discussed system requirements and re
 
 ------------------------------------------------
 
+# User Acceptance Criteria
+
+## 1. Choose Between Campus User and Organizer
+**User Story:**  
+As a user, I want to choose between Campus User and Organizer so that I can access the correct section.
+
+**Acceptance Criteria:**
+- When the app loads, the user should see options for **Campus User** and **Organizer**.
+- Selecting **Campus User** redirects to the campus user login page.
+- Selecting **Organizer** redirects to the organizer dashboard login page.
+- The user cannot proceed without selecting a role.
+
+---
+
+## 2. Campus User Login
+**User Story:**  
+As a campus user, I want to log in so that I can browse campus events.
+
+**Acceptance Criteria:**
+- Users can log in using valid credentials.
+- After successful login, users are redirected to the event browsing page.
+- Invalid credentials display an error message.
+- Empty fields prevent login submission.
+
+---
+
+## 3. Search Events by Category
+**User Story:**  
+As a campus user, I want to search events by category so that I can find relevant events.
+
+**Acceptance Criteria:**
+- Users can filter events using categories.
+- Only events belonging to the selected category are displayed.
+- Clearing the filter shows all events.
+- If no events match the category, the system displays "No events found".
+
+---
+
+## 4. View Event Details
+**User Story:**  
+As a campus user, I want to view event details (date, time, venue, price, capacity) so that I understand the event.
+
+**Acceptance Criteria:**
+- Users can open a detailed event page.
+- The page displays title, description, date, time, venue, price, and capacity.
+- Remaining capacity is shown if limited.
+- Missing details show a placeholder such as "Not specified".
+
+---
+
+## 5. Select Ticket Types and Quantities
+**User Story:**  
+As a campus user, I want to select ticket types and quantities so that I can purchase tickets.
+
+**Acceptance Criteria:**
+- Ticket types and prices are displayed.
+- Users can select quantity for each ticket type.
+- Selected quantity cannot exceed available tickets.
+- Total price updates automatically.
+- Ticket selection is disabled if tickets are sold out.
+
+---
+
+## 6. Pay Using Paymo
+**User Story:**  
+As a campus user, I want to pay using Paymo so that I can complete my purchase.
+
+**Acceptance Criteria:**
+- Users can choose Paymo as a payment method.
+- Successful payment confirms ticket purchase.
+- Failed payments display an error message.
+- Tickets are only generated after successful payment.
+
+---
+
+## 7. QR Code Entry Pass
+**User Story:**  
+As a campus user, I want a QR code entry pass so that I can check in at the event.
+
+**Acceptance Criteria:**
+- A unique QR code is generated after successful registration or purchase.
+- The QR code is linked to the specific user and event.
+- Users can view or download the QR code.
+- Event staff can scan the QR code to verify entry.
+- Used or invalid QR codes cannot be reused.
+
+---
+
+## 8. View My RSVP’d Events
+**User Story:**  
+As a campus user, I want to view my RSVP’d events so that I can track my registrations.
+
+**Acceptance Criteria:**
+- Users can access a **My Events** page.
+- The page displays events the user has RSVP’d to.
+- Each event shows title, date, time, and venue.
+- If no events exist, a message indicates no registered events.
+
+---
+
+## 9. Organizer Dashboard Login
+**User Story:**  
+As an organizer, I want to log in to an organizer dashboard so that I can manage my events.
+
+**Acceptance Criteria:**
+- Organizers can log in using valid credentials.
+- Successful login opens the organizer dashboard.
+- Invalid login attempts display an error.
+- Only the organizer’s events are visible in the dashboard.
+
+---
+
+## 10. Create Events
+**User Story:**  
+As an organizer, I want to create events with event details so that users can register.
+
+**Acceptance Criteria:**
+- Organizers can create events with title, description, date, time, venue, and category.
+- Required fields must be validated.
+- Created events appear in the organizer dashboard.
+- Published events become visible to campus users.
+
+---
+
+## 11. Set Ticket Price and Quantity
+**User Story:**  
+As an organizer, I want to set ticket price and quantity so that I can manage ticket sales.
+
+**Acceptance Criteria:**
+- Organizers can define ticket type, price, and quantity.
+- Prices must be valid numbers.
+- Quantities cannot be negative.
+- Ticket details appear on the event page.
+
+---
+
+## 12. Set Event Capacity
+**User Story:**  
+As an organizer, I want to set event capacity so that tickets are not oversold.
+
+**Acceptance Criteria:**
+- Organizers can define a capacity limit.
+- Users cannot RSVP beyond capacity.
+- Events display **Sold Out / Full** when capacity is reached.
+- Capacity updates recalculate available seats.
+
+---
+
+## 13. Set Sales Start and End Time
+**User Story:**  
+As an organizer, I want to set sales start and end time so that ticket sales are controlled.
+
+**Acceptance Criteria:**
+- Organizers can define ticket sales start and end time.
+- Users cannot buy tickets before sales start.
+- Users cannot buy tickets after sales end.
+- Invalid time ranges trigger validation errors.
+
+---
+
+## 14. View RSVP Count and Attendee List
+**User Story:**  
+As an organizer, I want to view RSVP count and attendee list so that I can track attendance.
+
+**Acceptance Criteria:**
+- Organizers can view RSVP count per event.
+- Organizers can view a list of registered attendees.
+- The attendee list updates when new RSVPs occur.
+- Only the event organizer can access attendee data.
+
+---
+
+## 15. Prevent Duplicate Form Submissions
+**User Story:**  
+As a system, I want to prevent duplicate form submissions without payment so that data remains clean.
+
+**Acceptance Criteria:**
+- Multiple clicks on submit create only one pending transaction.
+- Incomplete payment attempts do not create duplicate records.
+- The submit button is temporarily disabled after submission.
+- Users receive clear feedback if submission fails.
+
+---
+
+## 16. Separate Tracking for Referral and Discount Codes
+**User Story:**  
+As a system, I want separate tracking for referral and discount codes so that there is no confusion in Excel.
+
+**Acceptance Criteria:**
+- Referral codes and discount codes are stored separately.
+- Reports distinguish between referral and discount codes.
+- Invalid codes are rejected.
+- Codes cannot be misclassified.
+
+---
+
+## 17. Send Updates to Attendees
+**User Story:**  
+As an organizer, I want to send updates to attendees so that they are informed of changes.
+
+**Acceptance Criteria:**
+- Organizers can send event updates to registered attendees.
+- Updates may include time changes, venue changes, or cancellations.
+- Notifications are delivered to all attendees.
+- Updates are linked to the correct event.
+
+-----------------------------------------------
+
 ### UML Diagrams
 
 ### Use Case Diagram
