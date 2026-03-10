@@ -42,43 +42,6 @@ Discussed repository setup, documentation requirements, backlog management, and 
 
 ---------------------------------------------------------
 
-
-### TA Project Setup Meeting – March 1, 2026
-
-#### Attendance
-- Mir Huzaifa Gujjar  
-- Muhammad Mahad Bhatti  
-- Aliza Khan  
-- Eman Anwer Qureshi
-
-### Discussion
-- We showed the TA our Figma designs
-- We showed him the kanban board and explained the progress of tasks
-- We showed the recent github changes and updates made to the project
-- We also showed him the README file
-- He was satisfied with the weekly work we had completed
-- He asked us to proceed with the next stage tasks such as making wireframes and CRC cards
-
---------------------------------------------------------
-
-### TA Project Setup Meeting – March 8, 2026
-
-#### Attendance
-- Mir Huzaifa Gujjar  
-- Muhammad Mahad Bhatti  
-- Aliza Khan  
-- Eman Anwer Qureshi
-
-### Discussion
-- Updated TA on our progress for Project Part 2 deliverables
-- We showed him the wireframes we created and explained the design decisions
-- We showed him our updated work on github and he reviewed it during the meeting
-- We gave him update on crc cards
-- He gave us some suggestions and feedback to improve certain parts of the project
-- He wished us good luck for completing the project successfully
-
---------------------------------------------------------
-
 ### Internal Meeting – February 27, 2026
 
 #### Attendance
@@ -152,6 +115,24 @@ Reviewed stakeholder interview insights and discussed system requirements and re
 
 --------------------------------------------------------
 
+### TA Project Setup Meeting – March 1, 2026
+
+#### Attendance
+- Mir Huzaifa Gujjar  
+- Muhammad Mahad Bhatti  
+- Aliza Khan  
+- Eman Anwer Qureshi
+
+### Discussion
+- We showed the TA our Figma designs
+- We showed him the kanban board and explained the progress of tasks
+- We showed the recent github changes and updates made to the project
+- We also showed him the README file
+- He was satisfied with the weekly work we had completed
+- He asked us to proceed with the next stage tasks such as making wireframes and CRC cards
+
+--------------------------------------------------------
+
 ### Internal Meeting – March 5 , 2026
 
 #### Attendance
@@ -165,6 +146,24 @@ Reviewed stakeholder interview insights and discussed system requirements and re
 - Divided rest of the project deliverables among all the group members.
 
 -------------------------------------------------------
+
+### TA Project Setup Meeting – March 8, 2026
+
+#### Attendance
+- Mir Huzaifa Gujjar  
+- Muhammad Mahad Bhatti  
+- Aliza Khan  
+- Eman Anwer Qureshi
+
+### Discussion
+- Updated TA on our progress for Project Part 2 deliverables
+- We showed him the wireframes we created and explained the design decisions
+- We showed him our updated work on github and he reviewed it during the meeting
+- We gave him update on crc cards
+- He gave us some suggestions and feedback to improve certain parts of the project
+- He wished us good luck for completing the project successfully
+
+--------------------------------------------------------
 
 ### Product Backlog – Project Part 2
 
