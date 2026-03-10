@@ -211,8 +211,18 @@ Reviewed stakeholder interview insights and discussed system requirements and re
 ![Prototype Link](https://www.figma.com/proto/VitIeFiy6DKdKlLVFUzN8b/SE_mockup?node-id=12-2565&t=cjnYJTEGlyDgrxgI-1)
 
 
+<img width="894" height="508" alt="Screenshot 2026-03-10 at 2 27 33 PM" src="https://github.com/user-attachments/assets/6182c74f-3b0a-4ba3-b379-40ba9a77e97d" />
+<img width="491" height="520" alt="Screenshot 2026-03-10 at 2 27 40 PM" src="https://github.com/user-attachments/assets/47a3e174-755a-480d-ae55-7a5ea2bc9b3b" />
+<img width="518" height="604" alt="Screenshot 2026-03-10 at 2 27 52 PM" src="https://github.com/user-attachments/assets/10e9ddd6-e8f7-4a00-b97e-e87dedf95611" />
+<img width="497" height="568" alt="Screenshot 2026-03-10 at 2 27 56 PM" src="https://github.com/user-attachments/assets/2ea8c2e3-30f9-40e2-b441-3851eaa44c8a" />
+<img width="668" height="414" alt="Screenshot 2026-03-10 at 2 28 06 PM" src="https://github.com/user-attachments/assets/dc5cd3db-4642-4b78-8ed8-3395745806bf" />
+<img width="396" height="349" alt="Screenshot 2026-03-10 at 2 28 12 PM" src="https://github.com/user-attachments/assets/7dd723e5-5dc8-4c5b-aab4-cb0d0a1e4f69" />
 
-<img width="805" height="588" alt="Screenshot 2026-03-10 at 2 00 43 PM" src="https://github.com/user-attachments/assets/c800ac2f-65b8-4734-8d5e-1baffee50e64" />
+
+<img width="937" height="670" alt="Screenshot 2026-03-10 at 2 29 26 PM" src="https://github.com/user-attachments/assets/8f369afd-9fae-46ba-a677-6f9a09056abe" />
+<img width="784" height="540" alt="Screenshot 2026-03-10 at 2 29 34 PM" src="https://github.com/user-attachments/assets/8fef44c4-53c1-45a3-acb0-fb0a2b3d7d54" />
+<img width="389" height="512" alt="Screenshot 2026-03-10 at 2 29 41 PM" src="https://github.com/user-attachments/assets/227c6c32-8785-4a45-8eb8-0c364d0d1ff4" />
+<img width="799" height="670" alt="Screenshot 2026-03-10 at 2 29 53 PM" src="https://github.com/user-attachments/assets/8ad4a820-a4fd-4cda-abf9-11f766325d70" />
 
 
 -----------------------------------------------
