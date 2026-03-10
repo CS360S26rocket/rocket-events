@@ -210,13 +210,13 @@ Reviewed stakeholder interview insights and discussed system requirements and re
 
 ### Use Case Diagram
 
-![Use Case Diagram](usecase.png)
+![Use Case Diagram](UseCase1.png)
 
 ---
 
 ### Class Diagram
 
-![Class Diagram](ClassDiagram.png)
+![Class Diagram](ClassDiagram1.png)
 
 -----------------------------------------------
 
