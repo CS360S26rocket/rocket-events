@@ -192,7 +192,7 @@ Reviewed stakeholder interview insights and discussed system requirements and re
 ------------------------------------------------
 
 
-### CRC Card
+### Class Responsibility Cards
 
 | Class | Responsibilities | Collaborators |
 |------|-----------------|---------------|
