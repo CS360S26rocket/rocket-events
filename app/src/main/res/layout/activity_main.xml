@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="24dp">
+
+    <EditText
+        android:id="@+id/etEmail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="University email"
+        android:inputType="textEmailAddress"
+        android:layout_marginBottom="12dp"/>
+
+    <EditText
+        android:id="@+id/etPassword"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Password"
+        android:inputType="textPassword"
+        android:layout_marginBottom="12dp"/>
+
+    <EditText
+        android:id="@+id/etName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Full name"
+        android:layout_marginBottom="24dp"/>
+
+    <Button
+        android:id="@+id/btnRegister"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Register"
+        android:layout_marginBottom="12dp"/>
+
+    <Button
+        android:id="@+id/btnLogin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Login"
+        android:layout_marginBottom="12dp"/>
+
+    <Button
+        android:id="@+id/btnOrganizer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Register as Organizer"
+        android:layout_marginBottom="12dp"/>
+
+    <EditText
+        android:id="@+id/etOtp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter OTP"
+        android:inputType="number"
+        android:layout_marginBottom="12dp"/>
+
+    <Button
+        android:id="@+id/btnSendOtp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Send OTP"
+        android:layout_marginBottom="12dp"/>
+
+
+    <Button
+        android:id="@+id/btnVerifyOtp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Verify OTP"
+        android:layout_marginBottom="12dp"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="--- Sprint 2 ---"
+        android:textStyle="bold"
+        android:layout_marginTop="24dp"
+        android:layout_marginBottom="12dp"/>
+
+    <EditText
+        android:id="@+id/etEventTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Event title"
+        android:layout_marginBottom="8dp"/>
+
+    <EditText
+        android:id="@+id/etEventDesc"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Event description"
+        android:layout_marginBottom="8dp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Event Date"
+            android:textSize="14sp"
+            android:layout_marginBottom="4dp"/>
+
+        <Button
+            android:id="@+id/btnPickDate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Pick Event Date"
+            android:layout_marginBottom="8dp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Select University"
+            android:textSize="14sp"
+            android:layout_marginBottom="4dp"/>
+
+        <Spinner
+            android:id="@+id/spinnerVenue"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:padding="8dp"/>
+
+    <Button
+        android:id="@+id/btnCreateEvent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Create Event"
+        android:layout_marginBottom="8dp"/>
+
+        <Button
+            android:id="@+id/btnPickSalesStart"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Pick Sales Start Date"
+            android:layout_marginBottom="8dp"/>
+
+        <Button
+            android:id="@+id/btnPickSalesEnd"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Pick Sales End Date"
+            android:layout_marginBottom="8dp"/>
+    <Button
+        android:id="@+id/btnSetSales"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Set Sales Timing"
+        android:layout_marginBottom="8dp"/>
+
+    <Button
+        android:id="@+id/btnViewAttendees"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="View Attendees"
+        android:layout_marginBottom="8dp"/>
+
+    <TextView
+        android:id="@+id/tvResult"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Result will appear here"
+        android:layout_marginTop="24dp"
+        android:textSize="16sp"/>
+
+</LinearLayout>
+</ScrollView>
