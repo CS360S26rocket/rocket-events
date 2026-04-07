@@ -53,9 +53,10 @@ public class OrganizerDashboardActivity extends AppCompatActivity {
         };
         ArrayAdapter<String> adapter = new ArrayAdapter<>(
                 this,
-                android.R.layout.simple_spinner_dropdown_item,
+                R.layout.item_spinner_selected,
                 universities
         );
+        adapter.setDropDownViewResource(R.layout.item_spinner_dropdown);
         spinnerVenue.setAdapter(adapter);
 
         // Event date picker
