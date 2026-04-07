@@ -6,6 +6,12 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.HashMap;
 import java.util.Map;
 
+// This class handles the user registration process using Firebase Authentication and Firestore. 
+// The `registerUser` method validates the university email, checks if an account already exists, and proceeds to create a user account if valid. 
+// The `createAuthAccount` method creates the authentication account, and the `saveUserProfile` method stores the user's profile in Firestore. 
+// The `isValidUniversityEmail` method ensures the email belongs to the university domain. 
+// Success and failure of each operation are handled via the `RegistrationCallback` interface.
+
 public class RegistrationRepository {
     private final FirebaseAuth auth = FirebaseAuth.getInstance();
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
