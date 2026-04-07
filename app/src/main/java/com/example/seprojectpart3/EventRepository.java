@@ -5,7 +5,11 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import java.util.HashMap;
 import java.util.Map;
-
+// This class handles event-related operations in Firebase Firestore, including creating events, setting ticket sales time, and retrieving attendee details.
+// The `createEvent` method adds a new event to the Firestore database, validating required fields such as title, date, and venue. 
+// The `setSalesTime` method updates the ticket sales start and end time for an event. 
+// The `getAttendees` method retrieves the RSVP count and attendee list for a given event. 
+// Success and failure for each operation are handled via callback interfaces (`EventCallback` and `AttendeesCallback`).
 public class EventRepository {
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
 
