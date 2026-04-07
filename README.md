@@ -510,8 +510,11 @@ As an organizer, I want to send updates to attendees so that they are informed o
 
 
 
+-----------------------------------------------
+UML Diagram
 
 
+<img width="3951" height="766" alt="fLTRRzis57xdho2wXtfOqcmekWr65y1rkgL0qpXMidTQEhOuKwJ0YpDls7_V8INPaYNAwUO7Ew7E-Sxzuz5h-aliGrxJXM1IGaQlw2D8oopV0KsiqXmCFerhafAbMxO1-ce4uHNzcn1AKy6CeObR5TmOhkHlZkbi2QKo7ENszFtxiiAulaO5Yf_lQAg1MLY0pBZS75Kdpe3-b4tHWiO75nHsQBHzi5Qwk6KcRqw-RVweWNDc" src="https://github.com/user-attachments/assets/68bf21ef-d114-4a93-a8b0-a96bab87d5b2" />
 
 
 
