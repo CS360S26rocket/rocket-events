@@ -226,6 +226,21 @@ Reviewed stakeholder interview insights and discussed system requirements and re
 
 ------------------------------------------------
 
+### Product Backlog – Project Part 3 
+
+#### User Stories
+| **ID** | **User Story**                                                                                             | **Epic**   | **Status** | **Risk Level** | **Priority Level** |
+|--------|------------------------------------------------------------------------------------------------------------|-----------|------------|----------------|--------------------|
+| #1     | As a user, I want to choose between Campus User and Organizer so that I can access the correct section.    | Onboarding| Done       | Low            | High               |
+| #2     | As a campus user, I want to log in with my university email so that I can browse campus events.            | Onboarding| Done       | Medium         | High               |
+| #18    | As a campus user, I want to register an account using my university email so that I can create a profile.   | Onboarding| Done       | Medium         | High               |
+| #19    | As a campus user, I want to reset my password via email OTP so that I can recover my account.              | Onboarding| Done       | Medium         | High               |
+| #21    | As an organizer, I want to register my society or club so that it is recognised on the platform.           | Onboarding| Done       | Medium         | High               |
+| #22    | As an organizer, I want my account registration to be accepted only with a valid LUMS society email domain.  | Onboarding| Done       | High           | High               |
+| #3     | As a campus user, I want to search events by category so that I can find relevant events.                  | Discovery | Done       | Low            | High               |
+| #4     | As a campus user, I want to view event details (date, time, venue, price, capacity) so that I understand the event. | Discovery | Done       | Low            | High               |
+| #23    | As a campus user, I want to browse a list of all upcoming events on a home feed so that I can discover what is happening on campus. | Discovery | Done       | Low            | High               |
+| #5     | As a campus user, I want to select ticket types (e.g., general, VIP) and quantities so that I can purchase the right tickets. | Ticketing | Done       | Medium         | High               |
 
 ### Class Responsibility Cards
 
