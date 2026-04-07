@@ -165,7 +165,7 @@ Reviewed stakeholder interview insights and discussed system requirements and re
 
 --------------------------------------------------------
 
-### TA Project Part 2 Evaluation Meeting – March 26, 2026
+### Internal Meeting – March 26, 2026
 
 #### Attendance
 - Mir Huzaifa Gujjar  
@@ -178,10 +178,10 @@ Reviewed stakeholder interview insights and discussed system requirements and re
 - TA feedback from the Project Part 2 evaluation was reviewed and discussed.
 - Edits on the README file, based on the TA’s feedback, were assigned to Huzaifa.
 - The task of creating more detailed user stories was assigned to Eman.
-- The coding of the initial wireframes was assigned to Aliza.
-- The group decided that each member would be responsible for writing code for three user stories, as well as performing testing for each one.
-- The meeting concluded with a productive discussion, which included some lighthearted criticism of the TA.
-
+- The group decided that each member would be responsible for writing code for different user stories, as well as performing testing for each one.
+- We created a pdf (that is uploaded on github repo) where we divided sprints into 4 member roles and every member picked one of the roles and then did work on them.
+- M1: Aliza Khan , M2: Mir Huzaifa Gujjar , M3: Emaan Qureshi , M4: Muhammad Mahad Bhatti
+- The meeting concluded with a productive discussion.
 
 --------------------------------------------------------
 
