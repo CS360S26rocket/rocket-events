@@ -4,6 +4,10 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.firestore.FirebaseFirestore;
+// This class handles user authentication using Firebase Authentication. It provides methods for logging in users with a university email, 
+// saving their FCM (Firebase Cloud Messaging) token to Firestore, and logging out users. It uses FirebaseAuth for authentication, 
+// FirebaseMessaging for FCM token retrieval, and FirebaseFirestore for saving the token. 
+// The login process ensures the user provides a valid university email, and the success/failure of operations are handled via the AuthCallback interface.
 public class AuthRepository {
     private final FirebaseAuth auth = FirebaseAuth.getInstance();
 
