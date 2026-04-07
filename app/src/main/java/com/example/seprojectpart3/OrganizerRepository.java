@@ -8,6 +8,12 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.HashMap;
 import java.util.Map;
 
+// This class handles the registration of society organizers. It ensures that the organizer's society email is valid and belongs to an approved university domain before proceeding with the registration. 
+// The `registerOrganizer` method validates the email domain and checks for duplicate society entries. 
+// If the domain is valid and the society is not already registered, the organizer's profile is saved in Firestore, and the user's role is updated. 
+// The `validateOrganizerDomain` method checks if the society's domain is in the allowed domains list, while the `saveOrganizerProfile` method stores the organizer's details in Firestore. 
+// Success and failure of operations are handled via the `OrganizerCallback` interface.
+
 public class OrganizerRepository {
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
 
