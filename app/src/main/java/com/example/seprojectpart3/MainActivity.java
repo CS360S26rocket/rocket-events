@@ -14,6 +14,7 @@ public class MainActivity extends AppCompatActivity {
 
     EditText etEmail, etPassword, etName;
     TextView tvResult;
+
     OrganizerRepository orgRepo;
     RegistrationRepository regRepo;
     AuthRepository authRepo;
@@ -63,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
                     });
         });
 
-        // LOGIN
+        // LOGIN - with role checking
         View btnLogin = findViewById(R.id.btnLogin);
         btnLogin.setOnClickListener(v -> {
             String email = etEmail.getText().toString().trim();
@@ -74,7 +75,25 @@ public class MainActivity extends AppCompatActivity {
                         @Override
                         public void onSuccess(String token, String uid) {
                             lastUid = uid;
-                            tvResult.setText("Logged in! UID: " + uid);
+
+                            // Role-based navigation (the fix)
+                            com.google.firebase.firestore.FirebaseFirestore.getInstance()
+                                    .collection("users")
+                                    .document(uid)
+                                    .get()
+                                    .addOnSuccessListener(doc -> {
+                                        String role = doc.getString("role");
+                                        if ("organizer".equals(role)) {
+                                            android.content.Intent intent = new android.content.Intent(
+                                                    MainActivity.this, OrganizerDashboardActivity.class);
+                                            intent.putExtra("uid", uid);
+                                            startActivity(intent);
+                                        } else {
+                                            tvResult.setText("Logged in as campus user! UID: " + uid);
+                                            // TODO: navigate to campus user dashboard if needed
+                                        }
+                                    })
+                                    .addOnFailureListener(e -> tvResult.setText("Error fetching role: " + e.getMessage()));
                         }
 
                         @Override
@@ -85,9 +104,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         // ORGANIZER REGISTER
-        // ORGANIZER REGISTER
         View btnOrganizer = findViewById(R.id.btnOrganizer);
-
         btnOrganizer.setOnClickListener(v -> {
             String email = etEmail.getText().toString().trim();
             String password = etPassword.getText().toString().trim();
@@ -112,12 +129,14 @@ public class MainActivity extends AppCompatActivity {
                                         public void onSuccess(String id) {
                                             tvResult.setText("Organizer registered! UID: " + uid);
                                         }
+
                                         @Override
                                         public void onFailure(String error) {
                                             tvResult.setText("Error saving organizer: " + error);
                                         }
                                     });
                         }
+
                         @Override
                         public void onFailure(String error) {
                             tvResult.setText("Error: " + error);
@@ -128,18 +147,12 @@ public class MainActivity extends AppCompatActivity {
         // -------------------------
         // SPRINT 2 TESTS (no new buttons needed)
         //
-        // Long-press Organizer button:
-        //   1) setTicketType(TEST_EVENT_ID, "general", 500, 1)
-        //   2) registerAttendee as logged-in user -> EXPECT CONFIRMED
-        //
-        // Long-press Login button:
-        //   registerAttendee as fake user -> EXPECT WAITLIST (if capacity=1 and already sold)
-        //
-        // Long-press Send OTP button:
-        //   exportAttendeeCsv(TEST_EVENT_ID)
+        // Long-press Organizer button: setTicketType + registerAttendee (CONFIRMED)
+        // Long-press Login button:     registerAttendee as fake user (WAITLIST test)
+        // Long-press Send OTP button:  exportAttendeeCsv
         // -------------------------
 
-        // Long-press: setup ticket type + book seat 1 (CONFIRM expected)
+        // Long-press Organizer button → Sprint 2 test: confirm ticket
         btnOrganizer.setOnLongClickListener(v -> {
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
             if (user == null) {
@@ -192,46 +205,7 @@ public class MainActivity extends AppCompatActivity {
             return true;
         });
 
-        // Long-press: book seat 2 as fake user (WAITLIST expected)
-        btnLogin.setOnClickListener(v -> {
-            String email = etEmail.getText().toString().trim();
-            String password = etPassword.getText().toString().trim();
-
-            authRepo.loginUser(email, password,
-                    new AuthRepository.AuthCallback() {
-                        @Override
-                        public void onSuccess(String token, String uid) {
-                            lastUid = uid;
-
-                            // Check the user's role in Firestore
-                            com.google.firebase.firestore.FirebaseFirestore.getInstance()
-                                    .collection("users")
-                                    .document(uid)
-                                    .get()
-                                    .addOnSuccessListener(doc -> {
-                                        String role = doc.getString("role");
-                                        if ("organizer".equals(role)) {
-                                            android.content.Intent intent = new android.content.Intent(
-                                                    MainActivity.this, OrganizerDashboardActivity.class
-                                            );
-                                            intent.putExtra("uid", uid);
-                                            startActivity(intent);
-                                        } else {
-                                            tvResult.setText("Logged in as campus user! UID: " + uid);
-                                            // TODO: navigate to your campus user screen here
-                                        }
-                                    })
-                                    .addOnFailureListener(e -> tvResult.setText("Error fetching role: " + e.getMessage()));
-                        }
-
-                        @Override
-                        public void onFailure(String error) {
-                            tvResult.setText("Error: " + error);
-                        }
-                    });
-        });
-
-        // OTP
+        // OTP Section
         OtpManager otpManager = new OtpManager();
         EditText etOtp = findViewById(R.id.etOtp);
 
@@ -251,7 +225,7 @@ public class MainActivity extends AppCompatActivity {
             });
         });
 
-        // Long-press: export CSV for Sprint2 (#39)  ✅ FIXED CALLBACK TYPE
+        // Long-press Send OTP → Export CSV (Sprint 2)
         btnSendOtp.setOnLongClickListener(v -> {
             csvRepo.exportAttendeeCsv(this, TEST_EVENT_ID, new CsvExportRepository.CsvCallback() {
                 @Override

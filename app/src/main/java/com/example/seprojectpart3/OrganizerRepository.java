@@ -19,12 +19,12 @@ public class OrganizerRepository {
 
         final String email = normalizeEmail(societyEmail);
 
-        // M3: Validate email domain against whitelist BEFORE creating organizer
+        // Validate email domain against whitelist BEFORE creating organizer
         validateOrganizerDomain(email, new DomainCallback() {
             @Override
             public void onAllowed(String domain) {
 
-                // Check for duplicate society (use normalized email)
+                // Check for duplicate society
                 db.collection("organizers")
                         .whereEqualTo("societyEmail", email)
                         .get()
@@ -45,12 +45,6 @@ public class OrganizerRepository {
         });
     }
 
-    /**
-     * Rules:
-     * - valid email format
-     * - domain ends with .edu.pk
-     * - domain must exist in Firestore collection: allowed_domains (active=true)
-     */
     private void validateOrganizerDomain(String normalizedEmail, DomainCallback callback) {
         if (normalizedEmail == null || normalizedEmail.isEmpty()) {
             callback.onBlocked("Society email is required");
@@ -98,7 +92,6 @@ public class OrganizerRepository {
     }
 
     private boolean isActive(DocumentSnapshot doc) {
-        // If active missing -> treat as active (for easy initial testing)
         Boolean active = doc.getBoolean("active");
         return active == null || active;
     }
