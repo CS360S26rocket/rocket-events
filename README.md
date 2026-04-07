@@ -165,6 +165,41 @@ Reviewed stakeholder interview insights and discussed system requirements and re
 
 --------------------------------------------------------
 
+### TA Project Part 2 Evaluation Meeting – March 26, 2026
+
+#### Attendance
+- Mir Huzaifa Gujjar  
+- Muhammad Mahad Bhatti  
+- Aliza Khan  
+- Eman Anwer Qureshi
+
+### Discussion
+-The agenda for the meeting was discussed, with a focus on the deliverables for Project 3.
+-TA feedback from the Project Part 2 evaluation was reviewed and discussed.
+-Edits on the README file, based on the TA’s feedback, were assigned to Huzaifa.
+-The task of creating more detailed user stories was assigned to Eman.
+-The coding of the initial wireframes was assigned to Aliza.
+-The group decided that each member would be responsible for writing code for three user stories, as well as performing testing for each one.
+-The meeting concluded with a productive discussion, which included some lighthearted criticism of the TA.
+
+--------------------------------------------------------
+
+### TA Project Setup Meeting – April 5, 2026
+
+#### Attendance
+- Mir Huzaifa Gujjar  
+- Muhammad Mahad Bhatti  
+- Aliza Khan  
+- Eman Anwer Qureshi
+
+### Discussion
+
+-The TA reviewed the user story numbers, code, and their outputs on the app: 1, 18, 19, 2, 18, 21, 19.
+-The TA suggested updating Git issues simultaneously.
+-The group made good progress, and the current work is on track.
+
+--------------------------------------------------------
+
 ### Product Backlog – Project Part 2
 
 #### User Stories
@@ -456,6 +491,8 @@ As an organizer, I want to send updates to attendees so that they are informed o
 
 ![Wireframes](wireframes_campus_flow_full.png)
 ![Wireframes](wireframes_organizer_flow_full.png)
+
+
 
 
 
