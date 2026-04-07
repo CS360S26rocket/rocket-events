@@ -517,5 +517,14 @@ UML Diagram
 <img width="3951" height="766" alt="fLTRRzis57xdho2wXtfOqcmekWr65y1rkgL0qpXMidTQEhOuKwJ0YpDls7_V8INPaYNAwUO7Ew7E-Sxzuz5h-aliGrxJXM1IGaQlw2D8oopV0KsiqXmCFerhafAbMxO1-ce4uHNzcn1AKy6CeObR5TmOhkHlZkbi2QKo7ENszFtxiiAulaO5Yf_lQAg1MLY0pBZS75Kdpe3-b4tHWiO75nHsQBHzi5Qwk6KcRqw-RVweWNDc" src="https://github.com/user-attachments/assets/68bf21ef-d114-4a93-a8b0-a96bab87d5b2" />
 
 
+-----------------------------------------------
+### App Screens Part 3
+![part3_1](https://github.com/CS360S26rocket/rocket-events/raw/main/part3_1.jpg)
+![part3_2](https://github.com/CS360S26rocket/rocket-events/raw/main/part3_2.jpg)
+![part3_3](https://github.com/CS360S26rocket/rocket-events/raw/main/part3_3.jpg)
+![part3_4](https://github.com/CS360S26rocket/rocket-events/raw/main/part3_4.jpg)
+![part3_5](https://github.com/CS360S26rocket/rocket-events/raw/main/part3_5.jpg)
+![part3_6](https://github.com/CS360S26rocket/rocket-events/raw/main/part3_6.jpg)
+
 
 
