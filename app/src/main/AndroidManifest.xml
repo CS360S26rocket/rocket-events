@@ -12,6 +12,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SEprojectpart3">
         <activity
+            android:name="com.example.seprojectpart3.QRScannerActivity"
+            android:exported="false" />
+        <activity
             android:name=".OrganizerDashboardActivity"
             android:exported="false" />
         <activity
