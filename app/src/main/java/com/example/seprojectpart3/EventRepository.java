@@ -5,9 +5,13 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 // This class handles event-related operations in Firebase Firestore, including creating events,
@@ -19,6 +23,8 @@ import java.util.Map;
 // #26  searchEvents      — Keyword search on event title / description (Low risk, Day 1)
 // #24  filterByDateRange — Filter events by date range (Low risk, Day 1)
 // #25  filterByPrice     — Filter events by free vs paid (Low risk, Day 1)
+// #23  getUpcomingEvents — Sorted upcoming home feed query
+// #4   getEventDetail    — Single event detail read
 
 public class EventRepository {
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -48,6 +54,9 @@ public class EventRepository {
         event.put("ticketSalesEnd", null);      // set by story #13
         event.put("capacity", null);            // set by M3's story #12
         event.put("isFree", isFree);            // used by story #25
+        event.put("priceSummary", isFree ? "Free RSVP" : "Paid ticket");
+        event.put("minTicketPrice", isFree ? 0 : null);
+        event.put("paymentQrUrl", "");
         event.put("createdAt", FieldValue.serverTimestamp());
 
         db.collection("events").add(event)
@@ -79,6 +88,140 @@ public class EventRepository {
                     callback.onSuccess(results);
                 })
                 .addOnFailureListener(e -> callback.onFailure(e.getMessage()));
+    }
+
+    // Story #23 — List all upcoming events for the campus home feed.
+    // Dates are stored as ISO-like strings in this project, so Firestore can sort
+    // them lexicographically in the same order users expect chronologically.
+    public void getUpcomingEvents(EventListCallback callback) {
+        String today = new SimpleDateFormat("yyyy-MM-dd", Locale.US).format(new Date());
+
+        db.collection("events")
+                .whereEqualTo("status", "active")
+                .get()
+                .addOnSuccessListener(snap -> {
+                    List<Map<String, Object>> results = new ArrayList<>();
+
+                    for (QueryDocumentSnapshot doc : snap) {
+                        Map<String, Object> event = doc.getData();
+                        String date = event.get("date") == null
+                                ? ""
+                                : String.valueOf(event.get("date"));
+                        if (!date.isEmpty() && date.compareTo(today) < 0) {
+                            continue;
+                        }
+                        event.put("eventId", doc.getId());
+                        results.add(event);
+                    }
+
+                    Collections.sort(results, (a, b) ->
+                            valueForSort(a, "date").compareTo(valueForSort(b, "date")));
+                    callback.onSuccess(results);
+                })
+                .addOnFailureListener(e -> callback.onFailure(e.getMessage()));
+    }
+
+    // Story #4 — Event detail read: date, time, venue, price, capacity and QR info.
+    public void getEventDetail(String eventId, EventDetailCallback callback) {
+        if (eventId == null || eventId.trim().isEmpty()) {
+            callback.onFailure("Event ID is required");
+            return;
+        }
+
+        db.collection("events").document(eventId)
+                .get()
+                .addOnSuccessListener(doc -> {
+                    if (!doc.exists()) {
+                        callback.onFailure("Event not found");
+                        return;
+                    }
+
+                    Map<String, Object> event = doc.getData();
+                    if (event == null) event = new HashMap<>();
+                    event.put("eventId", doc.getId());
+
+                    Map<String, Object> finalEvent = event;
+                    db.collection("events").document(eventId)
+                            .collection("ticketTypes")
+                            .orderBy("price", Query.Direction.ASCENDING)
+                            .get()
+                            .addOnSuccessListener(ticketSnap -> {
+                                List<Map<String, Object>> ticketTypes = new ArrayList<>();
+                                for (QueryDocumentSnapshot ticketDoc : ticketSnap) {
+                                    Map<String, Object> ticket = ticketDoc.getData();
+                                    ticket.put("typeId", ticketDoc.getId());
+                                    ticketTypes.add(ticket);
+                                }
+                                finalEvent.put("ticketTypes", ticketTypes);
+                                callback.onSuccess(finalEvent);
+                            })
+                            .addOnFailureListener(e -> {
+                                finalEvent.put("ticketTypes", new ArrayList<Map<String, Object>>());
+                                callback.onSuccess(finalEvent);
+                            });
+                })
+                .addOnFailureListener(e -> callback.onFailure(e.getMessage()));
+    }
+
+    public void updateEventMetadata(String eventId, Map<String, Object> updates,
+                                    EventCallback callback) {
+        if (eventId == null || eventId.trim().isEmpty()) {
+            callback.onFailure("Event ID is required");
+            return;
+        }
+        if (updates == null || updates.isEmpty()) {
+            callback.onSuccess(eventId);
+            return;
+        }
+
+        db.collection("events").document(eventId)
+                .update(updates)
+                .addOnSuccessListener(v -> callback.onSuccess(eventId))
+                .addOnFailureListener(e -> callback.onFailure(e.getMessage()));
+    }
+
+    // Story #44 — cancel event and notify registered users.
+    public void cancelEventAndNotify(String eventId, EventCallback callback) {
+        if (eventId == null || eventId.trim().isEmpty()) {
+            callback.onFailure("Event ID is required");
+            return;
+        }
+
+        db.collection("events").document(eventId)
+                .get()
+                .addOnSuccessListener(doc -> {
+                    if (!doc.exists()) {
+                        callback.onFailure("Event not found");
+                        return;
+                    }
+
+                    String title = doc.getString("title");
+                    Map<String, Object> updates = new HashMap<>();
+                    updates.put("status", "cancelled");
+                    updates.put("cancelledAt", FieldValue.serverTimestamp());
+
+                    db.collection("events").document(eventId)
+                            .update(updates)
+                            .addOnSuccessListener(v ->
+                                    new NotificationRepository()
+                                            .notifyRegisteredUsersEventCancelled(eventId, title,
+                                                    new NotificationRepository.NotificationCallback() {
+                                                        @Override public void onSuccess(String message) {
+                                                            callback.onSuccess(eventId);
+                                                        }
+
+                                                        @Override public void onFailure(String error) {
+                                                            callback.onFailure(error);
+                                                        }
+                                                    }))
+                            .addOnFailureListener(e -> callback.onFailure(e.getMessage()));
+                })
+                .addOnFailureListener(e -> callback.onFailure(e.getMessage()));
+    }
+
+    private String valueForSort(Map<String, Object> map, String key) {
+        Object value = map.get(key);
+        return value == null ? "" : String.valueOf(value);
     }
 
     // Story #13 — Set ticket sales start and end time
@@ -274,6 +417,11 @@ public class EventRepository {
     /** Callback for query methods that return a list of event maps. */
     public interface EventListCallback {
         void onSuccess(List<Map<String, Object>> events);
+        void onFailure(String error);
+    }
+
+    public interface EventDetailCallback {
+        void onSuccess(Map<String, Object> event);
         void onFailure(String error);
     }
 }

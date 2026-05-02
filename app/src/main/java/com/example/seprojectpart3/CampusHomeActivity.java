@@ -21,6 +21,7 @@ public class CampusHomeActivity extends AppCompatActivity {
 
     private EventRepository eventRepo;
     private TicketRepository ticketRepo;
+    private FileStorageRepository fileStorageRepo;
 
     private LinearLayout sectionBrowse;
     private LinearLayout sectionMyEvents;
@@ -40,8 +41,14 @@ public class CampusHomeActivity extends AppCompatActivity {
     private EditText etStatusEventId;
 
     private LinearLayout listEvents;
+    private LinearLayout listTicketTypes;
+    private LinearLayout rowQuantity;
     private TextView tvSelectedEvent;
+    private TextView tvQuantity;
     private String selectedEventId = null;
+    private String selectedTicketTypeId = null;
+    private boolean selectedEventIsFree = true;
+    private int selectedQuantity = 1;
 
     private String uid;
     private String email = "";
@@ -54,6 +61,7 @@ public class CampusHomeActivity extends AppCompatActivity {
 
         eventRepo = new EventRepository();
         ticketRepo = new TicketRepository();
+        fileStorageRepo = new FileStorageRepository();
 
         uid = getIntent().getStringExtra("uid");
 
@@ -76,6 +84,9 @@ public class CampusHomeActivity extends AppCompatActivity {
         tabStatus = findViewById(R.id.tabStatus);
 
         listEvents = findViewById(R.id.listEvents);
+        listTicketTypes = findViewById(R.id.listTicketTypes);
+        rowQuantity = findViewById(R.id.rowQuantity);
+        tvQuantity = findViewById(R.id.tvQuantity);
         tvMyEvents = findViewById(R.id.tvMyEvents);
         tvMessage = findViewById(R.id.tvMessage);
 
@@ -103,6 +114,8 @@ public class CampusHomeActivity extends AppCompatActivity {
         findViewById(R.id.btnRsvp).setOnClickListener(v -> rsvpToEvent());
         findViewById(R.id.btnCancelRsvp).setOnClickListener(v -> cancelRsvp());
         findViewById(R.id.btnTicketStatus).setOnClickListener(v -> viewTicketStatus());
+        findViewById(R.id.btnDecreaseQty).setOnClickListener(v -> changeQuantity(-1));
+        findViewById(R.id.btnIncreaseQty).setOnClickListener(v -> changeQuantity(1));
 
         showTab("browse");
         loadAllEvents();
@@ -124,12 +137,19 @@ public class CampusHomeActivity extends AppCompatActivity {
     }
 
     private void loadAllEvents() {
-        eventRepo.getActiveEvents(new EventRepository.EventListCallback() {
+        eventRepo.getUpcomingEvents(new EventRepository.EventListCallback() {
             @Override public void onSuccess(List<Map<String, Object>> events) {
                 renderEvents(events);
             }
 
             @Override public void onFailure(String error) {
+                selectedEventId = null;
+                selectedTicketTypeId = null;
+                selectedEventIsFree = true;
+                rowQuantity.setVisibility(View.GONE);
+                listTicketTypes.removeAllViews();
+                tvSelectedEvent.setText("Select an event above");
+                tvSelectedEvent.setTextColor(getColor(R.color.text_secondary));
                 showMessage(error);
             }
         });
@@ -190,10 +210,22 @@ public class CampusHomeActivity extends AppCompatActivity {
             return;
         }
 
-        ticketRepo.registerFreeRsvp(selectedEventId, uid, name, email,
+        if (!selectedEventIsFree && selectedTicketTypeId == null) {
+            showMessage("Select a ticket tier first.");
+            return;
+        }
+
+        String tierId = selectedTicketTypeId == null ? "free_rsvp" : selectedTicketTypeId;
+
+        ticketRepo.registerTicketSelection(selectedEventId, uid, name, email,
+                tierId, selectedQuantity, selectedEventIsFree,
                 new TicketRepository.RegistrationCallback() {
                     @Override public void onConfirmed(String registrationId) {
-                        showMessage("RSVP confirmed. Registration ID: " + registrationId);
+                        if (selectedEventIsFree) {
+                            showMessage("RSVP confirmed. Registration ID: " + registrationId);
+                        } else {
+                            showMessage("Ticket request saved. Upload payment proof when that step is available. Registration ID: " + registrationId);
+                        }
                     }
 
                     @Override public void onWaitlisted(String waitlistId) {
@@ -293,6 +325,45 @@ public class CampusHomeActivity extends AppCompatActivity {
         return value == null ? "-" : String.valueOf(value);
     }
 
+    private String valueOrDefault(Map<String, Object> map, String key, String fallback) {
+        Object value = map.get(key);
+        if (value == null) return fallback;
+        String asString = String.valueOf(value);
+        return asString.trim().isEmpty() || "null".equals(asString) ? fallback : asString;
+    }
+
+    private String money(Object value) {
+        if (value instanceof Number) {
+            double amount = ((Number) value).doubleValue();
+            if (amount == Math.floor(amount)) return String.valueOf((long) amount);
+            return String.format(java.util.Locale.US, "%.2f", amount);
+        }
+        return value == null ? "0" : String.valueOf(value);
+    }
+
+    private String availableCount(Map<String, Object> tier) {
+        long quantity = longValue(tier.get("quantity"));
+        long sold = longValue(tier.get("sold"));
+        if (quantity <= 0) return "No limit";
+        return String.valueOf(Math.max(0, quantity - sold));
+    }
+
+    private long longValue(Object value) {
+        if (value instanceof Number) return ((Number) value).longValue();
+        try {
+            return value == null ? 0 : Long.parseLong(String.valueOf(value));
+        } catch (NumberFormatException e) {
+            return 0;
+        }
+    }
+
+    private void changeQuantity(int delta) {
+        selectedQuantity += delta;
+        if (selectedQuantity < 1) selectedQuantity = 1;
+        if (selectedQuantity > 10) selectedQuantity = 10;
+        tvQuantity.setText(String.valueOf(selectedQuantity));
+    }
+
     private void showDatePicker(EditText target) {
         Calendar calendar = Calendar.getInstance();
 
@@ -329,19 +400,121 @@ public class CampusHomeActivity extends AppCompatActivity {
             String title = value(event, "title");
             String date = value(event, "date");
             String venue = value(event, "venue");
-            String price = Boolean.TRUE.equals(event.get("isFree")) ? "Free RSVP" : "Paid ticket";
+            String price = valueOrDefault(event, "priceSummary",
+                    Boolean.TRUE.equals(event.get("isFree")) ? "Free RSVP" : "Paid ticket");
 
             String label = title + "\n" + date + " | " + venue + "\n" + price;
 
             TextView card = makeEventCard(label);
             card.setOnClickListener(v -> {
                 selectedEventId = eventId;
-                tvSelectedEvent.setText(title + "\n" + date + " | " + venue);
+                selectedTicketTypeId = null;
+                selectedQuantity = 1;
+                tvQuantity.setText(String.valueOf(selectedQuantity));
+                listTicketTypes.removeAllViews();
+                tvSelectedEvent.setText("Loading event details...");
                 tvSelectedEvent.setTextColor(getColor(R.color.text_primary));
-                showMessage("Selected: " + title);
+                loadEventDetail(eventId);
             });
 
             listEvents.addView(card);
+        }
+    }
+
+    private void loadEventDetail(String eventId) {
+        eventRepo.getEventDetail(eventId, new EventRepository.EventDetailCallback() {
+            @Override public void onSuccess(Map<String, Object> event) {
+                selectedEventIsFree = Boolean.TRUE.equals(event.get("isFree"));
+                renderEventDetail(event);
+                renderTicketTypes(event);
+            }
+
+            @Override public void onFailure(String error) {
+                showMessage(error);
+            }
+        });
+    }
+
+    @SuppressWarnings("unchecked")
+    private void renderTicketTypes(Map<String, Object> event) {
+        listTicketTypes.removeAllViews();
+
+        if (selectedEventIsFree) {
+            rowQuantity.setVisibility(View.GONE);
+            selectedTicketTypeId = "free_rsvp";
+            return;
+        }
+
+        rowQuantity.setVisibility(View.VISIBLE);
+        Object raw = event.get("ticketTypes");
+        List<Map<String, Object>> ticketTypes = raw instanceof List
+                ? (List<Map<String, Object>>) raw
+                : null;
+
+        if (ticketTypes == null || ticketTypes.isEmpty()) {
+            TextView empty = makeEventCard("No ticket tiers have been configured yet.");
+            listTicketTypes.addView(empty);
+            return;
+        }
+
+        for (Map<String, Object> tier : ticketTypes) {
+            String typeId = value(tier, "typeId");
+            String tierName = valueOrDefault(tier, "name", typeId);
+            String label = tierName + "\nPKR " + money(tier.get("price"))
+                    + " | Available: " + availableCount(tier);
+
+            TextView card = makeEventCard(label);
+            card.setOnClickListener(v -> {
+                selectedTicketTypeId = typeId;
+                highlightSelectedTier();
+                card.setBackgroundResource(R.drawable.bg_button_secondary);
+                showMessage("Selected tier: " + tierName);
+            });
+
+            listTicketTypes.addView(card);
+
+            if (selectedTicketTypeId == null) {
+                selectedTicketTypeId = typeId;
+                card.setBackgroundResource(R.drawable.bg_button_secondary);
+            }
+        }
+    }
+
+    private void renderEventDetail(Map<String, Object> event) {
+        StringBuilder detail = new StringBuilder();
+        detail.append(value(event, "title")).append("\n")
+                .append("Date: ").append(value(event, "date")).append("\n")
+                .append("Time: ").append(valueOrDefault(event, "startTime", "-")).append("\n")
+                .append("Venue: ").append(value(event, "venue")).append("\n")
+                .append("Price: ").append(valueOrDefault(event, "priceSummary", "-")).append("\n")
+                .append("Capacity: ").append(valueOrDefault(event, "capacity", "No limit"));
+
+        String paymentQrFileId = value(event, "paymentQrFileId");
+        String paymentQrUrl = value(event, "paymentQrUrl");
+        if (!selectedEventIsFree) {
+            detail.append("\nPayment QR: ");
+            if (!paymentQrFileId.equals("-") && !paymentQrFileId.isEmpty()) {
+                String loadingDetail = detail + "Loading...";
+                tvSelectedEvent.setText(loadingDetail);
+                fileStorageRepo.getFileUrl(paymentQrFileId,
+                        url -> tvSelectedEvent.setText(detail + url),
+                        error -> tvSelectedEvent.setText(detail
+                                + "Organizer has not uploaded it yet"));
+                return;
+            } else {
+                detail.append(paymentQrUrl.equals("-") || paymentQrUrl.isEmpty()
+                        ? "Organizer has not uploaded it yet"
+                        : paymentQrUrl);
+            }
+        }
+
+        tvSelectedEvent.setText(detail.toString());
+    }
+
+    private void highlightSelectedTier() {
+        for (int i = 0; i < listTicketTypes.getChildCount(); i++) {
+            View child = listTicketTypes.getChildAt(i);
+            child.setBackgroundResource(R.drawable.bg_card_dark);
         }
     }
 
