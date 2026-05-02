@@ -32,7 +32,6 @@
         <activity android:name=".CampusHomeActivity"       android:exported="false" />
         <activity android:name=".ForgotPasswordActivity"   android:exported="false" />
 
-
         <!-- Organizer Flow -->
         <activity android:name=".OrganizerLoginActivity"     android:exported="false" />
         <activity android:name=".OrganizerRegisterActivity"  android:exported="false" />
@@ -40,6 +39,19 @@
         <activity android:name=".CreateEventActivity"        android:exported="false" />
         <activity android:name=".TicketSetupActivity"        android:exported="false" />
         <activity android:name=".InfoSetupActivity"          android:exported="false" />
+
+        <!-- Sprint 4: Organizer proof review screen -->
+        <activity
+            android:name=".PendingProofsActivity"
+            android:exported="false"
+            android:label="Payment Proofs" />
+
+        <!-- Sprint 4: Full-screen proof image viewer -->
+        <activity
+            android:name=".ProofImageViewerActivity"
+            android:exported="false"
+            android:theme="@style/Theme.SEprojectpart3"
+            android:label="Proof Image" />
 
         <!-- Keep old MainActivity accessible (can remove once fully migrated) -->
         <activity android:name=".MainActivity"               android:exported="false" />
