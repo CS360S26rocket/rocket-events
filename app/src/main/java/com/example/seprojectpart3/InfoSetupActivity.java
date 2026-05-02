@@ -8,6 +8,9 @@ import android.widget.Switch;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class InfoSetupActivity extends AppCompatActivity {
 
     EditText etEntryReqs, etOrganizerContact, etAdditionalInfo;
@@ -63,6 +66,24 @@ public class InfoSetupActivity extends AppCompatActivity {
     private void publishEvent() {
         // Use startDate as the event date for createEvent
         String eventDate = startDate + (startTime.isEmpty() ? "" : " " + startTime);
+        Integer parsedCapacity = null;
+
+        if (capacity != null && !capacity.isEmpty()) {
+            try {
+                parsedCapacity = Integer.parseInt(capacity);
+                if (parsedCapacity < 0) {
+                    tvStatus.setVisibility(View.VISIBLE);
+                    tvStatus.setText("Capacity cannot be negative.");
+                    tvStatus.setTextColor(getColor(R.color.error_red));
+                    return;
+                }
+            } catch (NumberFormatException e) {
+                tvStatus.setVisibility(View.VISIBLE);
+                tvStatus.setText("Capacity must be a number.");
+                tvStatus.setTextColor(getColor(R.color.error_red));
+                return;
+            }
+        }
 
         tvStatus.setVisibility(View.VISIBLE);
         tvStatus.setText("Publishing event...");
@@ -70,6 +91,7 @@ public class InfoSetupActivity extends AppCompatActivity {
         // Step 1: Create the event
         // Story #25: derive isFree from the ticketMode chosen in TicketSetupActivity
         boolean isFree = "free_rsvp".equals(ticketMode);
+        final Integer finalCapacity = parsedCapacity;
 
         eventRepo.createEvent(
                 organizerUid, title, description, eventDate, venue, isFree,
@@ -77,10 +99,9 @@ public class InfoSetupActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(String eventId) {
                         // Step 2: Set ticket capacity
-                        if (capacity != null && !capacity.isEmpty()) {
-                            int cap = Integer.parseInt(capacity);
-                            TicketRepository ticketRepo = new TicketRepository();
-                            ticketRepo.updateCapacity(eventId, cap,
+                        TicketRepository ticketRepo = new TicketRepository();
+                        if (finalCapacity != null) {
+                            ticketRepo.updateCapacity(eventId, finalCapacity,
                                     new TicketRepository.TicketCallback() {
                                         @Override public void onSuccess(String id) { /* ok */ }
                                         @Override public void onFailure(String e) { /* non-fatal */ }
@@ -96,6 +117,37 @@ public class InfoSetupActivity extends AppCompatActivity {
                                         @Override public void onFailure(String e) { /* non-fatal */ }
                                     });
                         }
+
+                        // Step 4: Save the M1 ticket-tier model used by #5/#41.
+                        ticketRepo.saveDefaultTicketTiers(eventId, isFree,
+                                new TicketRepository.TicketCallback() {
+                                    @Override public void onSuccess(String message) { /* ok */ }
+                                    @Override public void onFailure(String error) { /* non-fatal */ }
+                                });
+
+                        Map<String, Object> metadata = new HashMap<>();
+                        metadata.put("dateOnly", startDate);
+                        metadata.put("startTime", startTime);
+                        metadata.put("endDate", endDate);
+                        metadata.put("endTime", endTime);
+                        metadata.put("location", location);
+                        metadata.put("institutionName", institutionName);
+                        metadata.put("eventType", eventType);
+                        metadata.put("category", category);
+                        metadata.put("ticketMode", ticketMode);
+                        metadata.put("priceSummary", isFree ? "Free RSVP" : "From PKR 300");
+                        metadata.put("minTicketPrice", isFree ? 0 : 300);
+                        metadata.put("paymentQrUrl", "");
+                        metadata.put("entryRequirements", etEntryReqs.getText().toString().trim());
+                        metadata.put("organizerContact", etOrganizerContact.getText().toString().trim());
+                        metadata.put("additionalInfo", etAdditionalInfo.getText().toString().trim());
+                        metadata.put("announcementsEnabled", switchAnnouncements.isChecked());
+
+                        eventRepo.updateEventMetadata(eventId, metadata,
+                                new EventRepository.EventCallback() {
+                                    @Override public void onSuccess(String id) { /* ok */ }
+                                    @Override public void onFailure(String error) { /* non-fatal */ }
+                                });
 
                         // Success — go back to dashboard
                         tvStatus.setText("Event published! ID: " + eventId);

@@ -7,6 +7,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.WriteBatch;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -59,6 +60,12 @@ public class TicketRepository {
     /** USRC — ticket / proof-submission status */
     public interface TicketStatusCallback {
         void onSuccess(String status);   // e.g. "confirmed", "pending", "approved", "rejected", "waitlisted"
+        void onFailure(String error);
+    }
+
+    /** #5/#41 — available ticket tiers for one event */
+    public interface TicketTypesCallback {
+        void onSuccess(List<Map<String, Object>> ticketTypes);
         void onFailure(String error);
     }
 
@@ -511,6 +518,156 @@ public class TicketRepository {
         }).addOnFailureListener(e -> callback.onFailure(msg(e)));
     }
 
+    // Story #5/#41 — Fetch ticket types / tiers for selection.
+    public void getTicketTypes(@NonNull String eventId,
+                               @NonNull TicketTypesCallback callback) {
+        if (eventId.trim().isEmpty()) {
+            callback.onFailure("eventId required");
+            return;
+        }
+
+        db.collection(EVENTS_COLLECTION).document(eventId)
+                .collection("ticketTypes")
+                .orderBy("price", com.google.firebase.firestore.Query.Direction.ASCENDING)
+                .get()
+                .addOnSuccessListener(snap -> {
+                    List<Map<String, Object>> ticketTypes = new ArrayList<>();
+                    for (QueryDocumentSnapshot doc : snap) {
+                        Map<String, Object> type = doc.getData();
+                        type.put("typeId", doc.getId());
+                        ticketTypes.add(type);
+                    }
+                    callback.onSuccess(ticketTypes);
+                })
+                .addOnFailureListener(e -> callback.onFailure(msg(e)));
+    }
+
+    // Story #5/#41 — Register one or more tickets from a selected tier.
+    // Paid tickets remain pending until manual proof approval; free tickets bypass payment.
+    public void registerTicketSelection(@NonNull String eventId,
+                                        @NonNull String attendeeUid,
+                                        @NonNull String attendeeName,
+                                        @NonNull String attendeeEmail,
+                                        @NonNull String ticketTypeId,
+                                        int quantity,
+                                        boolean isFreeEvent,
+                                        @NonNull RegistrationCallback callback) {
+
+        if (isFreeEvent) {
+            registerFreeRsvp(eventId, attendeeUid, attendeeName, attendeeEmail, callback);
+            return;
+        }
+
+        if (eventId.trim().isEmpty() || attendeeUid.trim().isEmpty()
+                || ticketTypeId.trim().isEmpty()) {
+            callback.onFailure("eventId, user and ticket type are required");
+            return;
+        }
+        if (quantity < 1 || quantity > 10) {
+            callback.onFailure("Quantity must be between 1 and 10");
+            return;
+        }
+
+        DocumentReference eventRef = db.collection(EVENTS_COLLECTION).document(eventId);
+        DocumentReference ticketTypeRef = eventRef.collection("ticketTypes").document(ticketTypeId);
+
+        db.runTransaction(transaction -> {
+            DocumentSnapshot eventSnap = transaction.get(eventRef);
+            if (!eventSnap.exists()) throw new IllegalStateException("Event not found");
+
+            DocumentSnapshot typeSnap = transaction.get(ticketTypeRef);
+            if (!typeSnap.exists()) throw new IllegalStateException("Ticket type not found");
+
+            Long capacityL = eventSnap.getLong("capacity");
+            Long soldCountL = eventSnap.getLong("soldCount");
+            Long qtyL = typeSnap.getLong("quantity");
+            Long soldL = typeSnap.getLong("sold");
+
+            long capacity = capacityL == null ? 0 : capacityL;
+            long soldCount = soldCountL == null ? 0 : soldCountL;
+            long tierQty = qtyL == null ? 0 : qtyL;
+            long tierSold = soldL == null ? 0 : soldL;
+
+            boolean eventHasSpace = capacity <= 0 || soldCount + quantity <= capacity;
+            boolean tierHasSpace = tierQty <= 0 || tierSold + quantity <= tierQty;
+
+            if (!eventHasSpace || !tierHasSpace) {
+                throw new IllegalStateException("Not enough tickets available for this tier");
+            }
+
+            String registrationId = UUID.randomUUID().toString();
+            DocumentReference regRef = db.collection(REGISTRATIONS_COLLECTION)
+                    .document(registrationId);
+
+            double unitPrice = readDouble(typeSnap, "price");
+
+            Map<String, Object> reg = new HashMap<>();
+            reg.put("eventId", eventId);
+            reg.put("userId", attendeeUid);
+            reg.put("attendeeName", attendeeName);
+            reg.put("email", attendeeEmail);
+            reg.put("ticketType", ticketTypeId);
+            reg.put("quantity", quantity);
+            reg.put("unitPrice", unitPrice);
+            reg.put("totalPrice", unitPrice * quantity);
+            reg.put("status", "pending_payment");
+            reg.put("registeredAt", FieldValue.serverTimestamp());
+
+            transaction.set(regRef, reg);
+            transaction.update(eventRef, "soldCount", soldCount + quantity);
+            transaction.update(ticketTypeRef, "sold", tierSold + quantity);
+
+            return registrationId;
+        }).addOnSuccessListener(callback::onConfirmed)
+                .addOnFailureListener(e -> callback.onFailure(msg(e)));
+    }
+
+    public void saveDefaultTicketTiers(@NonNull String eventId,
+                                       boolean isFreeEvent,
+                                       @NonNull TicketCallback callback) {
+        if (eventId.trim().isEmpty()) {
+            callback.onFailure("eventId required");
+            return;
+        }
+
+        WriteBatch batch = db.batch();
+        DocumentReference eventRef = db.collection(EVENTS_COLLECTION).document(eventId);
+
+        if (isFreeEvent) {
+            DocumentReference freeRef = eventRef.collection("ticketTypes").document("free_rsvp");
+            Map<String, Object> free = new HashMap<>();
+            free.put("name", "Free RSVP");
+            free.put("price", 0);
+            free.put("quantity", 0);
+            free.put("sold", 0);
+            free.put("tierOrder", 0);
+            free.put("updatedAt", FieldValue.serverTimestamp());
+            batch.set(freeRef, free, com.google.firebase.firestore.SetOptions.merge());
+        } else {
+            addTierToBatch(batch, eventRef, "early_bird", "Early Bird", 300, 50, 1);
+            addTierToBatch(batch, eventRef, "standard", "Standard", 500, 150, 2);
+            addTierToBatch(batch, eventRef, "vip", "VIP", 1000, 25, 3);
+        }
+
+        batch.commit()
+                .addOnSuccessListener(v -> callback.onSuccess("Ticket tiers saved"))
+                .addOnFailureListener(e -> callback.onFailure(msg(e)));
+    }
+
+    private void addTierToBatch(WriteBatch batch, DocumentReference eventRef,
+                                String id, String name, double price,
+                                int quantity, int tierOrder) {
+        DocumentReference ref = eventRef.collection("ticketTypes").document(id);
+        Map<String, Object> tier = new HashMap<>();
+        tier.put("name", name);
+        tier.put("price", price);
+        tier.put("quantity", quantity);
+        tier.put("sold", 0);
+        tier.put("tierOrder", tierOrder);
+        tier.put("updatedAt", FieldValue.serverTimestamp());
+        batch.set(ref, tier, com.google.firebase.firestore.SetOptions.merge());
+    }
+
     // Story #11 — Create/update ticket type
     public void setTicketType(@NonNull String eventId,
                               @NonNull String typeId,
@@ -690,5 +847,13 @@ public class TicketRepository {
 
     private String msg(Exception e) {
         return (e == null || e.getMessage() == null) ? "Unknown error" : e.getMessage();
+    }
+
+    private double readDouble(DocumentSnapshot snap, String field) {
+        Double asDouble = snap.getDouble(field);
+        if (asDouble != null) return asDouble;
+
+        Long asLong = snap.getLong(field);
+        return asLong == null ? 0 : asLong;
     }
 }

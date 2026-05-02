@@ -1,6 +1,7 @@
 package com.example.seprojectpart3;
 
 import android.content.ContentResolver;
+<<<<<<< HEAD
 import android.content.Context;
 import android.net.Uri;
 import android.webkit.MimeTypeMap;
@@ -206,10 +207,44 @@ public class FileStorageRepository {
     public void getFileUrl(String fileId,
                            OnSuccessListener<String> onSuccess,
                            OnFailureListener onFailure) {
+=======
+import android.net.Uri;
+
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.FieldValue;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.io.InputStream;
+
+// Shared FILE-STORAGE interface from M4's Sprint 3 spec.
+// M1 uses getFileUrl(fileId) for USR-A. Upload wiring remains M2/M3/M4-owned.
+public class FileStorageRepository {
+
+    private static final long MAX_FILE_SIZE_BYTES = 5L * 1024L * 1024L;
+
+    private final FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+    public void uploadFile(Uri fileUri, String entityType, String entityId,
+                           OnSuccessListener<String> onSuccess,
+                           OnFailureListener onFailure) {
+        onFailure.onFailure(new UnsupportedOperationException(
+                "uploadFile is owned by the M4 file-storage implementation."));
+    }
+
+    public void getFileUrl(String fileId,
+                           OnSuccessListener<String> onSuccess,
+                           OnFailureListener onFailure) {
+        if (fileId == null || fileId.trim().isEmpty()) {
+            onFailure.onFailure(new IllegalArgumentException("fileId is required"));
+            return;
+        }
+>>>>>>> origin/Eman
 
         db.collection("files").document(fileId)
                 .get()
                 .addOnSuccessListener(doc -> {
+<<<<<<< HEAD
                     if (doc.exists() && doc.get("deletedAt") == null) {
                         String url = doc.getString("downloadUrl");
                         if (url != null) {
@@ -220,10 +255,30 @@ public class FileStorageRepository {
                     } else {
                         onFailure.onFailure(new Exception("File not found or deleted."));
                     }
+=======
+                    if (!doc.exists()) {
+                        onFailure.onFailure(new IllegalStateException("File not found"));
+                        return;
+                    }
+
+                    if (doc.get("deletedAt") != null) {
+                        onFailure.onFailure(new IllegalStateException("File has been deleted"));
+                        return;
+                    }
+
+                    String downloadUrl = doc.getString("downloadUrl");
+                    if (downloadUrl == null || downloadUrl.trim().isEmpty()) {
+                        onFailure.onFailure(new IllegalStateException("File URL is missing"));
+                        return;
+                    }
+
+                    onSuccess.onSuccess(downloadUrl);
+>>>>>>> origin/Eman
                 })
                 .addOnFailureListener(onFailure);
     }
 
+<<<<<<< HEAD
     /**
      * Get file download URL by entity type and entity ID.
      * Useful when you know the eventId but not the fileId.
@@ -272,10 +327,23 @@ public class FileStorageRepository {
 
         db.collection("files").document(fileId)
                 .update(updates)
+=======
+    public void deleteFile(String fileId,
+                           OnSuccessListener<Void> onSuccess,
+                           OnFailureListener onFailure) {
+        if (fileId == null || fileId.trim().isEmpty()) {
+            onFailure.onFailure(new IllegalArgumentException("fileId is required"));
+            return;
+        }
+
+        db.collection("files").document(fileId)
+                .update("deletedAt", FieldValue.serverTimestamp())
+>>>>>>> origin/Eman
                 .addOnSuccessListener(onSuccess)
                 .addOnFailureListener(onFailure);
     }
 
+<<<<<<< HEAD
     // ─── Helpers ─────────────────────────────────────────────────────
 
     /**
@@ -307,10 +375,47 @@ public class FileStorageRepository {
         private final String errorMessage;
 
         public ValidationResult(boolean valid, String errorMessage) {
+=======
+    public ValidationResult validateFile(Uri fileUri, ContentResolver resolver) {
+        if (fileUri == null) {
+            return ValidationResult.invalid("Select an image first.");
+        }
+        if (resolver == null) {
+            return ValidationResult.invalid("File resolver is unavailable.");
+        }
+
+        String mimeType = resolver.getType(fileUri);
+        if (!"image/png".equals(mimeType)
+                && !"image/jpeg".equals(mimeType)
+                && !"image/webp".equals(mimeType)) {
+            return ValidationResult.invalid("Only PNG, JPEG and WEBP images are allowed.");
+        }
+
+        try (InputStream stream = resolver.openInputStream(fileUri)) {
+            if (stream == null) {
+                return ValidationResult.invalid("Unable to read selected image.");
+            }
+            if (stream.available() > MAX_FILE_SIZE_BYTES) {
+                return ValidationResult.invalid("Image must be 5 MB or smaller.");
+            }
+        } catch (Exception e) {
+            return ValidationResult.invalid("Unable to read selected image.");
+        }
+
+        return ValidationResult.valid();
+    }
+
+    public static class ValidationResult {
+        public final boolean valid;
+        public final String errorMessage;
+
+        private ValidationResult(boolean valid, String errorMessage) {
+>>>>>>> origin/Eman
             this.valid = valid;
             this.errorMessage = errorMessage;
         }
 
+<<<<<<< HEAD
         public boolean isValid() { return valid; }
         public String getErrorMessage() { return errorMessage; }
     }
@@ -333,5 +438,14 @@ public class FileStorageRepository {
         public String getFileId() { return fileId; }
         public String getDownloadUrl() { return downloadUrl; }
         public String getStoragePath() { return storagePath; }
+=======
+        public static ValidationResult valid() {
+            return new ValidationResult(true, null);
+        }
+
+        public static ValidationResult invalid(String errorMessage) {
+            return new ValidationResult(false, errorMessage);
+        }
+>>>>>>> origin/Eman
     }
 }

@@ -18,6 +18,15 @@ public class EmailSender {
     private static final String SENDER_EMAIL = "mirhuzaifa230@gmail.com";
     private static final String APP_PASSWORD = "rlly klcs qvsb mcrn";
     public static void sendOtpEmail(String toEmail, String otp) throws MessagingException {
+        sendPlainEmail(
+                toEmail,
+                "Your password reset OTP",
+                "Your OTP is: " + otp + "\n\nThis code expires in 10 minutes."
+        );
+    }
+
+    public static void sendPlainEmail(String toEmail, String subject,
+                                      String body) throws MessagingException {
         Properties props = new Properties();
         props.put("mail.smtp.auth", "true");
         props.put("mail.smtp.starttls.enable", "true");
@@ -34,8 +43,8 @@ public class EmailSender {
         Message message = new MimeMessage(session);
         message.setFrom(new InternetAddress(SENDER_EMAIL));
         message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(toEmail));
-        message.setSubject("Your password reset OTP");
-        message.setText("Your OTP is: " + otp + "\n\nThis code expires in 10 minutes.");
+        message.setSubject(subject);
+        message.setText(body);
 
         Transport.send(message);
     }
