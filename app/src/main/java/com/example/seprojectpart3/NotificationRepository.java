@@ -1,15 +1,11 @@
 package com.example.seprojectpart3;
 
-<<<<<<< HEAD
 import androidx.annotation.NonNull;
 
-=======
->>>>>>> origin/Eman
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
-<<<<<<< HEAD
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -17,15 +13,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
-=======
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
-
-// M1 Sprint 5 notification backend.
-// #42: ticket approval confirmation through in-app notification + email.
-// #44: event cancellation alert to registered users.
->>>>>>> origin/Eman
 public class NotificationRepository {
 
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -35,10 +22,8 @@ public class NotificationRepository {
         void onFailure(String error);
     }
 
-<<<<<<< HEAD
     public void queue24HourRemindersForUser(@NonNull String userId,
                                             @NonNull NotificationCallback callback) {
-
         if (userId.trim().isEmpty()) {
             callback.onFailure("userId is required.");
             return;
@@ -61,10 +46,8 @@ public class NotificationRepository {
                         String eventId = reg.getString("eventId");
                         String registrationId = reg.getId();
 
-                        if (eventId == null || eventId.isEmpty()) {
-                            if (remaining.decrementAndGet() == 0) {
-                                callback.onSuccess("Queued " + queued.get() + " reminder(s).");
-                            }
+                        if (isBlank(eventId)) {
+                            finishReminder(callback, remaining, queued);
                             continue;
                         }
 
@@ -84,7 +67,7 @@ public class NotificationRepository {
                                         notification.put("type", "24_hour_reminder");
                                         notification.put("title", "Event reminder");
                                         notification.put("message", "Your event is tomorrow: " +
-                                                (title == null ? eventId : title));
+                                                fallback(title, eventId));
                                         notification.put("status", "queued");
                                         notification.put("createdAt", FieldValue.serverTimestamp());
 
@@ -93,15 +76,11 @@ public class NotificationRepository {
                                                 .set(notification)
                                                 .addOnSuccessListener(v -> {
                                                     queued.incrementAndGet();
-                                                    if (remaining.decrementAndGet() == 0) {
-                                                        callback.onSuccess("Queued " + queued.get() + " reminder(s).");
-                                                    }
+                                                    finishReminder(callback, remaining, queued);
                                                 })
                                                 .addOnFailureListener(e -> callback.onFailure(message(e)));
                                     } else {
-                                        if (remaining.decrementAndGet() == 0) {
-                                            callback.onSuccess("Queued " + queued.get() + " reminder(s).");
-                                        }
+                                        finishReminder(callback, remaining, queued);
                                     }
                                 })
                                 .addOnFailureListener(e -> callback.onFailure(message(e)));
@@ -114,10 +93,54 @@ public class NotificationRepository {
                                            @NonNull String organizerUid,
                                            @NonNull String updateMessage,
                                            @NonNull NotificationCallback callback) {
-
         if (eventId.trim().isEmpty() || updateMessage.trim().isEmpty()) {
             callback.onFailure("eventId and message are required.");
-=======
+            return;
+        }
+
+        db.collection("registrations")
+                .whereEqualTo("eventId", eventId)
+                .whereEqualTo("status", "confirmed")
+                .get()
+                .addOnSuccessListener(regSnap -> {
+                    if (regSnap.isEmpty()) {
+                        callback.onSuccess("No confirmed attendees to notify.");
+                        return;
+                    }
+
+                    AtomicInteger remaining = new AtomicInteger(regSnap.size());
+                    AtomicInteger sent = new AtomicInteger(0);
+
+                    for (QueryDocumentSnapshot reg : regSnap) {
+                        String userId = reg.getString("userId");
+
+                        if (isBlank(userId)) {
+                            finishBroadcast(callback, remaining, sent);
+                            continue;
+                        }
+
+                        Map<String, Object> notification = new HashMap<>();
+                        notification.put("userId", userId);
+                        notification.put("eventId", eventId);
+                        notification.put("organizerUid", organizerUid);
+                        notification.put("type", "organizer_broadcast");
+                        notification.put("title", "Event update");
+                        notification.put("message", updateMessage);
+                        notification.put("status", "queued");
+                        notification.put("createdAt", FieldValue.serverTimestamp());
+
+                        db.collection("notifications")
+                                .add(notification)
+                                .addOnSuccessListener(ref -> {
+                                    sent.incrementAndGet();
+                                    finishBroadcast(callback, remaining, sent);
+                                })
+                                .addOnFailureListener(e -> callback.onFailure(message(e)));
+                    }
+                })
+                .addOnFailureListener(e -> callback.onFailure(message(e)));
+    }
+
     public void sendTicketApprovedNotification(String userId, String email,
                                                String eventId, String eventTitle,
                                                String ticketId,
@@ -145,58 +168,15 @@ public class NotificationRepository {
     }
 
     public void notifyRegisteredUsersEventCancelled(String eventId,
-                                                   String eventTitle,
-                                                   NotificationCallback callback) {
+                                                    String eventTitle,
+                                                    NotificationCallback callback) {
         if (isBlank(eventId)) {
             callback.onFailure("eventId is required");
->>>>>>> origin/Eman
             return;
         }
 
         db.collection("registrations")
                 .whereEqualTo("eventId", eventId)
-<<<<<<< HEAD
-                .whereEqualTo("status", "confirmed")
-                .get()
-                .addOnSuccessListener(regSnap -> {
-                    if (regSnap.isEmpty()) {
-                        callback.onSuccess("No confirmed attendees to notify.");
-                        return;
-                    }
-
-                    AtomicInteger remaining = new AtomicInteger(regSnap.size());
-                    AtomicInteger sent = new AtomicInteger(0);
-
-                    for (QueryDocumentSnapshot reg : regSnap) {
-                        String userId = reg.getString("userId");
-
-                        if (userId == null || userId.isEmpty()) {
-                            if (remaining.decrementAndGet() == 0) {
-                                callback.onSuccess("Queued " + sent.get() + " update(s).");
-                            }
-                            continue;
-                        }
-
-                        Map<String, Object> notification = new HashMap<>();
-                        notification.put("userId", userId);
-                        notification.put("eventId", eventId);
-                        notification.put("organizerUid", organizerUid);
-                        notification.put("type", "organizer_broadcast");
-                        notification.put("title", "Event update");
-                        notification.put("message", updateMessage);
-                        notification.put("status", "queued");
-                        notification.put("createdAt", FieldValue.serverTimestamp());
-
-                        db.collection("notifications")
-                                .add(notification)
-                                .addOnSuccessListener(ref -> {
-                                    sent.incrementAndGet();
-                                    if (remaining.decrementAndGet() == 0) {
-                                        callback.onSuccess("Queued " + sent.get() + " update(s).");
-                                    }
-                                })
-                                .addOnFailureListener(e -> callback.onFailure(message(e)));
-=======
                 .get()
                 .addOnSuccessListener(snap -> {
                     if (snap.isEmpty()) {
@@ -236,23 +216,11 @@ public class NotificationRepository {
                                         }
                                     }
                                 });
->>>>>>> origin/Eman
                     }
                 })
                 .addOnFailureListener(e -> callback.onFailure(message(e)));
     }
 
-<<<<<<< HEAD
-    private boolean isTomorrow(String eventDate) {
-        if (eventDate == null || eventDate.trim().isEmpty()) return false;
-
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
-        Calendar tomorrow = Calendar.getInstance();
-        tomorrow.add(Calendar.DAY_OF_YEAR, 1);
-
-        String tomorrowText = format.format(tomorrow.getTime());
-        return tomorrowText.equals(eventDate);
-=======
     private void createInAppNotification(String userId, String eventId,
                                          String type, String title, String body,
                                          NotificationCallback callback) {
@@ -276,6 +244,32 @@ public class NotificationRepository {
                 .addOnFailureListener(e -> callback.onFailure(message(e)));
     }
 
+    private void finishReminder(NotificationCallback callback,
+                                AtomicInteger remaining,
+                                AtomicInteger queued) {
+        if (remaining.decrementAndGet() == 0) {
+            callback.onSuccess("Queued " + queued.get() + " reminder(s).");
+        }
+    }
+
+    private void finishBroadcast(NotificationCallback callback,
+                                 AtomicInteger remaining,
+                                 AtomicInteger sent) {
+        if (remaining.decrementAndGet() == 0) {
+            callback.onSuccess("Queued " + sent.get() + " update(s).");
+        }
+    }
+
+    private boolean isTomorrow(String eventDate) {
+        if (eventDate == null || eventDate.trim().isEmpty()) return false;
+
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+        Calendar tomorrow = Calendar.getInstance();
+        tomorrow.add(Calendar.DAY_OF_YEAR, 1);
+
+        return format.format(tomorrow.getTime()).equals(eventDate);
+    }
+
     private void sendEmailIfPresent(String email, String subject, String body) {
         if (isBlank(email)) return;
 
@@ -283,8 +277,6 @@ public class NotificationRepository {
             try {
                 EmailSender.sendPlainEmail(email, subject, body);
             } catch (Exception ignored) {
-                // In-app notification is the durable source; email failure should not
-                // roll back the app state.
             }
         }).start();
     }
@@ -295,7 +287,6 @@ public class NotificationRepository {
 
     private String fallback(String value, String fallback) {
         return isBlank(value) ? fallback : value;
->>>>>>> origin/Eman
     }
 
     private String message(Exception e) {
