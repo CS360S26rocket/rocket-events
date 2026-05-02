@@ -1,0 +1,486 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/app_bg"
+    android:orientation="vertical">
+
+    <!-- Header -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:id="@+id/btnBack"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:gravity="center"
+            android:text="←"
+            android:textColor="@color/text_primary"
+            android:textSize="20sp"
+            android:clickable="true"
+            android:focusable="true" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="Create Event"
+            android:textColor="@color/text_primary"
+            android:textSize="16sp"
+            android:fontFamily="@font/poppins_bold" />
+
+        <View android:layout_width="40dp" android:layout_height="40dp" />
+    </LinearLayout>
+
+    <!-- Step Indicator -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:paddingStart="24dp"
+        android:paddingEnd="24dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <!-- Step 1 - Done -->
+        <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:orientation="horizontal" android:gravity="center_vertical">
+            <TextView
+                android:layout_width="28dp" android:layout_height="28dp"
+                android:background="@drawable/bg_step_inactive"
+                android:gravity="center" android:text="1"
+                android:textColor="@color/text_secondary"
+                android:textSize="12sp" android:fontFamily="@font/poppins_bold" />
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:layout_marginStart="6dp" android:text="Create"
+                android:textColor="@color/text_secondary"
+                android:textSize="12sp" android:fontFamily="@font/poppins_regular" />
+        </LinearLayout>
+
+        <View android:layout_width="0dp" android:layout_height="1dp"
+            android:layout_weight="1" android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp" android:background="@color/border_dark" />
+
+        <!-- Step 2 - Active -->
+        <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:orientation="horizontal" android:gravity="center_vertical">
+            <TextView
+                android:layout_width="28dp" android:layout_height="28dp"
+                android:background="@drawable/bg_step_active"
+                android:gravity="center" android:text="2"
+                android:textColor="@color/button_text_dark"
+                android:textSize="12sp" android:fontFamily="@font/poppins_bold" />
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:layout_marginStart="6dp" android:text="Tickets"
+                android:textColor="@color/accent_lime"
+                android:textSize="12sp" android:fontFamily="@font/poppins_bold" />
+        </LinearLayout>
+
+        <View android:layout_width="0dp" android:layout_height="1dp"
+            android:layout_weight="1" android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp" android:background="@color/border_dark" />
+
+        <!-- Step 3 - Inactive -->
+        <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:orientation="horizontal" android:gravity="center_vertical">
+            <TextView
+                android:layout_width="28dp" android:layout_height="28dp"
+                android:background="@drawable/bg_step_inactive"
+                android:gravity="center" android:text="3"
+                android:textColor="@color/text_secondary"
+                android:textSize="12sp" android:fontFamily="@font/poppins_bold" />
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:layout_marginStart="6dp" android:text="Info"
+                android:textColor="@color/text_secondary"
+                android:textSize="12sp" android:fontFamily="@font/poppins_regular" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- Scrollable form -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:overScrollMode="never"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingBottom="24dp">
+
+            <!-- Ticketing Mode -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Ticketing mode"
+                android:textColor="@color/text_secondary"
+                android:textSize="13sp"
+                android:fontFamily="@font/poppins_regular" />
+
+            <!-- Mode tabs -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="44dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/bg_attendee_item"
+                android:orientation="horizontal"
+                android:padding="4dp">
+
+                <TextView
+                    android:id="@+id/modeFreeRsvp"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_ticket_mode_inactive"
+                    android:gravity="center"
+                    android:text="Free RSVP"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="12sp"
+                    android:fontFamily="@font/poppins_regular"
+                    android:clickable="true" android:focusable="true" />
+
+                <TextView
+                    android:id="@+id/modePaidTickets"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_ticket_mode_active"
+                    android:gravity="center"
+                    android:text="Paid tickets"
+                    android:textColor="@color/white"
+                    android:textSize="12sp"
+                    android:fontFamily="@font/poppins_bold"
+                    android:clickable="true" android:focusable="true" />
+
+                <TextView
+                    android:id="@+id/modeExternalLink"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_ticket_mode_inactive"
+                    android:gravity="center"
+                    android:text="External link"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="12sp"
+                    android:fontFamily="@font/poppins_regular"
+                    android:clickable="true" android:focusable="true" />
+            </LinearLayout>
+
+            <!-- Payment -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="Payment"
+                android:textColor="@color/text_secondary"
+                android:textSize="13sp"
+                android:fontFamily="@font/poppins_regular" />
+
+            <EditText
+                android:id="@+id/etPayment"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/bg_input_dark"
+                android:fontFamily="@font/poppins_regular"
+                android:hint="Paymo (PKR) *"
+                android:inputType="text"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:textColor="@color/text_primary"
+                android:textColorHint="@color/hint_text"
+                android:textSize="14sp" />
+
+            <!-- Ticket Types header -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="Ticket types"
+                android:textColor="@color/text_primary"
+                android:textSize="14sp"
+                android:fontFamily="@font/poppins_bold" />
+
+            <!-- Ticket Item: Student Pass -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/bg_ticket_item"
+                android:orientation="vertical"
+                android:padding="14dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Student Pass"
+                            android:textColor="@color/text_primary"
+                            android:textSize="14sp"
+                            android:fontFamily="@font/poppins_bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:text="PKR 300 • Qty 100"
+                            android:textColor="@color/text_secondary"
+                            android:textSize="12sp"
+                            android:fontFamily="@font/poppins_regular" />
+                    </LinearLayout>
+
+                    <Button
+                        android:id="@+id/btnEditStudentPass"
+                        android:layout_width="60dp"
+                        android:layout_height="32dp"
+                        android:layout_marginEnd="8dp"
+                        android:background="@drawable/bg_attendee_item"
+                        android:backgroundTint="@null"
+                        app:backgroundTint="@null"
+                        android:elevation="0dp"
+                        android:stateListAnimator="@null"
+                        android:text="Edit"
+                        android:textAllCaps="false"
+                        android:textColor="@color/text_primary"
+                        android:textSize="12sp"
+                        android:fontFamily="@font/poppins_regular" />
+
+                    <Button
+                        android:id="@+id/btnRemoveStudentPass"
+                        android:layout_width="72dp"
+                        android:layout_height="32dp"
+                        android:background="@drawable/bg_attendee_item"
+                        android:backgroundTint="@null"
+                        app:backgroundTint="@null"
+                        android:elevation="0dp"
+                        android:stateListAnimator="@null"
+                        android:text="Remove"
+                        android:textAllCaps="false"
+                        android:textColor="@color/error_red"
+                        android:textSize="12sp"
+                        android:fontFamily="@font/poppins_regular" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Ticket Item: General Pass -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/bg_ticket_item"
+                android:orientation="vertical"
+                android:padding="14dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="General Pass"
+                            android:textColor="@color/text_primary"
+                            android:textSize="14sp"
+                            android:fontFamily="@font/poppins_bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:text="PKR 500 • Qty 200"
+                            android:textColor="@color/text_secondary"
+                            android:textSize="12sp"
+                            android:fontFamily="@font/poppins_regular" />
+                    </LinearLayout>
+
+                    <Button
+                        android:id="@+id/btnEditGeneralPass"
+                        android:layout_width="60dp"
+                        android:layout_height="32dp"
+                        android:layout_marginEnd="8dp"
+                        android:background="@drawable/bg_attendee_item"
+                        android:backgroundTint="@null"
+                        app:backgroundTint="@null"
+                        android:elevation="0dp"
+                        android:stateListAnimator="@null"
+                        android:text="Edit"
+                        android:textAllCaps="false"
+                        android:textColor="@color/text_primary"
+                        android:textSize="12sp"
+                        android:fontFamily="@font/poppins_regular" />
+
+                    <Button
+                        android:id="@+id/btnRemoveGeneralPass"
+                        android:layout_width="72dp"
+                        android:layout_height="32dp"
+                        android:background="@drawable/bg_attendee_item"
+                        android:backgroundTint="@null"
+                        app:backgroundTint="@null"
+                        android:elevation="0dp"
+                        android:stateListAnimator="@null"
+                        android:text="Remove"
+                        android:textAllCaps="false"
+                        android:textColor="@color/error_red"
+                        android:textSize="12sp"
+                        android:fontFamily="@font/poppins_regular" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Add ticket type button -->
+            <LinearLayout
+                android:id="@+id/btnAddTicketType"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/bg_add_ticket_btn"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:clickable="true" android:focusable="true">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="+ Add ticket type"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="13sp"
+                    android:fontFamily="@font/poppins_regular" />
+            </LinearLayout>
+
+            <!-- Sales Timeline -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="Sales timeline"
+                android:textColor="@color/text_primary"
+                android:textSize="14sp"
+                android:fontFamily="@font/poppins_bold" />
+
+            <!-- Sales start -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/etSalesStart"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="8dp"
+                    android:background="@drawable/bg_input_dark"
+                    android:fontFamily="@font/poppins_regular"
+                    android:hint="Sales start"
+                    android:inputType="date"
+                    android:paddingStart="14dp"
+                    android:paddingEnd="14dp"
+                    android:textColor="@color/text_primary"
+                    android:textColorHint="@color/hint_text"
+                    android:textSize="13sp" />
+
+                <EditText
+                    android:id="@+id/etSalesStartTime"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_input_dark"
+                    android:fontFamily="@font/poppins_regular"
+                    android:hint="Time"
+                    android:inputType="time"
+                    android:paddingStart="14dp"
+                    android:paddingEnd="14dp"
+                    android:textColor="@color/text_primary"
+                    android:textColorHint="@color/hint_text"
+                    android:textSize="13sp" />
+            </LinearLayout>
+
+            <!-- Sales end -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:layout_marginTop="8dp"
+                android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/etSalesEnd"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="8dp"
+                    android:background="@drawable/bg_input_dark"
+                    android:fontFamily="@font/poppins_regular"
+                    android:hint="Sales end"
+                    android:inputType="date"
+                    android:paddingStart="14dp"
+                    android:paddingEnd="14dp"
+                    android:textColor="@color/text_primary"
+                    android:textColorHint="@color/hint_text"
+                    android:textSize="13sp" />
+
+                <EditText
+                    android:id="@+id/etSalesEndTime"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_input_dark"
+                    android:fontFamily="@font/poppins_regular"
+                    android:hint="Time"
+                    android:inputType="time"
+                    android:paddingStart="14dp"
+                    android:paddingEnd="14dp"
+                    android:textColor="@color/text_primary"
+                    android:textColorHint="@color/hint_text"
+                    android:textSize="13sp" />
+            </LinearLayout>
+
+            <!-- Next button -->
+            <Button
+                android:id="@+id/btnNext"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_marginTop="28dp"
+                android:background="@drawable/bg_button_primary"
+                android:backgroundTint="@null"
+                app:backgroundTint="@null"
+                android:elevation="0dp"
+                android:stateListAnimator="@null"
+                android:text="Next: Information Setup"
+                android:textAllCaps="false"
+                android:textColor="@color/button_text_dark"
+                android:textSize="16sp"
+                android:fontFamily="@font/poppins_bold" />
+
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>
