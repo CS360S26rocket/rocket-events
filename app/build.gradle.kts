@@ -57,6 +57,15 @@ dependencies {
     implementation(platform("com.google.firebase:firebase-bom:32.7.0"))
     implementation("com.google.firebase:firebase-auth")
     implementation("com.google.firebase:firebase-firestore")
+    implementation("com.google.firebase:firebase-messaging")
+    implementation("com.google.firebase:firebase-storage")
+
+    // Glide for loading proof images
+    implementation("com.github.bumptech.glide:glide:4.16.0")
+    annotationProcessor("com.github.bumptech.glide:compiler:4.16.0")
+
+    // CardView for proof submission items
+    implementation("androidx.cardview:cardview:1.0.0")
 
     // Gmail SMTP for OTP
     implementation("com.sun.mail:android-mail:1.6.7")
@@ -65,6 +74,4 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
-
-    implementation("com.google.firebase:firebase-messaging")
 }
