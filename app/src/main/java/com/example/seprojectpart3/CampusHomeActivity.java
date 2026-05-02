@@ -8,6 +8,10 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.app.DatePickerDialog;
 import java.util.Calendar;
+import android.content.Intent;
+import android.net.Uri;
+import android.widget.Button;
+
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -25,6 +29,14 @@ public class CampusHomeActivity extends AppCompatActivity {
     private LinearLayout sectionBrowse;
     private LinearLayout sectionMyEvents;
     private LinearLayout sectionStatus;
+
+    private static final int PICK_PROOF_IMAGE_REQUEST = 2001;
+
+    private PaymentProofRepository paymentProofRepo;
+    private NotificationRepository notificationRepo;
+
+    private Uri selectedProofUri = null;
+    private Button btnUploadProof;
 
     private TextView tabBrowse;
     private TextView tabMyEvents;
@@ -54,6 +66,8 @@ public class CampusHomeActivity extends AppCompatActivity {
 
         eventRepo = new EventRepository();
         ticketRepo = new TicketRepository();
+        paymentProofRepo = new PaymentProofRepository();
+        notificationRepo = new NotificationRepository();
 
         uid = getIntent().getStringExtra("uid");
 
@@ -97,12 +111,19 @@ public class CampusHomeActivity extends AppCompatActivity {
         });
         tabStatus.setOnClickListener(v -> showTab("status"));
 
+        btnUploadProof = findViewById(R.id.btnUploadProof);
+
         findViewById(R.id.btnSearch).setOnClickListener(v -> searchEvents());
         findViewById(R.id.btnFilterDate).setOnClickListener(v -> filterByDate());
         findViewById(R.id.btnFilterPrice).setOnClickListener(v -> filterByPrice());
         findViewById(R.id.btnRsvp).setOnClickListener(v -> rsvpToEvent());
         findViewById(R.id.btnCancelRsvp).setOnClickListener(v -> cancelRsvp());
         findViewById(R.id.btnTicketStatus).setOnClickListener(v -> viewTicketStatus());
+
+        findViewById(R.id.btnPickProof).setOnClickListener(v -> pickProofImage());
+        btnUploadProof.setOnClickListener(v -> uploadProof());
+        findViewById(R.id.btnQueueReminders).setOnClickListener(v -> queueReminders());
+
 
         showTab("browse");
         loadAllEvents();
@@ -363,6 +384,69 @@ public class CampusHomeActivity extends AppCompatActivity {
         card.setLayoutParams(params);
 
         return card;
+    }
+
+    private void pickProofImage() {
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.setType("image/*");
+        startActivityForResult(Intent.createChooser(intent, "Select payment proof"), PICK_PROOF_IMAGE_REQUEST);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == PICK_PROOF_IMAGE_REQUEST && resultCode == RESULT_OK && data != null) {
+            selectedProofUri = data.getData();
+            showMessage("Payment proof selected. Tap Upload Proof to submit.");
+        }
+    }
+
+    private void uploadProof() {
+        String eventId = selectedEventId;
+
+        if (!hasUser()) return;
+
+        if (eventId == null || eventId.isEmpty()) {
+            showMessage("Select an event first.");
+            return;
+        }
+
+        if (selectedProofUri == null) {
+            showMessage("Pick a proof screenshot first.");
+            return;
+        }
+
+        paymentProofRepo.uploadPaymentProof(selectedProofUri, uid, eventId, email,
+                new PaymentProofRepository.ProofCallback() {
+                    @Override
+                    public void onSuccess(String proofSubmissionId) {
+                        showMessage("Proof submitted. Status: pending. ID: " + proofSubmissionId);
+                        selectedProofUri = null;
+                    }
+
+                    @Override
+                    public void onFailure(String error) {
+                        showMessage(error);
+                    }
+                });
+    }
+
+    private void queueReminders() {
+        if (!hasUser()) return;
+
+        notificationRepo.queue24HourRemindersForUser(uid,
+                new NotificationRepository.NotificationCallback() {
+                    @Override
+                    public void onSuccess(String message) {
+                        showMessage(message);
+                    }
+
+                    @Override
+                    public void onFailure(String error) {
+                        showMessage(error);
+                    }
+                });
     }
 
 

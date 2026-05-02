@@ -5,8 +5,7 @@
     android:layout_height="match_parent"
     android:background="@color/app_bg"
     android:orientation="vertical"
-    android:paddingTop="28dp"
-    >
+    android:paddingTop="28dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -160,6 +159,9 @@
                         android:layout_marginEnd="5dp"
                         android:layout_weight="1"
                         android:background="@drawable/bg_input_dark"
+                        android:clickable="true"
+                        android:cursorVisible="false"
+                        android:focusable="false"
                         android:fontFamily="@font/poppins_regular"
                         android:hint="Start date"
                         android:inputType="date"
@@ -167,10 +169,7 @@
                         android:paddingEnd="12dp"
                         android:textColor="@color/text_primary"
                         android:textColorHint="@color/hint_text"
-                        android:textSize="12sp"
-                        android:clickable="true"
-                        android:focusable="false"
-                        android:cursorVisible="false"/>
+                        android:textSize="12sp" />
 
                     <EditText
                         android:id="@+id/etEndDate"
@@ -179,6 +178,9 @@
                         android:layout_marginStart="5dp"
                         android:layout_weight="1"
                         android:background="@drawable/bg_input_dark"
+                        android:clickable="true"
+                        android:cursorVisible="false"
+                        android:focusable="false"
                         android:fontFamily="@font/poppins_regular"
                         android:hint="End date"
                         android:inputType="date"
@@ -186,11 +188,7 @@
                         android:paddingEnd="12dp"
                         android:textColor="@color/text_primary"
                         android:textColorHint="@color/hint_text"
-                        android:textSize="12sp"
-                        android:clickable="true"
-                        android:focusable="false"
-                        android:cursorVisible="false"
-                        />
+                        android:textSize="12sp" />
                 </LinearLayout>
 
                 <Button
@@ -261,7 +259,6 @@
                     android:layout_marginTop="18dp"
                     android:orientation="vertical" />
 
-
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -294,6 +291,45 @@
                     android:fontFamily="@font/poppins_bold"
                     android:stateListAnimator="@null"
                     android:text="RSVP"
+                    android:textAllCaps="false"
+                    android:textColor="@color/button_text_dark"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="22dp"
+                    android:fontFamily="@font/poppins_bold"
+                    android:text="Payment Proof"
+                    android:textColor="@color/text_primary"
+                    android:textSize="16sp" />
+
+                <Button
+                    android:id="@+id/btnPickProof"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/bg_button_secondary"
+                    android:backgroundTint="@null"
+                    app:backgroundTint="@null"
+                    android:fontFamily="@font/poppins_regular"
+                    android:stateListAnimator="@null"
+                    android:text="Pick Proof Screenshot"
+                    android:textAllCaps="false"
+                    android:textColor="@color/text_primary"
+                    android:textSize="13sp" />
+
+                <Button
+                    android:id="@+id/btnUploadProof"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/bg_button_primary"
+                    android:backgroundTint="@null"
+                    app:backgroundTint="@null"
+                    android:fontFamily="@font/poppins_bold"
+                    android:stateListAnimator="@null"
+                    android:text="Upload Proof"
                     android:textAllCaps="false"
                     android:textColor="@color/button_text_dark"
                     android:textSize="14sp" />
@@ -342,6 +378,21 @@
                     android:fontFamily="@font/poppins_regular"
                     android:stateListAnimator="@null"
                     android:text="Cancel RSVP"
+                    android:textAllCaps="false"
+                    android:textColor="@color/text_primary"
+                    android:textSize="13sp" />
+
+                <Button
+                    android:id="@+id/btnQueueReminders"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="16dp"
+                    android:background="@drawable/bg_button_secondary"
+                    android:backgroundTint="@null"
+                    app:backgroundTint="@null"
+                    android:fontFamily="@font/poppins_regular"
+                    android:stateListAnimator="@null"
+                    android:text="Queue 24-Hour Reminders"
                     android:textAllCaps="false"
                     android:textColor="@color/text_primary"
                     android:textSize="13sp" />

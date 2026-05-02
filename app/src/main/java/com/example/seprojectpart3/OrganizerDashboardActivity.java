@@ -19,6 +19,9 @@ public class OrganizerDashboardActivity extends AppCompatActivity {
     private Spinner spinnerOrganizerEvents;
     private TextView tvDashboardResult;
 
+
+    private final NotificationRepository notificationRepo = new NotificationRepository();
+
     private final EventRepository eventRepo = new EventRepository();
     private final List<Map<String, Object>> organizerEvents = new ArrayList<>();
 
@@ -37,8 +40,8 @@ public class OrganizerDashboardActivity extends AppCompatActivity {
 
         findViewById(R.id.btnViewAttendees).setOnClickListener(v -> viewAttendees());
 
-        findViewById(R.id.btnSendUpdate).setOnClickListener(v ->
-                show("Update sent to attendees for this event."));
+        findViewById(R.id.btnSendUpdate).setOnClickListener(v -> sendBroadcastUpdate());
+
 
         findViewById(R.id.btnCloseRsvps).setOnClickListener(v ->
                 show("RSVPs closed for this event."));
@@ -134,6 +137,32 @@ public class OrganizerDashboardActivity extends AppCompatActivity {
     private String value(Map<String, Object> map, String key) {
         Object value = map.get(key);
         return value == null ? "-" : String.valueOf(value);
+    }
+
+    private void sendBroadcastUpdate() {
+        String eventId = getSelectedEventId();
+
+        if (eventId == null) {
+            show("Select an event first.");
+            return;
+        }
+
+        notificationRepo.broadcastUpdateToAttendees(
+                eventId,
+                organizerUid,
+                "The organizer has posted an update for this event.",
+                new NotificationRepository.NotificationCallback() {
+                    @Override
+                    public void onSuccess(String message) {
+                        show(message);
+                    }
+
+                    @Override
+                    public void onFailure(String error) {
+                        show(error);
+                    }
+                }
+        );
     }
 
     private void show(String msg) {
