@@ -1,176 +1,143 @@
 package com.example.seprojectpart3;
 
-import androidx.appcompat.app.AppCompatActivity;
-import android.app.DatePickerDialog;
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
-import java.util.Calendar;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class OrganizerDashboardActivity extends AppCompatActivity {
 
-    TextView tvResult;
-    final String[] currentEventId = {""};
-    final String[] selectedDate = {""};
-    final String[] selectedSalesStart = {""};
-    final String[] selectedSalesEnd = {""};
+    private String organizerUid;
+    private Spinner spinnerOrganizerEvents;
+    private TextView tvDashboardResult;
+
+    private final EventRepository eventRepo = new EventRepository();
+    private final List<Map<String, Object>> organizerEvents = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_organizer_dashboard);
 
-        tvResult = findViewById(R.id.tvDashboardResult);
-        EditText etEventTitle = findViewById(R.id.etEventTitle);
-        EditText etEventDesc = findViewById(R.id.etEventDesc);
+        organizerUid = getIntent().getStringExtra("uid");
 
-        // Get organizer uid passed from login
-        String organizerUid = getIntent().getStringExtra("uid");
+        spinnerOrganizerEvents = findViewById(R.id.spinnerOrganizerEvents);
+        tvDashboardResult = findViewById(R.id.tvDashboardResult);
 
-        EventRepository eventRepo = new EventRepository();
+        findViewById(R.id.btnCreateEvent).setOnClickListener(v -> openCreateEvent());
+        findViewById(R.id.btnCreateEventLarge).setOnClickListener(v -> openCreateEvent());
 
-        // University dropdown
-        Spinner spinnerVenue = findViewById(R.id.spinnerVenue);
-        String[] universities = {
-                "LUMS - Lahore",
-                "FAST NUCES - Lahore",
-                "FAST NUCES - Islamabad",
-                "FAST NUCES - Karachi",
-                "NUST - Islamabad",
-                "UET - Lahore",
-                "UET - Peshawar",
-                "COMSATS - Islamabad",
-                "COMSATS - Lahore",
-                "Aga Khan University - Karachi",
-                "IBA - Karachi",
-                "GIK Institute - Topi",
-                "ITU - Lahore",
-                "UMT - Lahore",
-                "Bahria University - Islamabad"
-        };
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(
-                this,
-                R.layout.item_spinner_selected,
-                universities
-        );
-        adapter.setDropDownViewResource(R.layout.item_spinner_dropdown);
-        spinnerVenue.setAdapter(adapter);
+        findViewById(R.id.btnViewAttendees).setOnClickListener(v -> viewAttendees());
 
-        // Event date picker
-        findViewById(R.id.btnPickDate).setOnClickListener(v -> {
-            Calendar cal = Calendar.getInstance();
-            new DatePickerDialog(this, (view, year, month, day) -> {
-                selectedDate[0] = year + "-" +
-                        String.format("%02d", month + 1) + "-" +
-                        String.format("%02d", day);
-                ((Button) findViewById(R.id.btnPickDate))
-                        .setText("Event Date: " + selectedDate[0]);
-            },
-                    cal.get(Calendar.YEAR),
-                    cal.get(Calendar.MONTH),
-                    cal.get(Calendar.DAY_OF_MONTH)).show();
-        });
+        findViewById(R.id.btnSendUpdate).setOnClickListener(v ->
+                show("Update sent to attendees for this event."));
 
-        // Sales start picker
-        findViewById(R.id.btnPickSalesStart).setOnClickListener(v -> {
-            Calendar cal = Calendar.getInstance();
-            new DatePickerDialog(this, (view, year, month, day) -> {
-                selectedSalesStart[0] = year + "-" +
-                        String.format("%02d", month + 1) + "-" +
-                        String.format("%02d", day);
-                ((Button) findViewById(R.id.btnPickSalesStart))
-                        .setText("Sales Start: " + selectedSalesStart[0]);
-            },
-                    cal.get(Calendar.YEAR),
-                    cal.get(Calendar.MONTH),
-                    cal.get(Calendar.DAY_OF_MONTH)).show();
-        });
+        findViewById(R.id.btnCloseRsvps).setOnClickListener(v ->
+                show("RSVPs closed for this event."));
 
-        // Sales end picker
-        findViewById(R.id.btnPickSalesEnd).setOnClickListener(v -> {
-            Calendar cal = Calendar.getInstance();
-            new DatePickerDialog(this, (view, year, month, day) -> {
-                selectedSalesEnd[0] = year + "-" +
-                        String.format("%02d", month + 1) + "-" +
-                        String.format("%02d", day);
-                ((Button) findViewById(R.id.btnPickSalesEnd))
-                        .setText("Sales End: " + selectedSalesEnd[0]);
-            },
-                    cal.get(Calendar.YEAR),
-                    cal.get(Calendar.MONTH),
-                    cal.get(Calendar.DAY_OF_MONTH)).show();
-        });
+        loadOrganizerEvents();
+    }
 
-        // Create event
-        findViewById(R.id.btnCreateEvent).setOnClickListener(v -> {
-            String title = etEventTitle.getText().toString().trim();
-            String desc = etEventDesc.getText().toString().trim();
-            String venue = spinnerVenue.getSelectedItem().toString();
+    @Override
+    protected void onResume() {
+        super.onResume();
+        loadOrganizerEvents();
+    }
 
-            if (selectedDate[0].isEmpty()) {
-                tvResult.setText("Please pick an event date!");
-                return;
+    private void loadOrganizerEvents() {
+        eventRepo.getOrganizerEvents(organizerUid, new EventRepository.EventListCallback() {
+            @Override
+            public void onSuccess(List<Map<String, Object>> events) {
+                organizerEvents.clear();
+                organizerEvents.addAll(events);
+
+                List<String> labels = new ArrayList<>();
+
+                if (events.isEmpty()) {
+                    labels.add("No events yet");
+                } else {
+                    for (Map<String, Object> event : events) {
+                        String title = value(event, "title");
+                        String date = value(event, "date");
+                        labels.add(title + " - " + date);
+                    }
+                }
+
+                ArrayAdapter<String> adapter = new ArrayAdapter<>(
+                        OrganizerDashboardActivity.this,
+                        android.R.layout.simple_spinner_dropdown_item,
+                        labels
+                );
+
+                spinnerOrganizerEvents.setAdapter(adapter);
+
+                if (events.isEmpty()) {
+                    show("Create your first event to manage attendees.");
+                } else {
+                    show("Select an event to manage attendees.");
+                }
             }
 
-            eventRepo.createEvent(organizerUid, title, desc,
-                    selectedDate[0], venue,
-                    new EventRepository.EventCallback() {
-                        @Override
-                        public void onSuccess(String eventId) {
-                            currentEventId[0] = eventId;
-                            tvResult.setText("Event created! ID: " + eventId);
-                        }
-                        @Override
-                        public void onFailure(String error) {
-                            tvResult.setText("Error: " + error);
-                        }
-                    });
+            @Override
+            public void onFailure(String error) {
+                show(error);
+            }
         });
+    }
 
-        // Set sales timing
-        findViewById(R.id.btnSetSales).setOnClickListener(v -> {
-            if (currentEventId[0].isEmpty()) {
-                tvResult.setText("Create an event first!");
-                return;
-            }
-            if (selectedSalesStart[0].isEmpty() || selectedSalesEnd[0].isEmpty()) {
-                tvResult.setText("Please pick both sales dates!");
-                return;
-            }
-            eventRepo.setSalesTime(currentEventId[0],
-                    selectedSalesStart[0], selectedSalesEnd[0],
-                    new EventRepository.EventCallback() {
-                        @Override
-                        public void onSuccess(String eventId) {
-                            tvResult.setText("Sales timing set!");
-                        }
-                        @Override
-                        public void onFailure(String error) {
-                            tvResult.setText("Error: " + error);
-                        }
-                    });
-        });
+    private void openCreateEvent() {
+        Intent intent = new Intent(this, CreateEventActivity.class);
+        intent.putExtra("organizerUid", organizerUid);
+        startActivity(intent);
+    }
 
-        // View attendees
-        findViewById(R.id.btnViewAttendees).setOnClickListener(v -> {
-            if (currentEventId[0].isEmpty()) {
-                tvResult.setText("Create an event first!");
-                return;
+    private void viewAttendees() {
+        String eventId = getSelectedEventId();
+
+        if (eventId == null) {
+            show("Select an event first.");
+            return;
+        }
+
+        eventRepo.getAttendees(eventId, new EventRepository.AttendeesCallback() {
+            @Override
+            public void onSuccess(String attendeeList) {
+                show(attendeeList);
             }
-            eventRepo.getAttendees(currentEventId[0],
-                    new EventRepository.AttendeesCallback() {
-                        @Override
-                        public void onSuccess(String attendeeList) {
-                            tvResult.setText(attendeeList);
-                        }
-                        @Override
-                        public void onFailure(String error) {
-                            tvResult.setText("Error: " + error);
-                        }
-                    });
+
+            @Override
+            public void onFailure(String error) {
+                show(error);
+            }
         });
+    }
+
+    private String getSelectedEventId() {
+        int position = spinnerOrganizerEvents.getSelectedItemPosition();
+
+        if (position < 0 || position >= organizerEvents.size()) {
+            return null;
+        }
+
+        Object eventId = organizerEvents.get(position).get("eventId");
+        return eventId == null ? null : String.valueOf(eventId);
+    }
+
+    private String value(Map<String, Object> map, String key) {
+        Object value = map.get(key);
+        return value == null ? "-" : String.valueOf(value);
+    }
+
+    private void show(String msg) {
+        tvDashboardResult.setVisibility(View.VISIBLE);
+        tvDashboardResult.setText(msg);
     }
 }

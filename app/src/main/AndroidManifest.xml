@@ -2,6 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="28" />
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -11,18 +15,35 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.SEprojectpart3">
+
+        <!-- ENTRY POINT: Role Selection -->
         <activity
-            android:name=".OrganizerDashboardActivity"
-            android:exported="false" />
-        <activity
-            android:name=".MainActivity"
+            android:name=".RoleSelectionActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!-- Campus User Flow -->
+        <activity android:name=".CampusLoginActivity"      android:exported="false" />
+        <activity android:name=".CampusRegisterActivity"   android:exported="false" />
+        <activity android:name=".CampusHomeActivity"       android:exported="false" />
+        <activity android:name=".ForgotPasswordActivity"   android:exported="false" />
+
+
+        <!-- Organizer Flow -->
+        <activity android:name=".OrganizerLoginActivity"     android:exported="false" />
+        <activity android:name=".OrganizerRegisterActivity"  android:exported="false" />
+        <activity android:name=".OrganizerDashboardActivity" android:exported="false" />
+        <activity android:name=".CreateEventActivity"        android:exported="false" />
+        <activity android:name=".TicketSetupActivity"        android:exported="false" />
+        <activity android:name=".InfoSetupActivity"          android:exported="false" />
+
+        <!-- Keep old MainActivity accessible (can remove once fully migrated) -->
+        <activity android:name=".MainActivity"               android:exported="false" />
+
     </application>
 
 </manifest>
