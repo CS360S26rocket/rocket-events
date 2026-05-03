@@ -426,6 +426,16 @@ public class TicketRepository {
                                         ? eventSnap.getString("venue")
                                         : "-");
 
+                        reg.put("bannerImageUrl",
+                                eventSnap.getString("bannerImageUrl") != null
+                                        ? eventSnap.getString("bannerImageUrl")
+                                        : "");
+
+                        reg.put("eventStatus",
+                                eventSnap.getString("status") != null
+                                        ? eventSnap.getString("status")
+                                        : "");
+
                         if (remaining.decrementAndGet() == 0) {
                             callback.onSuccess(results);
                         }

@@ -40,7 +40,7 @@
             android:background="?attr/selectableItemBackgroundBorderless"
             android:contentDescription="Remove from wishlist"
             android:src="@android:drawable/btn_star_big_on"
-            android:tint="#BB86FC"
+            app:tint="#BB86FC"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 

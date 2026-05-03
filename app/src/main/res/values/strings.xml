@@ -1,3 +1,30 @@
 <resources>
-    <string name="app_name">SEprojectpart3</string>
+    <string name="app_name">Scene</string>
+    <string-array name="pakistan_universities">
+        <item>LUMS</item>
+        <item>NUST</item>
+        <item>FAST NUCES</item>
+        <item>IBA Karachi</item>
+        <item>University of the Punjab</item>
+        <item>COMSATS University Islamabad</item>
+        <item>University of Karachi</item>
+        <item>GIKI</item>
+        <item>Habib University</item>
+        <item>Forman Christian College University</item>
+        <item>University of Engineering and Technology Lahore</item>
+        <item>University of Central Punjab</item>
+        <item>Lahore College for Women University</item>
+        <item>Aga Khan University</item>
+        <item>Bahria University</item>
+        <item>Air University</item>
+        <item>Institute of Space Technology</item>
+        <item>University of Lahore</item>
+        <item>Beaconhouse National University</item>
+        <item>Institute of Business Management</item>
+        <item>NED University</item>
+        <item>Dow University of Health Sciences</item>
+        <item>Quaid-i-Azam University</item>
+        <item>Riphah International University</item>
+        <item>Virtual University of Pakistan</item>
+    </string-array>
 </resources>

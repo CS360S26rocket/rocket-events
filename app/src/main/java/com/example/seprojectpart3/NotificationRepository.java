@@ -4,10 +4,13 @@ import androidx.annotation.NonNull;
 
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -20,6 +23,34 @@ public class NotificationRepository {
     public interface NotificationCallback {
         void onSuccess(String message);
         void onFailure(String error);
+    }
+
+    public interface NotificationListCallback {
+        void onSuccess(List<Map<String, Object>> notifications);
+        void onFailure(String error);
+    }
+
+    public void getUserNotifications(@NonNull String userId,
+                                     @NonNull NotificationListCallback callback) {
+        if (userId.trim().isEmpty()) {
+            callback.onFailure("userId is required.");
+            return;
+        }
+
+        db.collection("notifications")
+                .whereEqualTo("userId", userId)
+                .orderBy("createdAt", Query.Direction.DESCENDING)
+                .get()
+                .addOnSuccessListener(snap -> {
+                    List<Map<String, Object>> results = new ArrayList<>();
+                    for (QueryDocumentSnapshot doc : snap) {
+                        Map<String, Object> notification = doc.getData();
+                        notification.put("notificationId", doc.getId());
+                        results.add(notification);
+                    }
+                    callback.onSuccess(results);
+                })
+                .addOnFailureListener(e -> callback.onFailure(message(e)));
     }
 
     public void queue24HourRemindersForUser(@NonNull String userId,
@@ -93,6 +124,16 @@ public class NotificationRepository {
                                            @NonNull String organizerUid,
                                            @NonNull String updateMessage,
                                            @NonNull NotificationCallback callback) {
+        broadcastUpdateToAttendees(eventId, organizerUid, "organizer_broadcast",
+                "Event update", updateMessage, callback);
+    }
+
+    public void broadcastUpdateToAttendees(@NonNull String eventId,
+                                           @NonNull String organizerUid,
+                                           @NonNull String type,
+                                           @NonNull String title,
+                                           @NonNull String updateMessage,
+                                           @NonNull NotificationCallback callback) {
         if (eventId.trim().isEmpty() || updateMessage.trim().isEmpty()) {
             callback.onFailure("eventId and message are required.");
             return;
@@ -123,8 +164,8 @@ public class NotificationRepository {
                         notification.put("userId", userId);
                         notification.put("eventId", eventId);
                         notification.put("organizerUid", organizerUid);
-                        notification.put("type", "organizer_broadcast");
-                        notification.put("title", "Event update");
+                        notification.put("type", type);
+                        notification.put("title", title);
                         notification.put("message", updateMessage);
                         notification.put("status", "queued");
                         notification.put("createdAt", FieldValue.serverTimestamp());
@@ -152,7 +193,7 @@ public class NotificationRepository {
 
         String title = "Ticket confirmed";
         String body = "Your ticket for " + fallback(eventTitle, "this event")
-                + " has been approved. Ticket ID: " + ticketId;
+                + " has been approved.";
 
         createInAppNotification(userId, eventId, "ticket_approved", title, body,
                 new NotificationCallback() {

@@ -17,7 +17,7 @@
         android:background="?attr/selectableItemBackgroundBorderless"
         android:contentDescription="Back"
         android:src="@android:drawable/ic_menu_revert"
-        android:tint="#FFFFFF"
+        app:tint="#FFFFFF"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -84,7 +84,7 @@
             android:alpha="0.3"
             android:contentDescription="Empty wishlist"
             android:src="@android:drawable/btn_star_big_off"
-            android:tint="#FFFFFF" />
+            app:tint="#FFFFFF" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -93,7 +93,7 @@
             android:fontFamily="@font/poppins"
             android:text="No saved events yet"
             android:textColor="#666666"
-            android:textSize="16sp" />
+            android:textSize="20sp" />
 
         <TextView
             android:layout_width="wrap_content"

@@ -17,11 +17,15 @@
         android:background="?attr/selectableItemBackgroundBorderless"
         android:contentDescription="Back"
         android:src="@android:drawable/ic_menu_revert"
-        android:tint="#FFFFFF"
+        app:tint="#FFFFFF"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <!-- Event title -->
+
+    <!-- Location name -->
+
+    <!-- Location details / venue -->
     <TextView
         android:id="@+id/tvEventTitle"
         android:layout_width="0dp"
@@ -29,17 +33,18 @@
         android:layout_marginStart="8dp"
         android:layout_marginEnd="16dp"
         android:fontFamily="@font/poppins"
+        android:gravity="center_vertical"
         android:text="Event Title"
         android:textColor="#FFFFFF"
-        android:textSize="18sp"
+        android:textSize="25sp"
         android:textStyle="bold"
-        android:gravity="center_vertical"
         app:layout_constraintBottom_toBottomOf="@id/btnBack"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@id/btnBack"
-        app:layout_constraintTop_toTopOf="@id/btnBack" />
+        app:layout_constraintTop_toTopOf="@id/btnBack"
+        app:layout_constraintVertical_bias="1.0" />
 
-    <!-- Location name -->
     <TextView
         android:id="@+id/tvLocationName"
         android:layout_width="0dp"
@@ -52,10 +57,10 @@
         android:textColor="#BB86FC"
         android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/btnBack" />
 
-    <!-- Location details / venue -->
     <TextView
         android:id="@+id/tvLocationDetails"
         android:layout_width="0dp"

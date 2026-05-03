@@ -91,7 +91,7 @@
                     android:alpha="0.4"
                     android:contentDescription="Upload icon"
                     android:src="@android:drawable/ic_menu_gallery"
-                    android:tint="#FFFFFF" />
+                    app:tint="#FFFFFF" />
 
                 <TextView
                     android:layout_width="wrap_content"

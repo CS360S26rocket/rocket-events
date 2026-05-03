@@ -19,6 +19,7 @@
             android:id="@+id/btnBack"
             android:layout_width="40dp"
             android:layout_height="40dp"
+            android:background="@drawable/bg_icon_button"
             android:gravity="center"
             android:text="←"
             android:textColor="@color/text_primary"
@@ -30,100 +31,124 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:fontFamily="@font/poppins_bold"
             android:gravity="center"
             android:text="Create Event"
             android:textColor="@color/text_primary"
-            android:textSize="16sp"
-            android:fontFamily="@font/poppins_bold" />
+            android:textSize="25sp" />
 
         <View android:layout_width="40dp" android:layout_height="40dp" />
     </LinearLayout>
 
     <!-- Step Indicator -->
+
+    <!-- Scrollable form -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="56dp"
-        android:paddingStart="24dp"
-        android:paddingEnd="24dp"
+        android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:gravity="center_vertical">
+        android:paddingStart="24dp"
+        android:paddingEnd="24dp">
 
         <!-- Step 1 - Active -->
-        <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:orientation="horizontal" android:gravity="center_vertical">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
             <TextView
                 android:layout_width="28dp"
                 android:layout_height="28dp"
                 android:background="@drawable/bg_step_active"
+                android:fontFamily="@font/poppins_bold"
                 android:gravity="center"
                 android:text="1"
                 android:textColor="@color/button_text_dark"
-                android:textSize="12sp"
-                android:fontFamily="@font/poppins_bold" />
+                android:textSize="12sp" />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="6dp"
+                android:fontFamily="@font/poppins_bold"
                 android:text="Create"
                 android:textColor="@color/accent_lime"
-                android:textSize="12sp"
-                android:fontFamily="@font/poppins_bold" />
+                android:textSize="12sp" />
         </LinearLayout>
 
-        <View android:layout_width="0dp" android:layout_height="1dp"
-            android:layout_weight="1" android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp" android:background="@color/border_dark" />
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_weight="1"
+            android:background="@color/border_dark" />
 
         <!-- Step 2 - Inactive -->
-        <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:orientation="horizontal" android:gravity="center_vertical">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
             <TextView
                 android:layout_width="28dp"
                 android:layout_height="28dp"
                 android:background="@drawable/bg_step_inactive"
+                android:fontFamily="@font/poppins_bold"
                 android:gravity="center"
                 android:text="2"
                 android:textColor="@color/text_secondary"
-                android:textSize="12sp"
-                android:fontFamily="@font/poppins_bold" />
+                android:textSize="12sp" />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="6dp"
+                android:fontFamily="@font/poppins_regular"
                 android:text="Tickets"
                 android:textColor="@color/text_secondary"
-                android:textSize="12sp"
-                android:fontFamily="@font/poppins_regular" />
+                android:textSize="12sp" />
         </LinearLayout>
 
-        <View android:layout_width="0dp" android:layout_height="1dp"
-            android:layout_weight="1" android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp" android:background="@color/border_dark" />
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_weight="1"
+            android:background="@color/border_dark" />
 
         <!-- Step 3 - Inactive -->
-        <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:orientation="horizontal" android:gravity="center_vertical">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
             <TextView
                 android:layout_width="28dp"
                 android:layout_height="28dp"
                 android:background="@drawable/bg_step_inactive"
+                android:fontFamily="@font/poppins_bold"
                 android:gravity="center"
                 android:text="3"
                 android:textColor="@color/text_secondary"
-                android:textSize="12sp"
-                android:fontFamily="@font/poppins_bold" />
+                android:textSize="12sp" />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="6dp"
+                android:fontFamily="@font/poppins_regular"
                 android:text="Info"
                 android:textColor="@color/text_secondary"
-                android:textSize="12sp"
-                android:fontFamily="@font/poppins_regular" />
+                android:textSize="12sp" />
         </LinearLayout>
     </LinearLayout>
 
-    <!-- Scrollable form -->
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -147,6 +172,35 @@
                 android:textColor="@color/text_secondary"
                 android:textSize="13sp"
                 android:fontFamily="@font/poppins_regular" />
+
+            <FrameLayout
+                android:id="@+id/cardBannerPicker"
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/bg_hero_media"
+                android:clickable="true"
+                android:focusable="true">
+
+                <ImageView
+                    android:id="@+id/ivBannerPreview"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:contentDescription="Event banner preview"
+                    android:scaleType="centerCrop"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/tvBannerHint"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:fontFamily="@font/poppins_bold"
+                    android:gravity="center"
+                    android:padding="18dp"
+                    android:text="Tap to add event banner"
+                    android:textColor="@color/text_primary"
+                    android:textSize="15sp" />
+            </FrameLayout>
 
             <!-- Radio: Open for all -->
             <LinearLayout
@@ -235,19 +289,20 @@
                 android:textSize="13sp"
                 android:fontFamily="@font/poppins_regular" />
 
-            <EditText
-                android:id="@+id/etInstitutionName"
+            <TextView
+                android:id="@+id/tvInstitutionName"
                 android:layout_width="match_parent"
                 android:layout_height="52dp"
                 android:layout_marginTop="8dp"
                 android:background="@drawable/bg_input_dark"
+                android:clickable="true"
+                android:focusable="true"
                 android:fontFamily="@font/poppins_regular"
-                android:hint="LUMS"
-                android:inputType="text"
+                android:gravity="center_vertical"
                 android:paddingStart="16dp"
                 android:paddingEnd="16dp"
+                android:text="LUMS"
                 android:textColor="@color/text_primary"
-                android:textColorHint="@color/hint_text"
                 android:textSize="14sp" />
 
             <!-- Event Timeline -->
@@ -379,7 +434,7 @@
                 android:textColorHint="@color/hint_text"
                 android:textSize="14sp" />
 
-            <!-- Physical Location -->
+            <!-- Location Type -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -391,39 +446,64 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Physical Location"
+                    android:text="Location type"
                     android:textColor="@color/text_secondary"
                     android:textSize="13sp"
                     android:fontFamily="@font/poppins_regular" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/bg_button_purple"
-                    android:paddingStart="12dp"
-                    android:paddingEnd="12dp"
-                    android:paddingTop="4dp"
-                    android:paddingBottom="4dp"
-                    android:text="In-person"
-                    android:textColor="@color/white"
-                    android:textSize="12sp"
-                    android:fontFamily="@font/poppins_regular" />
             </LinearLayout>
 
-            <EditText
-                android:id="@+id/etLocation"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="52dp"
                 android:layout_marginTop="8dp"
-                android:background="@drawable/bg_input_dark"
-                android:fontFamily="@font/poppins_regular"
-                android:hint="LUMS"
-                android:inputType="text"
-                android:paddingStart="16dp"
-                android:paddingEnd="16dp"
-                android:textColor="@color/text_primary"
-                android:textColorHint="@color/hint_text"
-                android:textSize="14sp" />
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/chipLocationInPerson"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginEnd="6dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_button_primary"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:fontFamily="@font/poppins_bold"
+                    android:gravity="center"
+                    android:text="In-person"
+                    android:textColor="@color/button_text_dark"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:id="@+id/chipLocationOnline"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="6dp"
+                    android:layout_marginEnd="6dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_button_ghost"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:fontFamily="@font/poppins_bold"
+                    android:gravity="center"
+                    android:text="Online"
+                    android:textColor="@color/text_primary"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:id="@+id/chipLocationHybrid"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="6dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_button_ghost"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:fontFamily="@font/poppins_bold"
+                    android:gravity="center"
+                    android:text="Hybrid"
+                    android:textColor="@color/text_primary"
+                    android:textSize="12sp" />
+            </LinearLayout>
 
             <!-- Event Category -->
             <TextView
@@ -455,7 +535,7 @@
                         android:gravity="center"
                         android:paddingStart="16dp"
                         android:paddingEnd="16dp"
-                        android:text="Campus Events"
+                        android:text="Entertainment"
                         android:textColor="@color/button_text_dark"
                         android:textSize="13sp"
                         android:fontFamily="@font/poppins_regular"
@@ -470,7 +550,7 @@
                         android:gravity="center"
                         android:paddingStart="16dp"
                         android:paddingEnd="16dp"
-                        android:text="Talks"
+                        android:text="Seminars"
                         android:textColor="@color/text_primary"
                         android:textSize="13sp"
                         android:fontFamily="@font/poppins_regular"

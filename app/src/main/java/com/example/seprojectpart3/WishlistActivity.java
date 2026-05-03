@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.LinearLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -29,7 +30,7 @@ import java.util.Map;
 public class WishlistActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
-    private TextView tvEmpty;
+    private LinearLayout tvEmpty;
     private TextView tvCount;
     private WishlistAdapter adapter;
     private WishlistRepository wishlistRepo;

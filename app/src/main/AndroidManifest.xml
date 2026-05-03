@@ -18,9 +18,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SEprojectpart3">
 
-        <!-- ENTRY POINT: Role Selection -->
+        <!-- ENTRY POINT: Splash then role selection -->
         <activity
-            android:name=".RoleSelectionActivity"
+            android:name=".SplashActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -28,16 +28,26 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".RoleSelectionActivity"
+            android:exported="false" />
+
         <!-- Campus User Flow -->
         <activity android:name=".CampusLoginActivity"      android:exported="false" />
         <activity android:name=".CampusRegisterActivity"   android:exported="false" />
         <activity android:name=".CampusHomeActivity"       android:exported="false" />
+        <activity android:name=".CampusEventDetailActivity" android:exported="false" />
+        <activity android:name=".CampusAiAssistantActivity" android:exported="false" />
+        <activity android:name=".PaymentSuccessActivity" android:exported="false" />
         <activity android:name=".ForgotPasswordActivity"   android:exported="false" />
 
         <!-- Organizer Flow -->
         <activity android:name=".OrganizerLoginActivity"     android:exported="false" />
         <activity android:name=".OrganizerRegisterActivity"  android:exported="false" />
         <activity android:name=".OrganizerDashboardActivity" android:exported="false" />
+        <activity android:name=".EditEventActivity"          android:exported="false" />
+        <activity android:name=".OrganizerEventUpdateActivity" android:exported="false" />
+        <activity android:name=".PaymentTransactionsActivity" android:exported="false" />
         <activity android:name=".CreateEventActivity"        android:exported="false" />
         <activity android:name=".TicketSetupActivity"        android:exported="false" />
         <activity android:name=".InfoSetupActivity"          android:exported="false" />

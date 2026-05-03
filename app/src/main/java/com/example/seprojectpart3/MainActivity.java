@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
                         @Override
                         public void onSuccess(String uid) {
                             lastUid = uid;
-                            tvResult.setText("Registered! UID: " + uid);
+                            tvResult.setText("Registered successfully.");
                         }
 
                         @Override
@@ -89,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
                                             intent.putExtra("uid", uid);
                                             startActivity(intent);
                                         } else {
-                                            tvResult.setText("Logged in as campus user! UID: " + uid);
+                                            tvResult.setText("Logged in as campus user.");
                                             // TODO: navigate to campus user dashboard if needed
                                         }
                                     })
@@ -127,7 +127,7 @@ public class MainActivity extends AppCompatActivity {
                                     new OrganizerRepository.OrganizerCallback() {
                                         @Override
                                         public void onSuccess(String id) {
-                                            tvResult.setText("Organizer registered! UID: " + uid);
+                                            tvResult.setText("Organizer registered successfully.");
                                         }
 
                                         @Override
@@ -184,7 +184,7 @@ public class MainActivity extends AppCompatActivity {
 
                                         @Override
                                         public void onWaitlisted(String waitlistId) {
-                                            tvResult.setText("Sprint2: WAITLISTED (unexpected) id=" + waitlistId);
+                                            tvResult.setText("Waitlisted.");
                                         }
 
                                         @Override

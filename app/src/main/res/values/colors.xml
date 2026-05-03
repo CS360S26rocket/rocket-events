@@ -3,31 +3,39 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
-    <color name="app_bg">#0D0D0D</color>
-    <color name="surface_dark">#171717</color>
-    <color name="input_dark">#141414</color>
+    <color name="app_bg">#070D14</color>
+    <color name="surface_dark">#111821</color>
+    <color name="surface_elevated">#1A222D</color>
+    <color name="surface_muted">#0B1119</color>
+    <color name="input_dark">#151C26</color>
 
-    <color name="border_dark">#2A2A2A</color>
-    <color name="border_purple_soft">#4B356D</color>
+    <color name="border_dark">#273241</color>
+    <color name="border_soft">#3A4557</color>
+    <color name="border_purple_soft">#43513F</color>
 
     <color name="text_primary">#FFFFFF</color>
-    <color name="text_secondary">#B8B8B8</color>
-    <color name="hint_text">#8D8D8D</color>
+    <color name="text_secondary">#B8BAC7</color>
+    <color name="hint_text">#8F91A0</color>
 
-    <color name="accent_lime">#AEF359</color>
-    <color name="accent_lime_soft">#D7F8A8</color>
+    <color name="accent_lime">#B7FF3C</color>
+    <color name="accent_lime_soft">#E3FF9D</color>
+    <color name="accent_lime_deep">#6A8F22</color>
 
-    <color name="accent_purple">#7E57C2</color>
+    <color name="accent_purple">#7657F2</color>
     <color name="accent_purple_soft">#CDAEFF</color>
-    <color name="accent_purple_vivid">#7C3AED</color>
+    <color name="accent_purple_vivid">#8A4DFF</color>
 
-    <color name="button_text_dark">#0D0D0D</color>
+    <color name="button_text_dark">#080A0F</color>
 
     <!-- New colors for mockup -->
     <color name="success_green">#22C55E</color>
-    <color name="success_green_bg">#162716</color>
+    <color name="success_green_bg">#24361D</color>
     <color name="blue_accent">#60A5FA</color>
     <color name="blue_accent_bg">#0F1E2D</color>
-    <color name="error_red">#EF4444</color>
-    <color name="card_bg">#1A1A1A</color>
+    <color name="error_red">#EF476F</color>
+    <color name="warning_gold">#F4B740</color>
+    <color name="warning_gold_bg">#4A3517</color>
+    <color name="card_bg">#151D27</color>
+    <color name="scene_glow">#66B7FF3C</color>
+    <color name="scene_glow_soft">#26B7FF3C</color>
 </resources>

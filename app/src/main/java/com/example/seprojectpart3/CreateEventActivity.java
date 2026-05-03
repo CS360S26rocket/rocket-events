@@ -1,11 +1,14 @@
 package com.example.seprojectpart3;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import java.util.Calendar;
@@ -14,19 +17,27 @@ import java.util.Locale;
 
 public class CreateEventActivity extends AppCompatActivity {
 
-    EditText etEventTitle, etDescription, etInstitutionName;
+    private static final int PICK_BANNER_REQUEST = 4101;
+
+    EditText etEventTitle, etDescription;
     EditText etStartDate, etStartTime, etEndDate, etEndTime;
-    EditText etVenue, etLocation, etCapacity;
+    EditText etVenue, etCapacity;
+    TextView tvInstitutionName, tvBannerHint;
+    ImageView ivBannerPreview;
 
     // Radio dot views
     View dotOpenForAll, dotInstitutionOnly, dotInviteOnly, dotHidden;
 
     // Category chip TextViews
     TextView chipCampusEvents, chipTalks, chipSports, chipWorkshops;
+    TextView chipLocationInPerson, chipLocationOnline, chipLocationHybrid;
 
     String selectedEventType = "institution_only"; // default matches mockup
-    String selectedCategory  = "campus_events";    // default matches mockup
+    String selectedCategory  = "entertainment";
+    String selectedInstitution = "LUMS";
+    String selectedLocationType = "In-person";
     String organizerUid;
+    Uri selectedBannerUri;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,14 +49,15 @@ public class CreateEventActivity extends AppCompatActivity {
         // Bind fields
         etEventTitle       = findViewById(R.id.etEventTitle);
         etDescription      = findViewById(R.id.etDescription);
-        etInstitutionName  = findViewById(R.id.etInstitutionName);
+        tvInstitutionName = findViewById(R.id.tvInstitutionName);
         etStartDate        = findViewById(R.id.etStartDate);
         etStartTime        = findViewById(R.id.etStartTime);
         etEndDate          = findViewById(R.id.etEndDate);
         etEndTime          = findViewById(R.id.etEndTime);
         etVenue            = findViewById(R.id.etVenue);
-        etLocation         = findViewById(R.id.etLocation);
         etCapacity         = findViewById(R.id.etCapacity);
+        tvBannerHint       = findViewById(R.id.tvBannerHint);
+        ivBannerPreview    = findViewById(R.id.ivBannerPreview);
 
         dotOpenForAll      = findViewById(R.id.dotOpenForAll);
         dotInstitutionOnly = findViewById(R.id.dotInstitutionOnly);
@@ -56,8 +68,13 @@ public class CreateEventActivity extends AppCompatActivity {
         chipTalks          = findViewById(R.id.chipTalks);
         chipSports         = findViewById(R.id.chipSports);
         chipWorkshops      = findViewById(R.id.chipWorkshops);
+        chipLocationInPerson = findViewById(R.id.chipLocationInPerson);
+        chipLocationOnline   = findViewById(R.id.chipLocationOnline);
+        chipLocationHybrid   = findViewById(R.id.chipLocationHybrid);
 
         setupDateTimePickers();
+        tvInstitutionName.setOnClickListener(v -> showUniversityPicker());
+        findViewById(R.id.cardBannerPicker).setOnClickListener(v -> pickBannerImage());
 
 
         // Back
@@ -74,10 +91,13 @@ public class CreateEventActivity extends AppCompatActivity {
                 selectEventType("hidden"));
 
         // Category chip listeners
-        chipCampusEvents.setOnClickListener(v -> selectCategory("campus_events"));
-        chipTalks.setOnClickListener(v -> selectCategory("talks"));
+        chipCampusEvents.setOnClickListener(v -> selectCategory("entertainment"));
+        chipTalks.setOnClickListener(v -> selectCategory("seminars"));
         chipSports.setOnClickListener(v -> selectCategory("sports"));
         chipWorkshops.setOnClickListener(v -> selectCategory("workshops"));
+        chipLocationInPerson.setOnClickListener(v -> selectLocationType("In-person"));
+        chipLocationOnline.setOnClickListener(v -> selectLocationType("Online"));
+        chipLocationHybrid.setOnClickListener(v -> selectLocationType("Hybrid"));
 
         // Next: pass all data to TicketSetupActivity
         findViewById(R.id.btnNext).setOnClickListener(v -> {
@@ -89,7 +109,8 @@ public class CreateEventActivity extends AppCompatActivity {
 
             if (title.isEmpty() || venue.isEmpty()) {
                 // Show inline error (could add a tvError view if needed)
-                etEventTitle.setError("Required");
+                if (title.isEmpty()) etEventTitle.setError("Required");
+                if (venue.isEmpty()) etVenue.setError("Required");
                 return;
             }
 
@@ -102,15 +123,54 @@ public class CreateEventActivity extends AppCompatActivity {
             intent.putExtra("startTime", etStartTime.getText().toString().trim());
             intent.putExtra("endDate", etEndDate.getText().toString().trim());
             intent.putExtra("endTime", etEndTime.getText().toString().trim());
-            intent.putExtra("location", etLocation.getText().toString().trim());
-            intent.putExtra("institutionName", etInstitutionName.getText().toString().trim());
+            intent.putExtra("location", selectedLocationType);
+            intent.putExtra("institutionName", selectedInstitution);
             intent.putExtra("eventType", selectedEventType);
             intent.putExtra("category", selectedCategory);
             intent.putExtra("capacity", capacity);
+            intent.putExtra("bannerImageUri", selectedBannerUri == null ? "" : selectedBannerUri.toString());
             startActivity(intent);
         });
 
 
+    }
+
+    private void pickBannerImage() {
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.setType("image/*");
+        startActivityForResult(Intent.createChooser(intent, "Select event banner"), PICK_BANNER_REQUEST);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == PICK_BANNER_REQUEST && resultCode == RESULT_OK && data != null) {
+            selectedBannerUri = data.getData();
+            ivBannerPreview.setImageURI(selectedBannerUri);
+            ivBannerPreview.setVisibility(View.VISIBLE);
+            tvBannerHint.setText("Banner selected. Tap to change.");
+        }
+    }
+
+    private void showUniversityPicker() {
+        String[] universities = getResources().getStringArray(R.array.pakistan_universities);
+        int checked = 0;
+        for (int i = 0; i < universities.length; i++) {
+            if (universities[i].equals(selectedInstitution)) {
+                checked = i;
+                break;
+            }
+        }
+
+        new AlertDialog.Builder(this)
+                .setTitle("Select institution")
+                .setSingleChoiceItems(universities, checked, (dialog, which) -> {
+                    selectedInstitution = universities[which];
+                    tvInstitutionName.setText(selectedInstitution);
+                    dialog.dismiss();
+                })
+                .setNegativeButton("Cancel", null)
+                .show();
     }
 
     private void selectEventType(String type) {
@@ -144,8 +204,8 @@ public class CreateEventActivity extends AppCompatActivity {
         // Highlight selected
         TextView selected = null;
         switch (category) {
-            case "campus_events": selected = chipCampusEvents; break;
-            case "talks":         selected = chipTalks;        break;
+            case "entertainment": selected = chipCampusEvents; break;
+            case "seminars":      selected = chipTalks;        break;
             case "sports":        selected = chipSports;       break;
             case "workshops":     selected = chipWorkshops;    break;
         }
@@ -154,6 +214,19 @@ public class CreateEventActivity extends AppCompatActivity {
             selected.setTextColor(getColor(R.color.button_text_dark));
         }
     }
+
+    private void selectLocationType(String type) {
+        selectedLocationType = type;
+        setLocationChip(chipLocationInPerson, "In-person".equals(type));
+        setLocationChip(chipLocationOnline, "Online".equals(type));
+        setLocationChip(chipLocationHybrid, "Hybrid".equals(type));
+    }
+
+    private void setLocationChip(TextView chip, boolean active) {
+        chip.setBackgroundResource(active ? R.drawable.bg_button_primary : R.drawable.bg_button_ghost);
+        chip.setTextColor(getColor(active ? R.color.button_text_dark : R.color.text_primary));
+    }
+
     private void setupDateTimePickers() {
         etStartDate.setFocusable(false);
         etStartDate.setClickable(true);

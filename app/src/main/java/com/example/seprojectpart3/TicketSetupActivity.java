@@ -14,7 +14,8 @@ public class TicketSetupActivity extends AppCompatActivity {
 
     // Data passed from step 1
     String organizerUid, title, description, venue, startDate, startTime,
-           endDate, endTime, location, institutionName, eventType, category, capacity;
+           endDate, endTime, location, institutionName, eventType, category, capacity,
+           bannerImageUri;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +37,7 @@ public class TicketSetupActivity extends AppCompatActivity {
         eventType       = i.getStringExtra("eventType");
         category        = i.getStringExtra("category");
         capacity        = i.getStringExtra("capacity");
+        bannerImageUri  = i.getStringExtra("bannerImageUri");
 
         etPayment       = findViewById(R.id.etPayment);
         etSalesStart    = findViewById(R.id.etSalesStart);
@@ -89,6 +91,7 @@ public class TicketSetupActivity extends AppCompatActivity {
             intent.putExtra("eventType",       eventType);
             intent.putExtra("category",        category);
             intent.putExtra("capacity",        capacity);
+            intent.putExtra("bannerImageUri",  bannerImageUri);
             // Step 2 data
             intent.putExtra("ticketMode",      selectedMode);
             intent.putExtra("salesStart",      etSalesStart.getText().toString().trim());

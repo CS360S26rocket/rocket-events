@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/rootSuccess"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/app_bg"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:padding="32dp">
+
+    <TextView
+        android:layout_width="118dp"
+        android:layout_height="118dp"
+        android:background="@drawable/bg_chip_success"
+        android:fontFamily="@font/poppins_bold"
+        android:gravity="center"
+        android:text="✓"
+        android:textColor="@color/accent_lime"
+        android:textSize="64sp" />
+
+    <TextView
+        android:id="@+id/tvSuccessTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:fontFamily="@font/poppins_bold"
+        android:gravity="center"
+        android:text="Confirmed"
+        android:textColor="@color/text_primary"
+        android:textSize="28sp" />
+
+    <TextView
+        android:id="@+id/tvSuccessMessage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:fontFamily="@font/poppins_regular"
+        android:gravity="center"
+        android:text="Your action was completed successfully."
+        android:textColor="@color/text_secondary"
+        android:textSize="15sp" />
+
+    <Button
+        android:id="@+id/btnSuccessDone"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:layout_marginTop="36dp"
+        android:background="@drawable/bg_button_primary"
+        android:backgroundTint="@null"
+        app:backgroundTint="@null"
+        android:fontFamily="@font/poppins_bold"
+        android:stateListAnimator="@null"
+        android:text="Done"
+        android:textAllCaps="false"
+        android:textColor="@color/button_text_dark"
+        android:textSize="15sp" />
+</LinearLayout>

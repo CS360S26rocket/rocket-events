@@ -5,157 +5,417 @@
     android:layout_height="match_parent"
     android:background="@color/app_bg"
     android:orientation="vertical"
-    android:paddingTop="28dp">
+    android:paddingTop="56dp">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="56dp"
+        android:layout_height="66dp"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:paddingStart="18dp"
-        android:paddingEnd="18dp">
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp">
 
-        <TextView
+        <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:ellipsize="end"
-            android:fontFamily="@font/poppins_bold"
-            android:maxLines="1"
-            android:text="Organizer Dashboard"
-            android:textColor="@color/text_primary"
-            android:textSize="20sp" />
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tvPortalTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:fontFamily="@font/poppins_bold"
+                android:maxLines="1"
+                android:text="Dashboard"
+                android:textColor="@color/text_primary"
+                android:textSize="24sp" />
+
+            <TextView
+                android:id="@+id/tvPortalSubtitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/poppins_regular"
+                android:text="Organizer Portal"
+                android:textColor="@color/text_secondary"
+                android:textSize="12sp" />
+        </LinearLayout>
 
         <TextView
             android:id="@+id/btnCreateEvent"
-            android:layout_width="44dp"
-            android:layout_height="40dp"
-            android:background="@drawable/bg_button_primary"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@drawable/bg_scene_fab"
             android:clickable="true"
             android:focusable="true"
             android:fontFamily="@font/poppins_bold"
             android:gravity="center"
             android:text="+"
             android:textColor="@color/button_text_dark"
-            android:textSize="22sp" />
+            android:textSize="24sp" />
     </LinearLayout>
 
-    <ScrollView
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        android:overScrollMode="never"
-        android:paddingStart="18dp"
-        android:paddingEnd="18dp">
+        android:layout_weight="1">
 
-        <LinearLayout
+        <ScrollView
+            android:id="@+id/sectionDashboard"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingTop="20dp"
-            android:paddingBottom="28dp">
-
-            <Button
-                android:id="@+id/btnCreateEventLarge"
-                android:layout_width="match_parent"
-                android:layout_height="54dp"
-                android:background="@drawable/bg_button_primary"
-                android:backgroundTint="@null"
-                app:backgroundTint="@null"
-                android:fontFamily="@font/poppins_bold"
-                android:stateListAnimator="@null"
-                android:text="Create New Event"
-                android:textAllCaps="false"
-                android:textColor="@color/button_text_dark"
-                android:textSize="15sp" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="28dp"
-                android:fontFamily="@font/poppins_bold"
-                android:text="Manage Event"
-                android:textColor="@color/text_primary"
-                android:textSize="18sp" />
-
-            <Spinner
-                android:id="@+id/spinnerOrganizerEvents"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginTop="12dp"
-                android:background="@drawable/bg_input_dark"
-                android:paddingStart="14dp"
-                android:paddingEnd="14dp" />
-
-
-            <Button
-                android:id="@+id/btnViewAttendees"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginTop="8dp"
-                android:background="@drawable/bg_button_secondary"
-                android:backgroundTint="@null"
-                app:backgroundTint="@null"
-                android:fontFamily="@font/poppins_bold"
-                android:stateListAnimator="@null"
-                android:text="View Attendees"
-                android:textAllCaps="false"
-                android:textColor="@color/text_primary"
-                android:textSize="13sp" />
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:overScrollMode="never"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            android:paddingBottom="24dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginTop="8dp"
-                android:orientation="horizontal">
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingTop="16dp">
 
                 <Button
-                    android:id="@+id/btnSendUpdate"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_marginEnd="5dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/bg_button_secondary"
+                    android:id="@+id/btnCreateEventLarge"
+                    android:layout_width="match_parent"
+                    android:layout_height="54dp"
+                    android:background="@drawable/bg_button_primary"
                     android:backgroundTint="@null"
                     app:backgroundTint="@null"
                     android:fontFamily="@font/poppins_bold"
                     android:stateListAnimator="@null"
-                    android:text="Send Update"
+                    android:text="Create Event"
                     android:textAllCaps="false"
-                    android:textColor="@color/text_primary"
-                    android:textSize="12sp" />
+                    android:textColor="@color/button_text_dark"
+                    android:textSize="15sp" />
 
-                <Button
-                    android:id="@+id/btnCloseRsvps"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_marginStart="5dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/bg_button_secondary"
-                    android:backgroundTint="@null"
-                    app:backgroundTint="@null"
+                <LinearLayout
+                    android:id="@+id/listDashboardStats"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:orientation="horizontal" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="22dp"
                     android:fontFamily="@font/poppins_bold"
-                    android:stateListAnimator="@null"
-                    android:text="Close RSVPs"
-                    android:textAllCaps="false"
+                    android:text="Your Events"
                     android:textColor="@color/text_primary"
-                    android:textSize="12sp" />
+                    android:textSize="18sp" />
+
+                <LinearLayout
+                    android:id="@+id/listDashboardEvents"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:orientation="vertical" />
             </LinearLayout>
+        </ScrollView>
 
-            <TextView
-                android:id="@+id/tvDashboardResult"
+        <ScrollView
+            android:id="@+id/sectionEvents"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:overScrollMode="never"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            android:paddingBottom="24dp"
+            android:visibility="gone">
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="18dp"
-                android:background="@drawable/bg_card_dark"
-                android:fontFamily="@font/poppins_regular"
-                android:padding="14dp"
-                android:text="Select an event to manage attendees."
-                android:textColor="@color/text_primary"
-                android:textSize="13sp"
-                android:visibility="visible" />
+                android:orientation="vertical"
+                android:paddingTop="16dp">
 
-        </LinearLayout>
-    </ScrollView>
+                <Button
+                    android:id="@+id/btnAddEventManagement"
+                    android:layout_width="match_parent"
+                    android:layout_height="52dp"
+                    android:background="@drawable/bg_button_secondary"
+                    android:backgroundTint="@null"
+                    app:backgroundTint="@null"
+                    android:fontFamily="@font/poppins_bold"
+                    android:stateListAnimator="@null"
+                    android:text="Add Event"
+                    android:textAllCaps="false"
+                    android:textColor="@color/text_primary"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="18dp"
+                    android:fontFamily="@font/poppins_regular"
+                    android:text="Select an event to edit its details."
+                    android:textColor="@color/text_secondary"
+                    android:textSize="13sp" />
+
+                <LinearLayout
+                    android:id="@+id/listManagedEvents"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:orientation="vertical" />
+            </LinearLayout>
+        </ScrollView>
+
+        <ScrollView
+            android:id="@+id/sectionProofs"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:overScrollMode="never"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            android:paddingBottom="24dp"
+            android:visibility="gone">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingTop="16dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/poppins_regular"
+                    android:text="Choose an event to review mock Paymo transactions and approved payments."
+                    android:textColor="@color/text_secondary"
+                    android:textSize="13sp" />
+
+                <LinearLayout
+                    android:id="@+id/listProofEvents"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="14dp"
+                    android:orientation="vertical" />
+            </LinearLayout>
+        </ScrollView>
+
+        <ScrollView
+            android:id="@+id/sectionProfile"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:overScrollMode="never"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            android:paddingBottom="24dp"
+            android:visibility="gone">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingTop="18dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/tvProfileInitial"
+                        android:layout_width="78dp"
+                        android:layout_height="78dp"
+                        android:background="@drawable/bg_chip_warning"
+                        android:fontFamily="@font/poppins_bold"
+                        android:gravity="center"
+                        android:text="O"
+                        android:textColor="@color/text_primary"
+                        android:textSize="30sp" />
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/tvProfileName"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/poppins_bold"
+                            android:text="Organizer"
+                            android:textColor="@color/text_primary"
+                            android:textSize="22sp" />
+
+                        <TextView
+                            android:id="@+id/tvProfileEmail"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/poppins_regular"
+                            android:text="organizer@email.com"
+                            android:textColor="@color/text_secondary"
+                            android:textSize="13sp" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="28dp"
+                    android:fontFamily="@font/poppins_bold"
+                    android:text="Personal Information"
+                    android:textColor="@color/text_primary"
+                    android:textSize="18sp" />
+
+                <EditText
+                    android:id="@+id/etProfileName"
+                    android:layout_width="match_parent"
+                    android:layout_height="54dp"
+                    android:layout_marginTop="12dp"
+                    android:background="@drawable/bg_input_dark"
+                    android:fontFamily="@font/poppins_regular"
+                    android:hint="Full name"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:textColor="@color/text_primary"
+                    android:textColorHint="@color/hint_text"
+                    android:textSize="14sp" />
+
+                <EditText
+                    android:id="@+id/etProfilePassword"
+                    android:layout_width="match_parent"
+                    android:layout_height="54dp"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/bg_input_dark"
+                    android:fontFamily="@font/poppins_regular"
+                    android:hint="New password"
+                    android:inputType="textPassword"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:textColor="@color/text_primary"
+                    android:textColorHint="@color/hint_text"
+                    android:textSize="14sp" />
+
+                <Button
+                    android:id="@+id/btnSaveProfile"
+                    android:layout_width="match_parent"
+                    android:layout_height="54dp"
+                    android:layout_marginTop="12dp"
+                    android:background="@drawable/bg_button_primary"
+                    android:backgroundTint="@null"
+                    app:backgroundTint="@null"
+                    android:fontFamily="@font/poppins_bold"
+                    android:stateListAnimator="@null"
+                    android:text="Save Profile"
+                    android:textAllCaps="false"
+                    android:textColor="@color/button_text_dark"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:id="@+id/tvProfileDetails"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:background="@drawable/bg_card_dark"
+                    android:fontFamily="@font/poppins_regular"
+                    android:padding="14dp"
+                    android:textColor="@color/text_primary"
+                    android:textSize="13sp"
+                    android:visibility="gone" />
+
+                <Button
+                    android:id="@+id/btnSignOut"
+                    android:layout_width="match_parent"
+                    android:layout_height="54dp"
+                    android:layout_marginTop="22dp"
+                    android:background="@drawable/bg_button_ghost"
+                    android:backgroundTint="@null"
+                    app:backgroundTint="@null"
+                    android:fontFamily="@font/poppins_bold"
+                    android:stateListAnimator="@null"
+                    android:text="Sign Out"
+                    android:textAllCaps="false"
+                    android:textColor="@color/error_red"
+                    android:textSize="15sp" />
+            </LinearLayout>
+        </ScrollView>
+    </FrameLayout>
+
+    <LinearLayout
+        android:id="@+id/navOrganizer"
+        android:layout_width="match_parent"
+        android:layout_height="72dp"
+        android:layout_marginStart="18dp"
+        android:layout_marginEnd="18dp"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/bg_bottom_nav"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp">
+
+        <TextView
+            android:id="@+id/navDashboard"
+            android:layout_width="0dp"
+            android:layout_height="56dp"
+            android:layout_margin="4dp"
+            android:layout_weight="1"
+            android:background="@drawable/bg_nav_item_active"
+            android:clickable="true"
+            android:contentDescription="Dashboard"
+            android:drawableTop="@drawable/ic_nav_grid"
+            android:drawableTint="@color/text_primary"
+            android:focusable="true"
+            android:gravity="center"
+            android:includeFontPadding="false"
+            android:text="" />
+
+        <TextView
+            android:id="@+id/navEvents"
+            android:layout_width="0dp"
+            android:layout_height="56dp"
+            android:layout_margin="4dp"
+            android:layout_weight="1"
+            android:clickable="true"
+            android:contentDescription="Events"
+            android:drawableTop="@drawable/ic_nav_calendar"
+            android:drawableTint="@color/text_secondary"
+            android:focusable="true"
+            android:gravity="center"
+            android:includeFontPadding="false"
+            android:text="" />
+
+        <TextView
+            android:id="@+id/navProofs"
+            android:layout_width="0dp"
+            android:layout_height="56dp"
+            android:layout_margin="4dp"
+            android:layout_weight="1"
+            android:clickable="true"
+            android:contentDescription="Payments"
+            android:drawableTop="@drawable/ic_nav_wallet"
+            android:drawableTint="@color/text_secondary"
+            android:focusable="true"
+            android:gravity="center"
+            android:includeFontPadding="false"
+            android:text="" />
+
+        <TextView
+            android:id="@+id/navProfile"
+            android:layout_width="0dp"
+            android:layout_height="56dp"
+            android:layout_margin="4dp"
+            android:layout_weight="1"
+            android:clickable="true"
+            android:contentDescription="Profile"
+            android:drawableTop="@drawable/ic_nav_user"
+            android:drawableTint="@color/text_secondary"
+            android:focusable="true"
+            android:gravity="center"
+            android:includeFontPadding="false"
+            android:text="" />
+    </LinearLayout>
 
 </LinearLayout>

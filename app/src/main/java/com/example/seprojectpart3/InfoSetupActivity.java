@@ -1,12 +1,17 @@
 package com.example.seprojectpart3;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Switch;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.firebase.firestore.FieldValue;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -21,7 +26,8 @@ public class InfoSetupActivity extends AppCompatActivity {
     // All collected data
     String organizerUid, title, description, venue, startDate, startTime,
             endDate, endTime, location, institutionName, eventType, category,
-            capacity, ticketMode, salesStart, salesStartTime, salesEnd, salesEndTime;
+            capacity, ticketMode, salesStart, salesStartTime, salesEnd, salesEndTime,
+            bannerImageUri;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +54,7 @@ public class InfoSetupActivity extends AppCompatActivity {
         salesStartTime  = i.getStringExtra("salesStartTime");
         salesEnd        = i.getStringExtra("salesEnd");
         salesEndTime    = i.getStringExtra("salesEndTime");
+        bannerImageUri  = i.getStringExtra("bannerImageUri");
 
         etEntryReqs          = findViewById(R.id.etEntryReqs);
         etOrganizerContact   = findViewById(R.id.etOrganizerContact);
@@ -98,75 +105,107 @@ public class InfoSetupActivity extends AppCompatActivity {
                 new EventRepository.EventCallback() {
                     @Override
                     public void onSuccess(String eventId) {
-                        // Step 2: Set ticket capacity
-                        TicketRepository ticketRepo = new TicketRepository();
-                        if (finalCapacity != null) {
-                            ticketRepo.updateCapacity(eventId, finalCapacity,
-                                    new TicketRepository.TicketCallback() {
-                                        @Override public void onSuccess(String id) { /* ok */ }
-                                        @Override public void onFailure(String e) { /* non-fatal */ }
-                                    });
+                        if (bannerImageUri == null || bannerImageUri.trim().isEmpty()) {
+                            finalizeEvent(eventId, isFree, finalCapacity, "", "");
+                        } else {
+                            uploadBannerAndFinalize(eventId, isFree, finalCapacity);
                         }
-
-                        // Step 3: Set sales timing if provided
-                        if (salesStart != null && !salesStart.isEmpty() &&
-                                salesEnd   != null && !salesEnd.isEmpty()) {
-                            eventRepo.setSalesTime(eventId, salesStart, salesEnd,
-                                    new EventRepository.EventCallback() {
-                                        @Override public void onSuccess(String id) { /* ok */ }
-                                        @Override public void onFailure(String e) { /* non-fatal */ }
-                                    });
-                        }
-
-                        // Step 4: Save the M1 ticket-tier model used by #5/#41.
-                        ticketRepo.saveDefaultTicketTiers(eventId, isFree,
-                                new TicketRepository.TicketCallback() {
-                                    @Override public void onSuccess(String message) { /* ok */ }
-                                    @Override public void onFailure(String error) { /* non-fatal */ }
-                                });
-
-                        Map<String, Object> metadata = new HashMap<>();
-                        metadata.put("dateOnly", startDate);
-                        metadata.put("startTime", startTime);
-                        metadata.put("endDate", endDate);
-                        metadata.put("endTime", endTime);
-                        metadata.put("location", location);
-                        metadata.put("institutionName", institutionName);
-                        metadata.put("eventType", eventType);
-                        metadata.put("category", category);
-                        metadata.put("ticketMode", ticketMode);
-                        metadata.put("priceSummary", isFree ? "Free RSVP" : "From PKR 300");
-                        metadata.put("minTicketPrice", isFree ? 0 : 300);
-                        metadata.put("paymentQrUrl", "");
-                        metadata.put("entryRequirements", etEntryReqs.getText().toString().trim());
-                        metadata.put("organizerContact", etOrganizerContact.getText().toString().trim());
-                        metadata.put("additionalInfo", etAdditionalInfo.getText().toString().trim());
-                        metadata.put("announcementsEnabled", switchAnnouncements.isChecked());
-
-                        eventRepo.updateEventMetadata(eventId, metadata,
-                                new EventRepository.EventCallback() {
-                                    @Override public void onSuccess(String id) { /* ok */ }
-                                    @Override public void onFailure(String error) { /* non-fatal */ }
-                                });
-
-                        // Success — go back to dashboard
-                        tvStatus.setText("Event published! ID: " + eventId);
-                        tvStatus.setTextColor(getColor(R.color.accent_lime));
-
-                        // Navigate back to dashboard after a short delay
-                        tvStatus.postDelayed(() -> {
-                            Intent intent = new Intent(InfoSetupActivity.this,
-                                    OrganizerDashboardActivity.class);
-                            intent.putExtra("uid", organizerUid);
-                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                            startActivity(intent);
-                            finish();
-                        }, 1500);
                     }
 
                     @Override
                     public void onFailure(String error) {
                         tvStatus.setText("Error: " + error);
+                        tvStatus.setTextColor(getColor(R.color.error_red));
+                    }
+                });
+    }
+
+    private void uploadBannerAndFinalize(String eventId, boolean isFree, Integer finalCapacity) {
+        tvStatus.setText("Uploading banner...");
+        String storagePath = "event_banners/" + eventId + "/" + System.currentTimeMillis() + ".jpg";
+        StorageReference bannerRef = FirebaseStorage.getInstance().getReference().child(storagePath);
+
+        bannerRef.putFile(Uri.parse(bannerImageUri))
+                .continueWithTask(task -> {
+                    if (!task.isSuccessful()) {
+                        throw task.getException();
+                    }
+                    return bannerRef.getDownloadUrl();
+                })
+                .addOnSuccessListener(downloadUri -> finalizeEvent(eventId, isFree, finalCapacity,
+                        downloadUri.toString(), storagePath))
+                .addOnFailureListener(e -> {
+                    tvStatus.setText("Banner upload failed: " + (e.getMessage() == null ? "Unknown error" : e.getMessage()));
+                    tvStatus.setTextColor(getColor(R.color.error_red));
+                });
+    }
+
+    private void finalizeEvent(String eventId, boolean isFree, Integer finalCapacity,
+                               String bannerUrl, String bannerStoragePath) {
+        TicketRepository ticketRepo = new TicketRepository();
+        if (finalCapacity != null) {
+            ticketRepo.updateCapacity(eventId, finalCapacity,
+                    new TicketRepository.TicketCallback() {
+                        @Override public void onSuccess(String id) { /* ok */ }
+                        @Override public void onFailure(String e) { /* non-fatal */ }
+                    });
+        }
+
+        if (salesStart != null && !salesStart.isEmpty() &&
+                salesEnd != null && !salesEnd.isEmpty()) {
+            eventRepo.setSalesTime(eventId, salesStart, salesEnd,
+                    new EventRepository.EventCallback() {
+                        @Override public void onSuccess(String id) { /* ok */ }
+                        @Override public void onFailure(String e) { /* non-fatal */ }
+                    });
+        }
+
+        ticketRepo.saveDefaultTicketTiers(eventId, isFree,
+                new TicketRepository.TicketCallback() {
+                    @Override public void onSuccess(String message) { /* ok */ }
+                    @Override public void onFailure(String error) { /* non-fatal */ }
+                });
+
+        Map<String, Object> metadata = new HashMap<>();
+        metadata.put("dateOnly", startDate);
+        metadata.put("startTime", startTime);
+        metadata.put("endDate", endDate);
+        metadata.put("endTime", endTime);
+        metadata.put("location", location);
+        metadata.put("institutionName", institutionName);
+        metadata.put("eventType", eventType);
+        metadata.put("category", category);
+        metadata.put("ticketMode", ticketMode);
+        metadata.put("ticketSalesStartTime", salesStartTime);
+        metadata.put("ticketSalesEndTime", salesEndTime);
+        metadata.put("priceSummary", isFree ? "Free RSVP" : "From PKR 300");
+        metadata.put("minTicketPrice", isFree ? 0 : 300);
+        metadata.put("paymentQrUrl", "");
+        metadata.put("bannerImageUrl", bannerUrl);
+        metadata.put("bannerStoragePath", bannerStoragePath);
+        if (bannerUrl != null && !bannerUrl.trim().isEmpty()) {
+            metadata.put("bannerUpdatedAt", FieldValue.serverTimestamp());
+        }
+        metadata.put("entryRequirements", etEntryReqs.getText().toString().trim());
+        metadata.put("organizerContact", etOrganizerContact.getText().toString().trim());
+        metadata.put("additionalInfo", etAdditionalInfo.getText().toString().trim());
+        metadata.put("announcementsEnabled", switchAnnouncements.isChecked());
+
+        eventRepo.updateEventMetadata(eventId, metadata,
+                new EventRepository.EventCallback() {
+                    @Override public void onSuccess(String id) {
+                        Intent intent = new Intent(InfoSetupActivity.this,
+                                PaymentSuccessActivity.class);
+                        intent.putExtra("target", "organizer");
+                        intent.putExtra("uid", organizerUid);
+                        intent.putExtra("title", "Event published");
+                        intent.putExtra("message", "Your event is live and ready for attendees.");
+                        startActivity(intent);
+                        finish();
+                    }
+
+                    @Override public void onFailure(String error) {
+                        tvStatus.setText("Event saved, but banner metadata failed: " + error);
                         tvStatus.setTextColor(getColor(R.color.error_red));
                     }
                 });

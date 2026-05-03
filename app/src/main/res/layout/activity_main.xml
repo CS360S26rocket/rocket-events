@@ -19,7 +19,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="🚀 Rocket Events"
+            android:text="Scene"
             android:textColor="@color/text_primary"
             android:textSize="30sp"
             android:fontFamily="@font/poppins_bold" />
@@ -50,7 +50,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="✨ Account Details"
+                android:text="Account Details"
                 android:textColor="@color/text_primary"
                 android:textSize="20sp"
                 android:fontFamily="@font/poppins_bold" />

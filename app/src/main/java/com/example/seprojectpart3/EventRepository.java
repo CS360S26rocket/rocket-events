@@ -46,7 +46,7 @@ public class EventRepository {
         event.put("description", description);
         event.put("date", date);
         event.put("venue", venue);
-        event.put("status", "active");
+        event.put("status", "published");
         event.put("rsvpCount", 0);
         event.put("ticketsSold", 0);           // M4 needs this for #50
         event.put("ticketSalesOpen", false);    // M4 needs this for #50
@@ -74,13 +74,13 @@ public class EventRepository {
     // Campus discovery home — list all active events.
     public void getActiveEvents(EventListCallback callback) {
         db.collection("events")
-                .whereEqualTo("status", "active")
                 .get()
                 .addOnSuccessListener(snap -> {
                     List<Map<String, Object>> results = new ArrayList<>();
 
                     for (QueryDocumentSnapshot doc : snap) {
                         Map<String, Object> event = doc.getData();
+                        if (!isVisibleToCampusUsers(event)) continue;
                         event.put("eventId", doc.getId());
                         results.add(event);
                     }
@@ -97,13 +97,13 @@ public class EventRepository {
         String today = new SimpleDateFormat("yyyy-MM-dd", Locale.US).format(new Date());
 
         db.collection("events")
-                .whereEqualTo("status", "active")
                 .get()
                 .addOnSuccessListener(snap -> {
                     List<Map<String, Object>> results = new ArrayList<>();
 
                     for (QueryDocumentSnapshot doc : snap) {
                         Map<String, Object> event = doc.getData();
+                        if (!isVisibleToCampusUsers(event)) continue;
                         String date = event.get("date") == null
                                 ? ""
                                 : String.valueOf(event.get("date"));
@@ -180,6 +180,31 @@ public class EventRepository {
                 .addOnFailureListener(e -> callback.onFailure(e.getMessage()));
     }
 
+    public void updateEventStatus(String eventId, String status, EventCallback callback) {
+        if (eventId == null || eventId.trim().isEmpty()) {
+            callback.onFailure("Event ID is required");
+            return;
+        }
+        String normalized = status == null ? "" : status.trim().toLowerCase(Locale.US);
+        if (!"draft".equals(normalized)
+                && !"published".equals(normalized)
+                && !"cancelled".equals(normalized)
+                && !"sold_out".equals(normalized)) {
+            callback.onFailure("Unsupported event status.");
+            return;
+        }
+
+        if ("cancelled".equals(normalized)) {
+            cancelEventAndNotify(eventId, callback);
+            return;
+        }
+
+        Map<String, Object> updates = new HashMap<>();
+        updates.put("status", normalized);
+        updates.put("statusUpdatedAt", FieldValue.serverTimestamp());
+        updateEventMetadata(eventId, updates, callback);
+    }
+
     // Story #44 — cancel event and notify registered users.
     public void cancelEventAndNotify(String eventId, EventCallback callback) {
         if (eventId == null || eventId.trim().isEmpty()) {
@@ -222,6 +247,11 @@ public class EventRepository {
     private String valueForSort(Map<String, Object> map, String key) {
         Object value = map.get(key);
         return value == null ? "" : String.valueOf(value);
+    }
+
+    private boolean isVisibleToCampusUsers(Map<String, Object> event) {
+        String status = valueForSort(event, "status").toLowerCase(Locale.US);
+        return "active".equals(status) || "published".equals(status);
     }
 
     // Story #13 — Set ticket sales start and end time
@@ -290,11 +320,12 @@ public class EventRepository {
         // Pull all active events then filter client-side.
         // For large datasets this should be replaced by a search index (e.g. Algolia).
         db.collection("events")
-                .whereEqualTo("status", "active")
                 .get()
                 .addOnSuccessListener(snap -> {
                     List<Map<String, Object>> results = new ArrayList<>();
                     for (QueryDocumentSnapshot doc : snap) {
+                        Map<String, Object> event = doc.getData();
+                        if (!isVisibleToCampusUsers(event)) continue;
                         String title = doc.getString("title");
                         String desc  = doc.getString("description");
 
@@ -304,7 +335,6 @@ public class EventRepository {
                                 && desc.toLowerCase().contains(kw);
 
                         if (titleMatch || descMatch) {
-                            Map<String, Object> event = doc.getData();
                             event.put("eventId", doc.getId());
                             results.add(event);
                         }
@@ -332,7 +362,6 @@ public class EventRepository {
         }
 
         db.collection("events")
-                .whereEqualTo("status", "active")
                 .whereGreaterThanOrEqualTo("date", startDate)
                 .whereLessThanOrEqualTo("date", endDate)
                 .orderBy("date", Query.Direction.ASCENDING)
@@ -341,6 +370,7 @@ public class EventRepository {
                     List<Map<String, Object>> results = new ArrayList<>();
                     for (QueryDocumentSnapshot doc : snap) {
                         Map<String, Object> event = doc.getData();
+                        if (!isVisibleToCampusUsers(event)) continue;
                         event.put("eventId", doc.getId());
                         results.add(event);
                     }
@@ -361,13 +391,13 @@ public class EventRepository {
     // -------------------------------------------------------------------------
     public void filterByPrice(boolean isFree, EventListCallback callback) {
         db.collection("events")
-                .whereEqualTo("status", "active")
                 .whereEqualTo("isFree", isFree)
                 .get()
                 .addOnSuccessListener(snap -> {
                     List<Map<String, Object>> results = new ArrayList<>();
                     for (QueryDocumentSnapshot doc : snap) {
                         Map<String, Object> event = doc.getData();
+                        if (!isVisibleToCampusUsers(event)) continue;
                         event.put("eventId", doc.getId());
                         results.add(event);
                     }
@@ -383,7 +413,6 @@ public class EventRepository {
 
         db.collection("events")
                 .whereEqualTo("organizerUid", organizerUid)
-                .whereEqualTo("status", "active")
                 .get()
                 .addOnSuccessListener(snap -> {
                     List<Map<String, Object>> results = new ArrayList<>();
