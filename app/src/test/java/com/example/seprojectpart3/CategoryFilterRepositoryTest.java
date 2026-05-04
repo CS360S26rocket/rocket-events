@@ -1,51 +1,23 @@
 package com.example.seprojectpart3;
 
+import static org.junit.Assert.*;
+
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QuerySnapshot;
-
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import static org.junit.Assert.*;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
-
-/**
- * Unit tests for M3 Sprint 3 stories:
- *  - #3  CategoryFilterRepository
- *  - #29 FeaturedEventRepository
- */
-@RunWith(MockitoJUnitRunner.class)
 public class CategoryFilterRepositoryTest {
-
-    @Mock FirebaseFirestore mockDb;
-    @Mock CollectionReference mockCollection;
-    @Mock Query mockQuery;
-    @Mock Task<QuerySnapshot> mockTask;
 
     private CategoryFilterRepository categoryRepo;
     private FeaturedEventRepository featuredRepo;
 
     @Before
     public void setUp() {
-        when(mockDb.collection("events")).thenReturn(mockCollection);
-        categoryRepo = new CategoryFilterRepository(mockDb);
-        featuredRepo = new FeaturedEventRepository(mockDb);
+        categoryRepo = new CategoryFilterRepository(null);
+        featuredRepo = new FeaturedEventRepository(null);
     }
-
-    // ═══ #3 — Category Filter Tests ═══════════════════════════
 
     @Test
     public void filterByCategory_nullCategory_callsOnFailure() {
@@ -130,14 +102,13 @@ public class CategoryFilterRepositoryTest {
     @Test
     public void supportedCategories_containsExpectedValues() {
         List<String> cats = CategoryFilterRepository.CATEGORIES;
+
         assertTrue(cats.contains("Academic"));
         assertTrue(cats.contains("Sports"));
         assertTrue(cats.contains("Cultural"));
         assertTrue(cats.contains("Workshop"));
         assertEquals(8, cats.size());
     }
-
-    // ═══ #29 — Featured Events Tests ══════════════════════════
 
     @Test
     public void setFeatured_nullEventId_callsOnFailure() {

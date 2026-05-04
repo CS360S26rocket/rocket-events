@@ -71,6 +71,8 @@ dependencies {
 
     // Unit Tests
     testImplementation("junit:junit:4.13.2")
+    testImplementation("org.mockito:mockito-core:5.12.0")
+    testImplementation("org.mockito:mockito-inline:5.2.0")
 
     // Instrumentation Tests
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
@@ -129,6 +131,7 @@ dependencies {
         (options as org.gradle.external.javadoc.StandardJavadocDocletOptions)
             .addStringOption("Xdoclint:none", "-quiet")
     }
+
 
 }
 
