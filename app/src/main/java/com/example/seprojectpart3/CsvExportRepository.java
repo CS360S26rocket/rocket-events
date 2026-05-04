@@ -1,3 +1,10 @@
+/*
+ * This file defines CsvExportRepository, a data repository used by the Scene app.
+ * It contains CSV export generation for organizer attendee and ticketing data.
+ * Its functions include exportAttendeeCsv, createCsvFile, safe, esc to load data, handle user actions, validate input, and save results.
+ * It connects this feature to the Scene app's UI, data, navigation, and verification flow.
+ */
+
 package com.example.seprojectpart3;
 
 import android.content.Context;
@@ -14,16 +21,16 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-/**
- * M3 - Sprint 2
- * Story #39: Export attendee list as CSV
- *
- * Reads confirmed registrations from `registrations` filtered by eventId
- * and writes a CSV file to the app-specific external downloads directory
- * (no storage permission needed on Android 10+).
- *
- * CSV columns: Name, Email, Ticket Type, Status, Registered At
- */
+
+
+
+
+
+
+
+
+
+
 public class CsvExportRepository {
 
     private static final String REGISTRATIONS_COLLECTION = "registrations";
@@ -102,7 +109,7 @@ public class CsvExportRepository {
     }
 
     private String esc(String s) {
-        // CSV escaping: double quotes become two double quotes
+        
         return s.replace("\"", "\"\"");
     }
 

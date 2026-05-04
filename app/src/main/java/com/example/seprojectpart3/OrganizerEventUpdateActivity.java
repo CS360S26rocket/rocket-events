@@ -1,3 +1,10 @@
+/*
+ * This file defines OrganizerEventUpdateActivity, an Android activity used by the Scene app.
+ * It contains the organizer update composer used to send event changes and live messages to attendees.
+ * Its functions include onCreate, quickLive, selectType, renderTypeChips to load data, handle user actions, validate input, and save results.
+ * It connects this feature to the Scene app's UI, data, navigation, and verification flow.
+ */
+
 package com.example.seprojectpart3;
 
 import android.content.Intent;

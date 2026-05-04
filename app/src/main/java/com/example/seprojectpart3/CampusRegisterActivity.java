@@ -1,3 +1,10 @@
+/*
+ * This file defines CampusRegisterActivity, an Android activity used by the Scene app.
+ * It contains campus user account creation and validation.
+ * Its functions include onCreate, onSuccess, onFailure, showError to load data, handle user actions, validate input, and save results.
+ * It connects this feature to the Scene app's UI, data, navigation, and verification flow.
+ */
+
 package com.example.seprojectpart3;
 
 import android.os.Bundle;
@@ -25,7 +32,7 @@ public class CampusRegisterActivity extends AppCompatActivity {
 
         findViewById(R.id.btnBack).setOnClickListener(v -> finish());
 
-        // "Log in" link → go back to login
+        
         findViewById(R.id.tvLogin).setOnClickListener(v -> finish());
 
         findViewById(R.id.btnRegister).setOnClickListener(v -> {
@@ -44,10 +51,10 @@ public class CampusRegisterActivity extends AppCompatActivity {
                     new RegistrationRepository.RegistrationCallback() {
                         @Override
                         public void onSuccess(String uid) {
-                            // Registration done — go to login
+                            
                             showSuccess("Account created! Please log in.");
                             tvError.postDelayed(() -> {
-                                finish(); // back to CampusLoginActivity
+                                finish(); 
                             }, 1200);
                         }
 

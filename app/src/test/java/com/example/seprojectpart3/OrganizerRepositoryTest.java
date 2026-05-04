@@ -1,3 +1,10 @@
+/*
+ * This file defines OrganizerRepositoryTest, a test class used to verify Scene app behavior.
+ * It contains automated test coverage for OrganizerRepository behavior and expected results.
+ * Its functions include testEmailNormalization, testValidDomain, testInvalidDomain to load data, handle user actions, validate input, and save results.
+ * It connects this feature to the Scene app's UI, data, navigation, and verification flow.
+ */
+
 package com.example.seprojectpart3;
 
 import static org.junit.Assert.*;

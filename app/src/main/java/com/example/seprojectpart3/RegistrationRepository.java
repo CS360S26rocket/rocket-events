@@ -1,3 +1,10 @@
+/*
+ * This file defines RegistrationRepository, a data repository used by the Scene app.
+ * It contains student registration and approved campus user data operations.
+ * Its functions include registerUser, createAuthAccount, saveUserProfile, isValidUniversityEmail to load data, handle user actions, validate input, and save results.
+ * It connects this feature to the Scene app's UI, data, navigation, and verification flow.
+ */
+
 package com.example.seprojectpart3;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -6,11 +13,11 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.HashMap;
 import java.util.Map;
 
-// This class handles the user registration process using Firebase Authentication and Firestore. 
-// The `registerUser` method validates the university email, checks if an account already exists, and proceeds to create a user account if valid. 
-// The `createAuthAccount` method creates the authentication account, and the `saveUserProfile` method stores the user's profile in Firestore. 
-// The `isValidUniversityEmail` method ensures the email belongs to the university domain. 
-// Success and failure of each operation are handled via the `RegistrationCallback` interface.
+
+
+
+
+
 
 public class RegistrationRepository {
     private final FirebaseAuth auth = FirebaseAuth.getInstance();
@@ -44,7 +51,7 @@ public class RegistrationRepository {
         auth.createUserWithEmailAndPassword(email, password)
                 .addOnSuccessListener(result -> {
                     String uid = result.getUser().getUid();
-                    // 4. Save user profile to Firestore
+                    
                     saveUserProfile(uid, email, name, role, callback);
                 })
                 .addOnFailureListener(e -> callback.onFailure(e.getMessage()));

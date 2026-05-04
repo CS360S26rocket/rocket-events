@@ -1,3 +1,10 @@
+/*
+ * This file defines GeminiAssistantRepository, a data repository used by the Scene app.
+ * It contains Gemini request creation, event-context prompts, and AI response parsing.
+ * Its functions include ask, requestModel, fallbackModels, addUnique to load data, handle user actions, validate input, and save results.
+ * It connects this feature to the Scene app's UI, data, navigation, and verification flow.
+ */
+
 package com.example.seprojectpart3;
 
 import org.json.JSONArray;

@@ -1,3 +1,10 @@
+/*
+ * This file defines PaymentQRRepository, a data repository used by the Scene app.
+ * It contains payment QR upload metadata and retrieval for organizer payment settings.
+ * Its functions include savePaymentQRUrl, getPaymentQRUrl, removePaymentQR to load data, handle user actions, validate input, and save results.
+ * It connects this feature to the Scene app's UI, data, navigation, and verification flow.
+ */
+
 package com.example.seprojectpart3;
 
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -5,13 +12,13 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Story ORG-A — Payment QR code Firestore repository
- * M3 · Sprint 4
- *
- * Stores and retrieves the organizer's payment QR code URL
- * on the event document in Firestore.
- */
+
+
+
+
+
+
+
 public class PaymentQRRepository {
 
     private static final String COLLECTION_EVENTS = "events";
@@ -28,24 +35,24 @@ public class PaymentQRRepository {
         this.db = db;
     }
 
-    // ── Callbacks ───────────────────────────────────────────────
+    
     public interface OnQRSavedListener {
         void onSuccess();
         void onFailure(String errorMessage);
     }
 
     public interface OnQRUrlLoadedListener {
-        void onLoaded(String url);  // null if not set
+        void onLoaded(String url);  
     }
 
-    /**
-     * Save the payment QR image URL to the event document.
-     * Called after FileStorageManager returns the download URL.
-     *
-     * @param eventId     The event to attach the QR code to
-     * @param downloadUrl The secure download URL from FILE-STORAGE
-     * @param listener    Callback
-     */
+    
+
+
+
+
+
+
+
     public void savePaymentQRUrl(String eventId, String downloadUrl,
                                  OnQRSavedListener listener) {
         if (eventId == null || eventId.isEmpty()) {
@@ -70,13 +77,13 @@ public class PaymentQRRepository {
                         listener.onFailure("Failed to save QR URL: " + e.getMessage()));
     }
 
-    /**
-     * Retrieve the payment QR image URL for an event.
-     * Used by M1's USR-A to display the QR to users.
-     *
-     * @param eventId  The event to look up
-     * @param listener Callback with URL (null if not set)
-     */
+    
+
+
+
+
+
+
     public void getPaymentQRUrl(String eventId, OnQRUrlLoadedListener listener) {
         if (eventId == null || eventId.isEmpty()) {
             listener.onLoaded(null);
@@ -97,9 +104,9 @@ public class PaymentQRRepository {
                 .addOnFailureListener(e -> listener.onLoaded(null));
     }
 
-    /**
-     * Remove the payment QR code from an event (organizer action).
-     */
+    
+
+
     public void removePaymentQR(String eventId, OnQRSavedListener listener) {
         if (eventId == null || eventId.isEmpty()) {
             listener.onFailure("Event ID is required");

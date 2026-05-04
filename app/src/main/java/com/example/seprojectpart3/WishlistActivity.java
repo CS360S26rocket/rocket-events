@@ -1,3 +1,10 @@
+/*
+ * This file defines WishlistActivity, an Android activity used by the Scene app.
+ * It contains saved or wishlisted events for campus users.
+ * Its functions include onCreate, onResume, loadWishlist, onSuccess to load data, handle user actions, validate input, and save results.
+ * It connects this feature to the Scene app's UI, data, navigation, and verification flow.
+ */
+
 package com.example.seprojectpart3;
 
 import android.os.Bundle;
@@ -20,13 +27,13 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-/**
- * Story #45 — Wishlist Activity (view + manage wishlisted events)
- * M3 · Sprint 5
- *
- * Displays a list of events the user has saved to their wishlist.
- * Each item has a remove (heart) button to toggle wishlist status.
- */
+
+
+
+
+
+
+
 public class WishlistActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
@@ -52,7 +59,7 @@ public class WishlistActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
 
-        // Back button
+        
         findViewById(R.id.btnBack).setOnClickListener(v -> finish());
 
         loadWishlist();
@@ -124,7 +131,7 @@ public class WishlistActivity extends AppCompatActivity {
                 });
     }
 
-    // ── RecyclerView Adapter ────────────────────────────────────
+    
     private class WishlistAdapter
             extends RecyclerView.Adapter<WishlistAdapter.ViewHolder> {
 
@@ -149,7 +156,7 @@ public class WishlistActivity extends AppCompatActivity {
             holder.tvCategory.setText(
                     category != null ? category : "");
 
-            // Format event date
+            
             Object dateObj = event.get("eventDate");
             if (dateObj instanceof com.google.firebase.Timestamp) {
                 Date date = ((com.google.firebase.Timestamp) dateObj).toDate();
@@ -160,7 +167,7 @@ public class WishlistActivity extends AppCompatActivity {
                 holder.tvDate.setText("Date TBA");
             }
 
-            // Price display
+            
             Object priceObj = event.get("price");
             if (priceObj instanceof Number) {
                 double price = ((Number) priceObj).doubleValue();
@@ -170,7 +177,7 @@ public class WishlistActivity extends AppCompatActivity {
                 holder.tvPrice.setText("");
             }
 
-            // Remove button
+            
             holder.btnRemove.setOnClickListener(v ->
                     removeFromWishlist(holder.getAdapterPosition()));
         }

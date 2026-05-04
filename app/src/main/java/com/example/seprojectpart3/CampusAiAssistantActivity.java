@@ -1,3 +1,10 @@
+/*
+ * This file defines CampusAiAssistantActivity, an Android activity used by the Scene app.
+ * It contains the AI event assistant chat screen and recommendation flow.
+ * Its functions include onCreate, loadEvents, onSuccess, onFailure to load data, handle user actions, validate input, and save results.
+ * It connects this feature to the Scene app's UI, data, navigation, and verification flow.
+ */
+
 package com.example.seprojectpart3;
 
 import android.os.Bundle;

@@ -1,3 +1,10 @@
+/*
+ * This file defines WishlistRepository, a data repository used by the Scene app.
+ * It contains saving, removing, and loading user wishlist event entries.
+ * Its functions include getCurrentUserId, getWishlistDocId, addToWishlist, removeFromWishlist to load data, handle user actions, validate input, and save results.
+ * It connects this feature to the Scene app's UI, data, navigation, and verification flow.
+ */
+
 package com.example.seprojectpart3;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -11,19 +18,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Story #45 — Save event to wishlist
- * M3 · Sprint 5
- *
- * User-event join table in Firestore:
- *   Collection: "wishlists"
- *   Document:   auto-generated
- *   Fields:     userId, eventId, addedAt
- *
- * Compound key: (userId, eventId) — prevents duplicate wishlist entries.
- * Uses a deterministic document ID: "{userId}_{eventId}" to enforce uniqueness
- * without an extra query.
- */
+
+
+
+
+
+
+
+
+
+
+
+
+
 public class WishlistRepository {
 
     private static final String COLLECTION_WISHLISTS = "wishlists";
@@ -42,7 +49,7 @@ public class WishlistRepository {
         this.auth = auth;
     }
 
-    // ── Callbacks ───────────────────────────────────────────────
+    
     public interface OnWishlistActionListener {
         void onSuccess();
         void onFailure(String errorMessage);
@@ -57,25 +64,25 @@ public class WishlistRepository {
         void onResult(boolean isWishlisted);
     }
 
-    /**
-     * Get the current authenticated user's ID.
-     */
+    
+
+
     private String getCurrentUserId() {
         return auth.getCurrentUser() != null
                 ? auth.getCurrentUser().getUid() : null;
     }
 
-    /**
-     * Generate deterministic document ID for wishlist entry.
-     * Ensures one entry per (user, event) pair.
-     */
+    
+
+
+
     private String getWishlistDocId(String userId, String eventId) {
         return userId + "_" + eventId;
     }
 
-    /**
-     * Add an event to the current user's wishlist.
-     */
+    
+
+
     public void addToWishlist(String eventId, OnWishlistActionListener listener) {
         String userId = getCurrentUserId();
         if (userId == null) {
@@ -103,9 +110,9 @@ public class WishlistRepository {
                                 "Failed to add to wishlist: " + e.getMessage()));
     }
 
-    /**
-     * Remove an event from the current user's wishlist.
-     */
+    
+
+
     public void removeFromWishlist(String eventId,
                                    OnWishlistActionListener listener) {
         String userId = getCurrentUserId();
@@ -129,9 +136,9 @@ public class WishlistRepository {
                                 "Failed to remove from wishlist: " + e.getMessage()));
     }
 
-    /**
-     * Toggle wishlist status: add if not wishlisted, remove if already.
-     */
+    
+
+
     public void toggleWishlist(String eventId,
                                OnWishlistToggleListener listener) {
         isWishlisted(eventId, isInWishlist -> {
@@ -170,9 +177,9 @@ public class WishlistRepository {
         void onFailure(String errorMessage);
     }
 
-    /**
-     * Check if an event is in the current user's wishlist.
-     */
+    
+
+
     public void isWishlisted(String eventId, OnWishlistCheckListener listener) {
         String userId = getCurrentUserId();
         if (userId == null || eventId == null) {
@@ -189,10 +196,10 @@ public class WishlistRepository {
                 .addOnFailureListener(e -> listener.onResult(false));
     }
 
-    /**
-     * Get all events in the current user's wishlist.
-     * Returns full event data by joining with the events collection.
-     */
+    
+
+
+
     public void getWishlistEvents(OnWishlistLoadedListener listener) {
         String userId = getCurrentUserId();
         if (userId == null) {
@@ -224,7 +231,7 @@ public class WishlistRepository {
                             continue;
                         }
 
-                        // Fetch full event details
+                        
                         db.collection(COLLECTION_EVENTS).document(eventId)
                                 .get()
                                 .addOnSuccessListener(eventDoc -> {
@@ -257,10 +264,10 @@ public class WishlistRepository {
                                 "Failed to load wishlist: " + e.getMessage()));
     }
 
-    /**
-     * Get the count of users who have wishlisted an event.
-     * Useful for showing popularity on event detail pages.
-     */
+    
+
+
+
     public void getWishlistCount(String eventId,
                                  OnWishlistCountListener listener) {
         db.collection(COLLECTION_WISHLISTS)

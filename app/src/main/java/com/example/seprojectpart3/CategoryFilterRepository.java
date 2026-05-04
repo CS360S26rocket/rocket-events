@@ -1,3 +1,10 @@
+/*
+ * This file defines CategoryFilterRepository, a data repository used by the Scene app.
+ * It contains category-based event filtering and query helpers.
+ * Its functions include filterByCategory, filterByTags, filterByCategoryAndTag, getActiveCategories to load data, handle user actions, validate input, and save results.
+ * It connects this feature to the Scene app's UI, data, navigation, and verification flow.
+ */
+
 package com.example.seprojectpart3;
 
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -10,13 +17,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Story #3 — Filter events by category / tag
- * M3 · Sprint 3
- *
- * Provides Firestore queries to filter the events collection
- * by a single category enum or by multiple tags.
- */
+
+
+
+
+
+
+
 public class CategoryFilterRepository {
 
     private static final String COLLECTION_EVENTS = "events";
@@ -27,7 +34,7 @@ public class CategoryFilterRepository {
 
     private final FirebaseFirestore db;
 
-    // ── Supported category enum values ──────────────────────────
+    
     public static final List<String> CATEGORIES = Arrays.asList(
             "Academic", "Cultural", "Sports", "Workshop",
             "Social", "Career", "Club", "Other"
@@ -37,21 +44,21 @@ public class CategoryFilterRepository {
         this.db = FirebaseFirestore.getInstance();
     }
 
-    // Visible-for-testing constructor
+    
     public CategoryFilterRepository(FirebaseFirestore db) {
         this.db = db;
     }
 
-    // ── Callback interface ──────────────────────────────────────
+    
     public interface OnEventsLoadedListener {
         void onSuccess(List<Map<String, Object>> events);
         void onFailure(String errorMessage);
     }
 
-    /**
-     * Return all published events that match a single category.
-     * Results are sorted by eventDate ascending (soonest first).
-     */
+    
+
+
+
     public void filterByCategory(String category, OnEventsLoadedListener listener) {
         if (category == null || category.isEmpty()) {
             listener.onFailure("Category must not be empty");
@@ -76,19 +83,19 @@ public class CategoryFilterRepository {
                         listener.onFailure("Failed to filter by category: " + e.getMessage()));
     }
 
-    /**
-     * Return all published events whose tags array contains at least one
-     * of the requested tags (OR-match).
-     *
-     * Firestore's arrayContainsAny supports up to 30 values per query.
-     */
+    
+
+
+
+
+
     public void filterByTags(List<String> tags, OnEventsLoadedListener listener) {
         if (tags == null || tags.isEmpty()) {
             listener.onFailure("At least one tag is required");
             return;
         }
 
-        // Firestore limit: arrayContainsAny accepts max 30 items
+        
         List<String> queryTags = tags.size() > 30 ? tags.subList(0, 30) : tags;
 
         db.collection(COLLECTION_EVENTS)
@@ -109,10 +116,10 @@ public class CategoryFilterRepository {
                         listener.onFailure("Failed to filter by tags: " + e.getMessage()));
     }
 
-    /**
-     * Combined filter: category AND at least one of the supplied tags.
-     * Uses a compound query (requires a composite Firestore index).
-     */
+    
+
+
+
     public void filterByCategoryAndTag(String category, String tag,
                                        OnEventsLoadedListener listener) {
         if (category == null || tag == null) {
@@ -139,10 +146,10 @@ public class CategoryFilterRepository {
                         listener.onFailure("Failed to filter: " + e.getMessage()));
     }
 
-    /**
-     * Return all distinct categories that have at least one published event.
-     * Useful for populating the category chip bar on the home screen.
-     */
+    
+
+
+
     public void getActiveCategories(OnCategoriesLoadedListener listener) {
         db.collection(COLLECTION_EVENTS)
                 .whereEqualTo(FIELD_STATUS, "published")

@@ -1,3 +1,10 @@
+/*
+ * This file defines ProofImageViewerActivity, an Android activity used by the Scene app.
+ * It contains the legacy proof image preview and approval or rejection screen.
+ * Its functions include onCreate to load data, handle user actions, validate input, and save results.
+ * It connects this feature to the Scene app's UI, data, navigation, and verification flow.
+ */
+
 package com.example.seprojectpart3;
 
 import android.os.Bundle;
@@ -8,10 +15,10 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
 
-/**
- * Full-screen image viewer for payment proof screenshots.
- * Launched from PendingProofsActivity when organizer taps a proof image.
- */
+
+
+
+
 public class ProofImageViewerActivity extends AppCompatActivity {
 
     public static final String EXTRA_IMAGE_URL = "image_url";
@@ -34,7 +41,7 @@ public class ProofImageViewerActivity extends AppCompatActivity {
                 .load(imageUrl)
                 .into(ivFullImage);
 
-        // Tap to close
+        
         ivFullImage.setOnClickListener(v -> finish());
     }
 }

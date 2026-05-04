@@ -1,3 +1,10 @@
+/*
+ * This file defines OtpManager, a helper manager used by the Scene app.
+ * It contains OTP generation, expiry, validation, and reset-code tracking.
+ * Its functions include sendOtp, verifyOtp, generateOtp to load data, handle user actions, validate input, and save results.
+ * It connects this feature to the Scene app's UI, data, navigation, and verification flow.
+ */
+
 package com.example.seprojectpart3;
 
 import com.google.firebase.firestore.FirebaseFirestore;

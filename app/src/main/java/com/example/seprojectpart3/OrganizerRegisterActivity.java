@@ -1,3 +1,10 @@
+/*
+ * This file defines OrganizerRegisterActivity, an Android activity used by the Scene app.
+ * It contains organizer account creation and validation.
+ * Its functions include onCreate, onSuccess, onFailure, showError to load data, handle user actions, validate input, and save results.
+ * It connects this feature to the Scene app's UI, data, navigation, and verification flow.
+ */
+
 package com.example.seprojectpart3;
 
 import android.os.Bundle;
@@ -28,7 +35,7 @@ public class OrganizerRegisterActivity extends AppCompatActivity {
 
         findViewById(R.id.btnBack).setOnClickListener(v -> finish());
 
-        // "Log in" link → go back to login
+        
         findViewById(R.id.tvLogin).setOnClickListener(v -> finish());
 
         findViewById(R.id.btnRegister).setOnClickListener(v -> {
@@ -44,12 +51,12 @@ public class OrganizerRegisterActivity extends AppCompatActivity {
 
             showStatus("Registering society...");
 
-            // Step 1: Create Firebase Auth account + save to users collection
+            
             regRepo.registerUser(email, password, societyName, "organizer",
                     new RegistrationRepository.RegistrationCallback() {
                         @Override
                         public void onSuccess(String uid) {
-                            // Step 2: Save to organizers collection
+                            
                             orgRepo.registerOrganizer(uid, societyName, email,
                                     description.isEmpty() ? "Campus society" : description,
                                     new OrganizerRepository.OrganizerCallback() {

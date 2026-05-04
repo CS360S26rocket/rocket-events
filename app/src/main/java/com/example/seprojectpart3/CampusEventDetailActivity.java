@@ -1,3 +1,10 @@
+/*
+ * This file defines CampusEventDetailActivity, an Android activity used by the Scene app.
+ * It contains the campus event details, ticket quantity, tier selection, and mock payment flow.
+ * Its functions include onCreate, bindViews, bindActions, loadEvent to load data, handle user actions, validate input, and save results.
+ * It connects this feature to the Scene app's UI, data, navigation, and verification flow.
+ */
+
 package com.example.seprojectpart3;
 
 import android.content.Intent;
@@ -33,6 +40,8 @@ public class CampusEventDetailActivity extends AppCompatActivity {
 
     private String eventId, uid, email = "", name = "Campus User";
     private boolean selectedEventIsFree = true;
+    private boolean selectedEventIsExternal = false;
+    private String externalTicketLink = "";
     private String selectedTicketTypeId = null;
     private int selectedQuantity = 1;
     private double selectedUnitPrice = 0;
@@ -96,6 +105,9 @@ public class CampusEventDetailActivity extends AppCompatActivity {
         eventRepo.getEventDetail(eventId, new EventRepository.EventDetailCallback() {
             @Override public void onSuccess(Map<String, Object> event) {
                 selectedEventIsFree = Boolean.TRUE.equals(event.get("isFree"));
+                selectedEventIsExternal = "external_link".equals(value(event, "ticketMode"))
+                        || Boolean.TRUE.equals(event.get("externalLinkEnabled"));
+                externalTicketLink = valueOrDefault(event, "externalTicketLink", "");
                 renderEvent(event);
                 renderTicketTypes(event);
             }
@@ -112,11 +124,13 @@ public class CampusEventDetailActivity extends AppCompatActivity {
         tvMeta.setText(value(event, "date") + "  |  " + value(event, "venue"));
         tvDescription.setText(valueOrDefault(event, "description", "No description added yet."));
         loadBanner(value(event, "bannerImageUrl"));
+        String paymentLine = selectedEventIsExternal ? "Registration: External link" :
+                "Payment QR: " + (selectedEventIsFree ? "Not required"
+                : valueOrDefault(event, "paymentQrUrl", "Organizer has not uploaded it yet"));
         tvCapacity.setText("Capacity: " + valueOrDefault(event, "capacity", "No limit")
                 + "\nFee: " + valueOrDefault(event, "priceSummary",
-                selectedEventIsFree ? "Free RSVP" : "At checkout")
-                + "\nPayment QR: " + (selectedEventIsFree ? "Not required"
-                : valueOrDefault(event, "paymentQrUrl", "Organizer has not uploaded it yet")));
+                selectedEventIsExternal ? "External registration" : (selectedEventIsFree ? "Free RSVP" : "At checkout"))
+                + "\n" + paymentLine);
     }
 
     @SuppressWarnings("unchecked")
@@ -124,6 +138,16 @@ public class CampusEventDetailActivity extends AppCompatActivity {
         listTicketTypes.removeAllViews();
         paidTicketTypes.clear();
         paidTicketViews.clear();
+        if (selectedEventIsExternal) {
+            selectedTicketTypeId = "external_registration";
+            selectedUnitPrice = 0;
+            selectedTicketName = "External registration";
+            rowQuantity.setVisibility(View.GONE);
+            sectionMockPayment.setVisibility(View.GONE);
+            btnRegister.setText("External Registration");
+            listTicketTypes.addView(info("This event uses external registration. The app will track interest, but the outside link flow is not enabled yet."));
+            return;
+        }
         if (selectedEventIsFree) {
             selectedTicketTypeId = "free_rsvp";
             selectedUnitPrice = 0;
@@ -209,6 +233,19 @@ public class CampusEventDetailActivity extends AppCompatActivity {
 
     private void registerForEvent() {
         if (!hasUser()) return;
+        if (selectedEventIsExternal) {
+            eventRepo.incrementExternalLinkClick(eventId, new EventRepository.EventCallback() {
+                @Override public void onSuccess(String id) {
+                    showMessage(externalTicketLink.isEmpty()
+                            ? "External registration is marked for this event. The link will be added later."
+                            : "External registration interest recorded. Link opening will be enabled later.");
+                }
+                @Override public void onFailure(String error) {
+                    showMessage("External registration will be available soon.");
+                }
+            });
+            return;
+        }
         if (!selectedEventIsFree && selectedTicketTypeId == null) {
             showMessage("Select a ticket tier first.");
             return;

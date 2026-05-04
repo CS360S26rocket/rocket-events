@@ -1,3 +1,10 @@
+/*
+ * This file defines PendingProofsActivity, an Android activity used by the Scene app.
+ * It contains the legacy pending proof review list for older screenshot-based payment records.
+ * Its functions include onCreate, onResume, loadSubmissions, onApprove to load data, handle user actions, validate input, and save results.
+ * It connects this feature to the Scene app's UI, data, navigation, and verification flow.
+ */
+
 package com.example.seprojectpart3;
 
 import android.app.AlertDialog;
@@ -15,18 +22,18 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
-/**
- * Pending Proofs Activity — M4 Sprint 4
- *
- * Combines ORG-B (view pending submissions) and ORG-C (approve/reject).
- * Organizer navigates here from OrganizerDashboardActivity for a specific event.
- *
- * Flow:
- *   1. Load all proof submissions for the event (pending shown first)
- *   2. Organizer taps a proof image to view full-screen
- *   3. Organizer taps "Approve" → transaction → TKT-A generates ticket
- *   4. Organizer taps "Reject" → dialog for reason → transaction
- */
+
+
+
+
+
+
+
+
+
+
+
+
 public class PendingProofsActivity extends AppCompatActivity
         implements ProofSubmissionAdapter.OnSubmissionActionListener {
 
@@ -46,7 +53,7 @@ public class PendingProofsActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pending_proofs);
 
-        // Get event info from intent
+        
         eventId = getIntent().getStringExtra(EXTRA_EVENT_ID);
         String eventTitle = getIntent().getStringExtra(EXTRA_EVENT_TITLE);
 
@@ -56,7 +63,7 @@ public class PendingProofsActivity extends AppCompatActivity
             return;
         }
 
-        // Init views
+        
         rvSubmissions = findViewById(R.id.rvProofSubmissions);
         progressBar = findViewById(R.id.progressProofs);
         tvEmpty = findViewById(R.id.tvEmptyProofs);
@@ -66,24 +73,24 @@ public class PendingProofsActivity extends AppCompatActivity
             tvTitle.setText("Payment Proofs — " + eventTitle);
         }
 
-        // Init repository and adapter
+        
         proofRepo = new ProofSubmissionRepository();
         adapter = new ProofSubmissionAdapter(this);
 
         rvSubmissions.setLayoutManager(new LinearLayoutManager(this));
         rvSubmissions.setAdapter(adapter);
 
-        // Load submissions
+        
         loadSubmissions();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        loadSubmissions(); // Refresh on return
+        loadSubmissions(); 
     }
 
-    // ─── Data Loading ────────────────────────────────────────────────
+    
 
     private void loadSubmissions() {
         progressBar.setVisibility(View.VISIBLE);
@@ -112,7 +119,7 @@ public class PendingProofsActivity extends AppCompatActivity
         );
     }
 
-    // ─── ORG-C: Approve ──────────────────────────────────────────────
+    
 
     @Override
     public void onApprove(ProofSubmission submission) {
@@ -136,7 +143,7 @@ public class PendingProofsActivity extends AppCompatActivity
                     Toast.makeText(this,
                             "Approved! Ticket generated for " + submission.getUserName(),
                             Toast.LENGTH_SHORT).show();
-                    loadSubmissions(); // Refresh the list
+                    loadSubmissions(); 
                 },
                 error -> {
                     progressBar.setVisibility(View.GONE);
@@ -147,11 +154,11 @@ public class PendingProofsActivity extends AppCompatActivity
         );
     }
 
-    // ─── ORG-C: Reject ───────────────────────────────────────────────
+    
 
     @Override
     public void onReject(ProofSubmission submission) {
-        // Show dialog with reason input
+        
         EditText reasonInput = new EditText(this);
         reasonInput.setHint("Reason for rejection (optional)");
         reasonInput.setPadding(48, 32, 48, 16);
@@ -192,11 +199,11 @@ public class PendingProofsActivity extends AppCompatActivity
         );
     }
 
-    // ─── Image Preview ───────────────────────────────────────────────
+    
 
     @Override
     public void onImageClick(String imageUrl) {
-        // Open full-screen image viewer
+        
         Intent intent = new Intent(this, ProofImageViewerActivity.class);
         intent.putExtra(ProofImageViewerActivity.EXTRA_IMAGE_URL, imageUrl);
         startActivity(intent);

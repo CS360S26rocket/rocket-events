@@ -1,3 +1,10 @@
+/*
+ * This file defines PaymentVerificationRepository, a data repository used by the Scene app.
+ * It contains verified mock payment persistence and payment lookup behavior.
+ * Its functions include getPaymentsForEvent to load data, handle user actions, validate input, and save results.
+ * It connects this feature to the Scene app's UI, data, navigation, and verification flow.
+ */
+
 package com.example.seprojectpart3;
 
 import androidx.annotation.NonNull;

@@ -1,3 +1,10 @@
+/*
+ * This file defines CreateEventActivity, an Android activity used by the Scene app.
+ * It contains the organizer create-event form, banner selection, timeline, category, and venue setup.
+ * Its functions include onCreate, pickBannerImage, onActivityResult, showUniversityPicker to load data, handle user actions, validate input, and save results.
+ * It connects this feature to the Scene app's UI, data, navigation, and verification flow.
+ */
+
 package com.example.seprojectpart3;
 
 import android.content.Intent;
@@ -25,14 +32,14 @@ public class CreateEventActivity extends AppCompatActivity {
     TextView tvInstitutionName, tvBannerHint;
     ImageView ivBannerPreview;
 
-    // Radio dot views
+    
     View dotOpenForAll, dotInstitutionOnly, dotInviteOnly, dotHidden;
 
-    // Category chip TextViews
+    
     TextView chipCampusEvents, chipTalks, chipSports, chipWorkshops;
     TextView chipLocationInPerson, chipLocationOnline, chipLocationHybrid;
 
-    String selectedEventType = "institution_only"; // default matches mockup
+    String selectedEventType = "institution_only"; 
     String selectedCategory  = "entertainment";
     String selectedInstitution = "LUMS";
     String selectedLocationType = "In-person";
@@ -46,7 +53,7 @@ public class CreateEventActivity extends AppCompatActivity {
 
         organizerUid = getIntent().getStringExtra("organizerUid");
 
-        // Bind fields
+        
         etEventTitle       = findViewById(R.id.etEventTitle);
         etDescription      = findViewById(R.id.etDescription);
         tvInstitutionName = findViewById(R.id.tvInstitutionName);
@@ -77,10 +84,10 @@ public class CreateEventActivity extends AppCompatActivity {
         findViewById(R.id.cardBannerPicker).setOnClickListener(v -> pickBannerImage());
 
 
-        // Back
+        
         findViewById(R.id.btnBack).setOnClickListener(v -> finish());
 
-        // Radio button listeners
+        
         findViewById(R.id.radioOpenForAll).setOnClickListener(v ->
                 selectEventType("open_for_all"));
         findViewById(R.id.radioInstitutionOnly).setOnClickListener(v ->
@@ -90,7 +97,7 @@ public class CreateEventActivity extends AppCompatActivity {
         findViewById(R.id.radioHidden).setOnClickListener(v ->
                 selectEventType("hidden"));
 
-        // Category chip listeners
+        
         chipCampusEvents.setOnClickListener(v -> selectCategory("entertainment"));
         chipTalks.setOnClickListener(v -> selectCategory("seminars"));
         chipSports.setOnClickListener(v -> selectCategory("sports"));
@@ -99,7 +106,7 @@ public class CreateEventActivity extends AppCompatActivity {
         chipLocationOnline.setOnClickListener(v -> selectLocationType("Online"));
         chipLocationHybrid.setOnClickListener(v -> selectLocationType("Hybrid"));
 
-        // Next: pass all data to TicketSetupActivity
+        
         findViewById(R.id.btnNext).setOnClickListener(v -> {
             String title    = etEventTitle.getText().toString().trim();
             String desc     = etDescription.getText().toString().trim();
@@ -108,7 +115,7 @@ public class CreateEventActivity extends AppCompatActivity {
             String capacity = etCapacity.getText().toString().trim();
 
             if (title.isEmpty() || venue.isEmpty()) {
-                // Show inline error (could add a tvError view if needed)
+                
                 if (title.isEmpty()) etEventTitle.setError("Required");
                 if (venue.isEmpty()) etVenue.setError("Required");
                 return;
@@ -175,12 +182,12 @@ public class CreateEventActivity extends AppCompatActivity {
 
     private void selectEventType(String type) {
         selectedEventType = type;
-        // Reset all dots to unselected
+        
         dotOpenForAll.setBackgroundResource(R.drawable.bg_radio_unselected);
         dotInstitutionOnly.setBackgroundResource(R.drawable.bg_radio_unselected);
         dotInviteOnly.setBackgroundResource(R.drawable.bg_radio_unselected);
         dotHidden.setBackgroundResource(R.drawable.bg_radio_unselected);
-        // Set selected
+        
         switch (type) {
             case "open_for_all":       dotOpenForAll.setBackgroundResource(R.drawable.bg_radio_selected); break;
             case "institution_only":   dotInstitutionOnly.setBackgroundResource(R.drawable.bg_radio_selected); break;
@@ -191,7 +198,7 @@ public class CreateEventActivity extends AppCompatActivity {
 
     private void selectCategory(String category) {
         selectedCategory = category;
-        // Reset all chips
+        
         chipCampusEvents.setBackgroundResource(R.drawable.bg_chip_inactive);
         chipCampusEvents.setTextColor(getColor(R.color.text_primary));
         chipTalks.setBackgroundResource(R.drawable.bg_chip_inactive);
@@ -201,7 +208,7 @@ public class CreateEventActivity extends AppCompatActivity {
         chipWorkshops.setBackgroundResource(R.drawable.bg_chip_inactive);
         chipWorkshops.setTextColor(getColor(R.color.text_primary));
 
-        // Highlight selected
+        
         TextView selected = null;
         switch (category) {
             case "entertainment": selected = chipCampusEvents; break;

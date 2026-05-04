@@ -1,3 +1,10 @@
+/*
+ * This file defines WishlistRepositoryTest, a test class used to verify Scene app behavior.
+ * It contains automated test coverage for WishlistRepository behavior and expected results.
+ * Its functions include setUp, addToWishlist_noAuth_returnsFailure, onSuccess, onFailure to load data, handle user actions, validate input, and save results.
+ * It connects this feature to the Scene app's UI, data, navigation, and verification flow.
+ */
+
 package com.example.seprojectpart3;
 
 import org.junit.Before;
@@ -13,10 +20,10 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-/**
- * Unit tests for M3 Sprint 5:
- *  - #45 WishlistRepository
- */
+
+
+
+
 @RunWith(MockitoJUnitRunner.class)
 public class WishlistRepositoryTest {
 
@@ -31,7 +38,7 @@ public class WishlistRepositoryTest {
         wishlistRepo = new WishlistRepository(mockDb, mockAuth);
     }
 
-    // ═══ Authentication Guard Tests ═══════════════════════════
+    
 
     @Test
     public void addToWishlist_noAuth_returnsFailure() {
@@ -87,7 +94,7 @@ public class WishlistRepositoryTest {
                 });
     }
 
-    // ═══ Input Validation Tests ═══════════════════════════════
+    
 
     @Test
     public void addToWishlist_nullEventId_returnsFailure() {
@@ -127,7 +134,7 @@ public class WishlistRepositoryTest {
                 });
     }
 
-    // ═══ isWishlisted Edge Cases ══════════════════════════════
+    
 
     @Test
     public void isWishlisted_noAuth_returnsFalse() {

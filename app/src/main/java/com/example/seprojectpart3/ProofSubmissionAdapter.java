@@ -1,3 +1,10 @@
+/*
+ * This file defines ProofSubmissionAdapter, a list adapter used by the Scene app.
+ * It contains RecyclerView binding for legacy payment proof list items.
+ * Its functions include setSubmissions, onCreateViewHolder, onBindViewHolder, getItemCount to load data, handle user actions, validate input, and save results.
+ * It connects this feature to the Scene app's UI, data, navigation, and verification flow.
+ */
+
 package com.example.seprojectpart3;
 
 import android.content.Context;
@@ -19,12 +26,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-/**
- * Adapter for displaying proof submissions in organizer's review screen.
- * Supports pending (with approve/reject buttons), approved, and rejected states.
- *
- * Part of ORG-B (M4, Sprint 4).
- */
+
+
+
+
+
+
 public class ProofSubmissionAdapter
         extends RecyclerView.Adapter<ProofSubmissionAdapter.ViewHolder> {
 
@@ -61,18 +68,18 @@ public class ProofSubmissionAdapter
         ProofSubmission submission = submissions.get(position);
         Context context = holder.itemView.getContext();
 
-        // User info
+        
         holder.tvUserName.setText(submission.getUserName());
         holder.tvUserEmail.setText(submission.getUserEmail());
 
-        // Submission date
+        
         if (submission.getSubmittedAt() != null) {
             holder.tvSubmittedAt.setText(
                     "Submitted: " + dateFormat.format(submission.getSubmittedAt().toDate())
             );
         }
 
-        // Proof image — load with Glide
+        
         if (submission.getProofImageUrl() != null) {
             Glide.with(context)
                     .load(submission.getProofImageUrl())
@@ -84,7 +91,7 @@ public class ProofSubmissionAdapter
             );
         }
 
-        // Status badge and action buttons
+        
         switch (submission.getStatus()) {
             case ProofSubmission.STATUS_PENDING:
                 holder.tvStatus.setText("PENDING");
@@ -118,7 +125,7 @@ public class ProofSubmissionAdapter
                 break;
         }
 
-        // Button listeners
+        
         holder.btnApprove.setOnClickListener(v -> listener.onApprove(submission));
         holder.btnReject.setOnClickListener(v -> listener.onReject(submission));
     }

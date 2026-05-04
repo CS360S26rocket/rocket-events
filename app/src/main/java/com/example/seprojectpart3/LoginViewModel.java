@@ -1,3 +1,10 @@
+/*
+ * This file defines LoginViewModel, a supporting Java class used by the Scene app.
+ * It contains login state and authentication coordination for UI screens.
+ * Its functions include login, onSuccess, onFailure, getToken to load data, handle user actions, validate input, and save results.
+ * It connects this feature to the Scene app's UI, data, navigation, and verification flow.
+ */
+
 package com.example.seprojectpart3;
 
 import android.app.Application;

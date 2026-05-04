@@ -1,3 +1,10 @@
+/*
+ * This file defines PaymentTransactionsActivity, an Android activity used by the Scene app.
+ * It contains the organizer payment analytics and transaction review screen.
+ * Its functions include onCreate, onResume, loadPayments, onSuccess to load data, handle user actions, validate input, and save results.
+ * It connects this feature to the Scene app's UI, data, navigation, and verification flow.
+ */
+
 package com.example.seprojectpart3;
 
 import android.os.Bundle;

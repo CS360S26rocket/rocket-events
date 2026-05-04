@@ -1,3 +1,10 @@
+/*
+ * This file defines OrganizerRepository, a data repository used by the Scene app.
+ * It contains organizer-specific event, attendee, and dashboard data operations.
+ * Its functions include registerOrganizer, onAllowed, onBlocked, validateOrganizerDomain to load data, handle user actions, validate input, and save results.
+ * It connects this feature to the Scene app's UI, data, navigation, and verification flow.
+ */
+
 package com.example.seprojectpart3;
 
 import com.google.firebase.firestore.DocumentReference;
@@ -8,11 +15,11 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.HashMap;
 import java.util.Map;
 
-// This class handles the registration of society organizers. It ensures that the organizer's society email is valid and belongs to an approved university domain before proceeding with the registration. 
-// The `registerOrganizer` method validates the email domain and checks for duplicate society entries. 
-// If the domain is valid and the society is not already registered, the organizer's profile is saved in Firestore, and the user's role is updated. 
-// The `validateOrganizerDomain` method checks if the society's domain is in the allowed domains list, while the `saveOrganizerProfile` method stores the organizer's details in Firestore. 
-// Success and failure of operations are handled via the `OrganizerCallback` interface.
+
+
+
+
+
 
 public class OrganizerRepository {
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -25,12 +32,12 @@ public class OrganizerRepository {
 
         final String email = normalizeEmail(societyEmail);
 
-        // Validate email domain against whitelist BEFORE creating organizer
+        
         validateOrganizerDomain(email, new DomainCallback() {
             @Override
             public void onAllowed(String domain) {
 
-                // Check for duplicate society
+                
                 db.collection("organizers")
                         .whereEqualTo("societyEmail", email)
                         .get()
@@ -70,14 +77,14 @@ public class OrganizerRepository {
             return;
         }
 
-        // Preferred: doc id == domain
+        
         DocumentReference docRef = db.collection(ALLOWED_DOMAINS_COLLECTION).document(domain);
         docRef.get()
                 .addOnSuccessListener(doc -> {
                     if (doc.exists() && isActive(doc)) {
                         callback.onAllowed(domain);
                     } else {
-                        // Fallback: domain stored as a field "domain"
+                        
                         db.collection(ALLOWED_DOMAINS_COLLECTION)
                                 .whereEqualTo("domain", domain)
                                 .limit(1)

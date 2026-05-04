@@ -1,3 +1,10 @@
+/*
+ * This file defines PaymentQRUploadActivity, an Android activity used by the Scene app.
+ * It contains organizer payment QR upload and storage flow.
+ * Its functions include onCreate, onActivityResult, uploadQRImage, onSuccess to load data, handle user actions, validate input, and save results.
+ * It connects this feature to the Scene app's UI, data, navigation, and verification flow.
+ */
+
 package com.example.seprojectpart3;
 
 import android.app.Activity;
@@ -19,18 +26,18 @@ import androidx.appcompat.app.AppCompatActivity;
 import java.io.IOException;
 import java.io.InputStream;
 
-/**
- * Story ORG-A — Organizer uploads their bank payment QR code image per event
- * M3 · Sprint 4
- *
- * This Activity allows an organizer to:
- *   1. Select a QR code image from their gallery
- *   2. Preview the selected image
- *   3. Upload it via the FILE-STORAGE module (M4)
- *   4. Store the resulting URL on the event document
- *
- * Depends on: M4's FILE-STORAGE module (FileStorageManager) — available day 2
- */
+
+
+
+
+
+
+
+
+
+
+
+
 public class PaymentQRUploadActivity extends AppCompatActivity {
 
     private static final int PICK_IMAGE_REQUEST = 1001;
@@ -45,7 +52,7 @@ public class PaymentQRUploadActivity extends AppCompatActivity {
     private Uri selectedImageUri;
     private String eventId;
 
-    private FileStorageManager fileStorageManager; // M4's module
+    private FileStorageManager fileStorageManager; 
     private PaymentQRRepository paymentQRRepo;
 
     @Override
@@ -53,7 +60,7 @@ public class PaymentQRUploadActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_payment_qr_upload);
 
-        // Bind views
+        
         imgPreview = findViewById(R.id.imgQRPreview);
         btnSelectImage = findViewById(R.id.btnSelectImage);
         btnUpload = findViewById(R.id.btnUploadQR);
@@ -61,7 +68,7 @@ public class PaymentQRUploadActivity extends AppCompatActivity {
         tvStatus = findViewById(R.id.tvUploadStatus);
         tvEventName = findViewById(R.id.tvEventName);
 
-        // Get event ID from intent
+        
         eventId = getIntent().getStringExtra("eventId");
         String eventName = getIntent().getStringExtra("eventName");
         if (eventId == null) {
@@ -71,21 +78,21 @@ public class PaymentQRUploadActivity extends AppCompatActivity {
         }
         tvEventName.setText(eventName != null ? eventName : "Event");
 
-        // Initialize dependencies
+        
         fileStorageManager = new FileStorageManager();
         paymentQRRepo = new PaymentQRRepository();
 
-        // Load existing QR if any
+        
         loadExistingQR();
 
-        // Select image from gallery
+        
         btnSelectImage.setOnClickListener(v -> {
             Intent intent = new Intent(Intent.ACTION_PICK);
             intent.setType("image/*");
             startActivityForResult(intent, PICK_IMAGE_REQUEST);
         });
 
-        // Upload selected image
+        
         btnUpload.setOnClickListener(v -> uploadQRImage());
     }
 
@@ -98,7 +105,7 @@ public class PaymentQRUploadActivity extends AppCompatActivity {
                 && data != null && data.getData() != null) {
             selectedImageUri = data.getData();
 
-            // Show preview
+            
             try {
                 InputStream inputStream = getContentResolver()
                         .openInputStream(selectedImageUri);
@@ -122,13 +129,13 @@ public class PaymentQRUploadActivity extends AppCompatActivity {
             return;
         }
 
-        // Show progress
+        
         progressBar.setVisibility(View.VISIBLE);
         btnUpload.setEnabled(false);
         btnSelectImage.setEnabled(false);
         tvStatus.setText("Uploading...");
 
-        // Upload via M4's FILE-STORAGE module
+        
         String storagePath = "payment_qr/" + eventId + "/qr_code.jpg";
 
         fileStorageManager.uploadFile(
@@ -138,7 +145,7 @@ public class PaymentQRUploadActivity extends AppCompatActivity {
                 new FileStorageManager.OnUploadListener() {
                     @Override
                     public void onSuccess(String downloadUrl) {
-                        // Store the URL on the event document
+                        
                         saveQRUrlToEvent(downloadUrl);
                     }
 
@@ -192,7 +199,7 @@ public class PaymentQRUploadActivity extends AppCompatActivity {
         paymentQRRepo.getPaymentQRUrl(eventId, url -> {
             if (url != null) {
                 tvStatus.setText("QR code already uploaded. Select a new image to replace.");
-                // Could load the existing image here with an image loading library
+                
             }
         });
     }

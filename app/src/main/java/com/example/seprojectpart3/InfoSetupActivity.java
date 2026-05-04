@@ -1,3 +1,10 @@
+/*
+ * This file defines InfoSetupActivity, an Android activity used by the Scene app.
+ * It contains the final organizer event setup step for entry rules, contact, notes, and publishing.
+ * Its functions include onCreate, publishEvent, onSuccess, onFailure to load data, handle user actions, validate input, and save results.
+ * It connects this feature to the Scene app's UI, data, navigation, and verification flow.
+ */
+
 package com.example.seprojectpart3;
 
 import android.content.Intent;
@@ -23,10 +30,10 @@ public class InfoSetupActivity extends AppCompatActivity {
     TextView tvStatus;
     EventRepository eventRepo;
 
-    // All collected data
+    
     String organizerUid, title, description, venue, startDate, startTime,
             endDate, endTime, location, institutionName, eventType, category,
-            capacity, ticketMode, salesStart, salesStartTime, salesEnd, salesEndTime,
+            capacity, ticketMode, paymentMethod, externalTicketLink, salesStart, salesStartTime, salesEnd, salesEndTime,
             bannerImageUri;
 
     @Override
@@ -34,7 +41,7 @@ public class InfoSetupActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_info_setup);
 
-        // Receive all data
+        
         Intent i        = getIntent();
         organizerUid    = i.getStringExtra("organizerUid");
         title           = i.getStringExtra("title");
@@ -50,6 +57,8 @@ public class InfoSetupActivity extends AppCompatActivity {
         category        = i.getStringExtra("category");
         capacity        = i.getStringExtra("capacity");
         ticketMode      = i.getStringExtra("ticketMode");
+        paymentMethod   = i.getStringExtra("paymentMethod");
+        externalTicketLink = i.getStringExtra("externalTicketLink");
         salesStart      = i.getStringExtra("salesStart");
         salesStartTime  = i.getStringExtra("salesStartTime");
         salesEnd        = i.getStringExtra("salesEnd");
@@ -63,15 +72,15 @@ public class InfoSetupActivity extends AppCompatActivity {
         tvStatus             = findViewById(R.id.tvStatus);
         eventRepo            = new EventRepository();
 
-        // Back
+        
         findViewById(R.id.btnBack).setOnClickListener(v -> finish());
 
-        // Publish Event
+        
         findViewById(R.id.btnPublish).setOnClickListener(v -> publishEvent());
     }
 
     private void publishEvent() {
-        // Use startDate as the event date for createEvent
+        
         String eventDate = startDate + (startTime.isEmpty() ? "" : " " + startTime);
         Integer parsedCapacity = null;
 
@@ -95,9 +104,10 @@ public class InfoSetupActivity extends AppCompatActivity {
         tvStatus.setVisibility(View.VISIBLE);
         tvStatus.setText("Publishing event...");
 
-        // Step 1: Create the event
-        // Story #25: derive isFree from the ticketMode chosen in TicketSetupActivity
+        
+        
         boolean isFree = "free_rsvp".equals(ticketMode);
+        boolean isExternal = "external_link".equals(ticketMode);
         final Integer finalCapacity = parsedCapacity;
 
         eventRepo.createEvent(
@@ -106,9 +116,9 @@ public class InfoSetupActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(String eventId) {
                         if (bannerImageUri == null || bannerImageUri.trim().isEmpty()) {
-                            finalizeEvent(eventId, isFree, finalCapacity, "", "");
+                            finalizeEvent(eventId, isFree, isExternal, finalCapacity, "", "");
                         } else {
-                            uploadBannerAndFinalize(eventId, isFree, finalCapacity);
+                            uploadBannerAndFinalize(eventId, isFree, isExternal, finalCapacity);
                         }
                     }
 
@@ -120,7 +130,7 @@ public class InfoSetupActivity extends AppCompatActivity {
                 });
     }
 
-    private void uploadBannerAndFinalize(String eventId, boolean isFree, Integer finalCapacity) {
+    private void uploadBannerAndFinalize(String eventId, boolean isFree, boolean isExternal, Integer finalCapacity) {
         tvStatus.setText("Uploading banner...");
         String storagePath = "event_banners/" + eventId + "/" + System.currentTimeMillis() + ".jpg";
         StorageReference bannerRef = FirebaseStorage.getInstance().getReference().child(storagePath);
@@ -132,7 +142,7 @@ public class InfoSetupActivity extends AppCompatActivity {
                     }
                     return bannerRef.getDownloadUrl();
                 })
-                .addOnSuccessListener(downloadUri -> finalizeEvent(eventId, isFree, finalCapacity,
+                .addOnSuccessListener(downloadUri -> finalizeEvent(eventId, isFree, isExternal, finalCapacity,
                         downloadUri.toString(), storagePath))
                 .addOnFailureListener(e -> {
                     tvStatus.setText("Banner upload failed: " + (e.getMessage() == null ? "Unknown error" : e.getMessage()));
@@ -140,14 +150,14 @@ public class InfoSetupActivity extends AppCompatActivity {
                 });
     }
 
-    private void finalizeEvent(String eventId, boolean isFree, Integer finalCapacity,
+    private void finalizeEvent(String eventId, boolean isFree, boolean isExternal, Integer finalCapacity,
                                String bannerUrl, String bannerStoragePath) {
         TicketRepository ticketRepo = new TicketRepository();
         if (finalCapacity != null) {
             ticketRepo.updateCapacity(eventId, finalCapacity,
                     new TicketRepository.TicketCallback() {
-                        @Override public void onSuccess(String id) { /* ok */ }
-                        @Override public void onFailure(String e) { /* non-fatal */ }
+                        @Override public void onSuccess(String id) {  }
+                        @Override public void onFailure(String e) {  }
                     });
         }
 
@@ -155,16 +165,18 @@ public class InfoSetupActivity extends AppCompatActivity {
                 salesEnd != null && !salesEnd.isEmpty()) {
             eventRepo.setSalesTime(eventId, salesStart, salesEnd,
                     new EventRepository.EventCallback() {
-                        @Override public void onSuccess(String id) { /* ok */ }
-                        @Override public void onFailure(String e) { /* non-fatal */ }
+                        @Override public void onSuccess(String id) {  }
+                        @Override public void onFailure(String e) {  }
                     });
         }
 
-        ticketRepo.saveDefaultTicketTiers(eventId, isFree,
-                new TicketRepository.TicketCallback() {
-                    @Override public void onSuccess(String message) { /* ok */ }
-                    @Override public void onFailure(String error) { /* non-fatal */ }
-                });
+        if (!isExternal) {
+            ticketRepo.saveDefaultTicketTiers(eventId, isFree,
+                    new TicketRepository.TicketCallback() {
+                        @Override public void onSuccess(String message) {  }
+                        @Override public void onFailure(String error) {  }
+                    });
+        }
 
         Map<String, Object> metadata = new HashMap<>();
         metadata.put("dateOnly", startDate);
@@ -176,10 +188,14 @@ public class InfoSetupActivity extends AppCompatActivity {
         metadata.put("eventType", eventType);
         metadata.put("category", category);
         metadata.put("ticketMode", ticketMode);
+        metadata.put("paymentMethod", paymentMethod == null ? "" : paymentMethod);
+        metadata.put("externalTicketLink", externalTicketLink == null ? "" : externalTicketLink);
+        metadata.put("externalLinkEnabled", isExternal);
+        metadata.put("externalLinkClicks", 0);
         metadata.put("ticketSalesStartTime", salesStartTime);
         metadata.put("ticketSalesEndTime", salesEndTime);
-        metadata.put("priceSummary", isFree ? "Free RSVP" : "From PKR 300");
-        metadata.put("minTicketPrice", isFree ? 0 : 300);
+        metadata.put("priceSummary", isExternal ? "External registration" : (isFree ? "Free RSVP" : "From PKR 300"));
+        metadata.put("minTicketPrice", isExternal || isFree ? 0 : 300);
         metadata.put("paymentQrUrl", "");
         metadata.put("bannerImageUrl", bannerUrl);
         metadata.put("bannerStoragePath", bannerStoragePath);

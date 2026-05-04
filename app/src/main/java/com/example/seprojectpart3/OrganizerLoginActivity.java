@@ -1,3 +1,10 @@
+/*
+ * This file defines OrganizerLoginActivity, an Android activity used by the Scene app.
+ * It contains organizer sign-in and navigation into organizer tools.
+ * Its functions include onCreate, onSuccess, onFailure, showError to load data, handle user actions, validate input, and save results.
+ * It connects this feature to the Scene app's UI, data, navigation, and verification flow.
+ */
+
 package com.example.seprojectpart3;
 
 import android.content.Intent;
@@ -23,14 +30,14 @@ public class OrganizerLoginActivity extends AppCompatActivity {
         tvError    = findViewById(R.id.tvError);
         authRepo   = new AuthRepository();
 
-        // Back button
+        
         findViewById(R.id.btnBack).setOnClickListener(v -> finish());
 
-        // Register link → OrganizerRegisterActivity
+        
         findViewById(R.id.tvSignUp).setOnClickListener(v ->
                 startActivity(new Intent(this, OrganizerRegisterActivity.class)));
 
-        // Log In
+        
         findViewById(R.id.btnLogin).setOnClickListener(v -> {
             String email    = etEmail.getText().toString().trim();
             String password = etPassword.getText().toString().trim();

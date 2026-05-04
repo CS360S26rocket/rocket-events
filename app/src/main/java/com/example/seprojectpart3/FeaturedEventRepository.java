@@ -1,3 +1,10 @@
+/*
+ * This file defines FeaturedEventRepository, a data repository used by the Scene app.
+ * It contains featured event selection and promoted event lookup behavior.
+ * Its functions include getFeaturedEvents, getFeaturedEventsLimited, setFeatured to load data, handle user actions, validate input, and save results.
+ * It connects this feature to the Scene app's UI, data, navigation, and verification flow.
+ */
+
 package com.example.seprojectpart3;
 
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -8,14 +15,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Story #29 — Featured / spotlight flag on home screen
- * M3 · Sprint 3
- *
- * Queries Firestore for events where the "featured" boolean is true.
- * Organizers (or admins) set this flag via CreateEventActivity or
- * the OrganizerDashboard.  This repository only reads the flag.
- */
+
+
+
+
+
+
+
+
 public class FeaturedEventRepository {
 
     private static final String COLLECTION_EVENTS = "events";
@@ -33,18 +40,18 @@ public class FeaturedEventRepository {
         this.db = db;
     }
 
-    // ── Callback ────────────────────────────────────────────────
+    
     public interface OnFeaturedEventsListener {
         void onSuccess(List<Map<String, Object>> events);
         void onFailure(String errorMessage);
     }
 
-    /**
-     * Fetch all published events that are flagged as featured,
-     * ordered by event date (soonest first).
-     *
-     * Firestore index required: (featured ASC, status ASC, eventDate ASC)
-     */
+    
+
+
+
+
+
     public void getFeaturedEvents(OnFeaturedEventsListener listener) {
         db.collection(COLLECTION_EVENTS)
                 .whereEqualTo(FIELD_FEATURED, true)
@@ -64,9 +71,9 @@ public class FeaturedEventRepository {
                         listener.onFailure("Failed to load featured events: " + e.getMessage()));
     }
 
-    /**
-     * Fetch a limited number of featured events (for the home spotlight carousel).
-     */
+    
+
+
     public void getFeaturedEventsLimited(int limit, OnFeaturedEventsListener listener) {
         db.collection(COLLECTION_EVENTS)
                 .whereEqualTo(FIELD_FEATURED, true)
@@ -87,9 +94,9 @@ public class FeaturedEventRepository {
                         listener.onFailure("Failed to load featured events: " + e.getMessage()));
     }
 
-    /**
-     * Toggle the featured flag on an event (organizer / admin action).
-     */
+    
+
+
     public void setFeatured(String eventId, boolean featured,
                             OnToggleCompleteListener listener) {
         if (eventId == null || eventId.isEmpty()) {

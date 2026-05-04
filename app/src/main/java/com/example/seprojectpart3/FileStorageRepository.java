@@ -1,3 +1,10 @@
+/*
+ * This file defines FileStorageRepository, a data repository used by the Scene app.
+ * It contains Firebase Storage upload, download URL, and file metadata operations.
+ * Its functions include validateFile, uploadFile, getFileUrl, getFileUrlByEntity to load data, handle user actions, validate input, and save results.
+ * It connects this feature to the Scene app's UI, data, navigation, and verification flow.
+ */
+
 package com.example.seprojectpart3;
 
 import android.content.ContentResolver;

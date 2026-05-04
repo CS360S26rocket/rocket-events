@@ -1,3 +1,10 @@
+/*
+ * This file defines MainActivity, an Android activity used by the Scene app.
+ * It contains the shared account setup and entry flow for the app.
+ * Its functions include onCreate, onSuccess, onFailure, onConfirmed to load data, handle user actions, validate input, and save results.
+ * It connects this feature to the Scene app's UI, data, navigation, and verification flow.
+ */
+
 package com.example.seprojectpart3;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -43,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
         ticketRepo = new TicketRepository();
         csvRepo = new CsvExportRepository();
 
-        // REGISTER
+        
         findViewById(R.id.btnRegister).setOnClickListener(v -> {
             String email = etEmail.getText().toString().trim();
             String password = etPassword.getText().toString().trim();
@@ -64,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
                     });
         });
 
-        // LOGIN - with role checking
+        
         View btnLogin = findViewById(R.id.btnLogin);
         btnLogin.setOnClickListener(v -> {
             String email = etEmail.getText().toString().trim();
@@ -76,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
                         public void onSuccess(String token, String uid) {
                             lastUid = uid;
 
-                            // Role-based navigation (the fix)
+                            
                             com.google.firebase.firestore.FirebaseFirestore.getInstance()
                                     .collection("users")
                                     .document(uid)
@@ -90,7 +97,7 @@ public class MainActivity extends AppCompatActivity {
                                             startActivity(intent);
                                         } else {
                                             tvResult.setText("Logged in as campus user.");
-                                            // TODO: navigate to campus user dashboard if needed
+                                            
                                         }
                                     })
                                     .addOnFailureListener(e -> tvResult.setText("Error fetching role: " + e.getMessage()));
@@ -103,7 +110,7 @@ public class MainActivity extends AppCompatActivity {
                     });
         });
 
-        // ORGANIZER REGISTER
+        
         View btnOrganizer = findViewById(R.id.btnOrganizer);
         btnOrganizer.setOnClickListener(v -> {
             String email = etEmail.getText().toString().trim();
@@ -115,14 +122,14 @@ public class MainActivity extends AppCompatActivity {
                 return;
             }
 
-            // Step 1: Register Auth account + save to users collection
+            
             regRepo.registerUser(email, password, name, "organizer",
                     new RegistrationRepository.RegistrationCallback() {
                         @Override
                         public void onSuccess(String uid) {
                             lastUid = uid;
 
-                            // Step 2: Save to organizers collection
+                            
                             orgRepo.registerOrganizer(uid, name, email, "Test description",
                                     new OrganizerRepository.OrganizerCallback() {
                                         @Override
@@ -144,15 +151,15 @@ public class MainActivity extends AppCompatActivity {
                     });
         });
 
-        // -------------------------
-        // SPRINT 2 TESTS (no new buttons needed)
-        //
-        // Long-press Organizer button: setTicketType + registerAttendee (CONFIRMED)
-        // Long-press Login button:     registerAttendee as fake user (WAITLIST test)
-        // Long-press Send OTP button:  exportAttendeeCsv
-        // -------------------------
+        
+        
+        
+        
+        
+        
+        
 
-        // Long-press Organizer button → Sprint 2 test: confirm ticket
+        
         btnOrganizer.setOnLongClickListener(v -> {
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
             if (user == null) {
@@ -205,7 +212,7 @@ public class MainActivity extends AppCompatActivity {
             return true;
         });
 
-        // OTP Section
+        
         OtpManager otpManager = new OtpManager();
         EditText etOtp = findViewById(R.id.etOtp);
 
@@ -225,7 +232,7 @@ public class MainActivity extends AppCompatActivity {
             });
         });
 
-        // Long-press Send OTP → Export CSV (Sprint 2)
+        
         btnSendOtp.setOnLongClickListener(v -> {
             csvRepo.exportAttendeeCsv(this, TEST_EVENT_ID, new CsvExportRepository.CsvCallback() {
                 @Override

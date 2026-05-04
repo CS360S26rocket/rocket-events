@@ -1,3 +1,10 @@
+/*
+ * This file defines MockPaymentRepository, a data repository used by the Scene app.
+ * It contains mock Paymo transaction verification and amount matching.
+ * Its functions include verifyTransaction, parse, normalize, value to load data, handle user actions, validate input, and save results.
+ * It connects this feature to the Scene app's UI, data, navigation, and verification flow.
+ */
+
 package com.example.seprojectpart3;
 
 import androidx.annotation.NonNull;

@@ -1,3 +1,10 @@
+/*
+ * This file defines PaymentProofRepository, a data repository used by the Scene app.
+ * It contains legacy screenshot proof storage and review data access.
+ * Its functions include uploadPaymentProof, message to load data, handle user actions, validate input, and save results.
+ * It connects this feature to the Scene app's UI, data, navigation, and verification flow.
+ */
+
 package com.example.seprojectpart3;
 
 import android.net.Uri;

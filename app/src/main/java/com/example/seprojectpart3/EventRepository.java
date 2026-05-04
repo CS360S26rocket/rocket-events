@@ -38,6 +38,18 @@ import java.util.Map;
 public class EventRepository {
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
 
+    public void incrementExternalLinkClick(String eventId, EventCallback callback) {
+        if (eventId == null || eventId.trim().isEmpty()) {
+            callback.onFailure("Event is required");
+            return;
+        }
+        db.collection("events").document(eventId)
+                .update("externalLinkClicks", FieldValue.increment(1))
+                .addOnSuccessListener(v -> callback.onSuccess(eventId))
+                .addOnFailureListener(e -> callback.onFailure(e.getMessage()));
+    }
+
+
     /**
      * Creates a new event document in Firestore.
      *
@@ -75,6 +87,9 @@ public class EventRepository {
         event.put("priceSummary", isFree ? "Free RSVP" : "Paid ticket");
         event.put("minTicketPrice", isFree ? 0 : null);
         event.put("paymentQrUrl", "");
+        event.put("externalTicketLink", "");
+        event.put("externalLinkEnabled", false);
+        event.put("externalLinkClicks", 0);
         event.put("createdAt", FieldValue.serverTimestamp());
 
         db.collection("events").add(event)

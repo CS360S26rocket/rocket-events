@@ -1,3 +1,10 @@
+/*
+ * This file defines AttendeeCountHelper, a supporting Java class used by the Scene app.
+ * It contains attendee counting helpers used for event capacity and dashboard totals.
+ * Its functions include getAttendeeCount, bindAttendeeCount, getAttendeeCountFallback to load data, handle user actions, validate input, and save results.
+ * It connects this feature to the Scene app's UI, data, navigation, and verification flow.
+ */
+
 package com.example.seprojectpart3;
 
 import android.widget.TextView;
@@ -8,19 +15,19 @@ import com.google.firebase.firestore.AggregateQuerySnapshot;
 import com.google.firebase.firestore.AggregateSource;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-/**
- * Story #47 — Show Attendee Count on Event (M4, Sprint 5, Day 1)
- *
- * COUNT query on registrations collection — reuses the registrations
- * structure from #14 (RegistrationRepository, Sprint 2).
- *
- * Provides:
- *   - getAttendeeCount(): raw count via callback
- *   - bindAttendeeCount(): convenience method that directly sets a TextView
- *
- * Done by day 3. After completion, assist M2 on #43 cron infra
- * or M1 on #42 email edge cases.
- */
+
+
+
+
+
+
+
+
+
+
+
+
+
 public class AttendeeCountHelper {
 
     private static final String REGISTRATIONS_COLLECTION = "registrations";
@@ -30,14 +37,14 @@ public class AttendeeCountHelper {
         this.db = FirebaseFirestore.getInstance();
     }
 
-    /**
-     * Get the number of attendees registered for an event.
-     * Uses Firestore count() aggregation — does not download all documents.
-     *
-     * @param eventId   Firestore document ID of the event
-     * @param onSuccess returns the count as a long
-     * @param onFailure returns the error
-     */
+    
+
+
+
+
+
+
+
     public void getAttendeeCount(String eventId,
                                  OnSuccessListener<Long> onSuccess,
                                  OnFailureListener onFailure) {
@@ -53,16 +60,16 @@ public class AttendeeCountHelper {
                 .addOnFailureListener(onFailure);
     }
 
-    /**
-     * Convenience: fetch count and bind it directly to a TextView.
-     * Displays "X attending" or "No attendees yet".
-     *
-     * Usage in any Activity/Fragment:
-     *   new AttendeeCountHelper().bindAttendeeCount(eventId, tvAttendeeCount);
-     *
-     * @param eventId  Firestore document ID of the event
-     * @param textView the TextView to update
-     */
+    
+
+
+
+
+
+
+
+
+
     public void bindAttendeeCount(String eventId, TextView textView) {
         textView.setText("Loading...");
 
@@ -80,10 +87,10 @@ public class AttendeeCountHelper {
         );
     }
 
-    /**
-     * Fallback for older Firestore SDKs that don't support count().
-     * Downloads documents and counts locally — use only if count() isn't available.
-     */
+    
+
+
+
     public void getAttendeeCountFallback(String eventId,
                                          OnSuccessListener<Long> onSuccess,
                                          OnFailureListener onFailure) {

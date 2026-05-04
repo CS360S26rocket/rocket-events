@@ -1,3 +1,10 @@
+/*
+ * This file defines DiscountRepository, a data repository used by the Scene app.
+ * It contains discount and promotion lookup behavior for event ticketing.
+ * Its functions include success, failure, validateAndApply, incrementUsage to load data, handle user actions, validate input, and save results.
+ * It connects this feature to the Scene app's UI, data, navigation, and verification flow.
+ */
+
 package com.example.seprojectpart3;
 
 import com.google.firebase.Timestamp;
@@ -8,27 +15,27 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Story #33 — Apply discount / referral code at checkout
- * M3 · Sprint 4
- *
- * Server-side validation of discount and referral codes.
- * Discount codes are stored in a "discount_codes" Firestore collection.
- *
- * Document structure:
- * {
- *   code:          "EARLYBIRD20"
- *   discountType:  "percentage" | "fixed"
- *   discountValue: 20          (% or flat amount)
- *   maxUses:       100
- *   currentUses:   42
- *   validFrom:     Timestamp
- *   validUntil:    Timestamp
- *   eventId:       "abc123" | null  (null = global code)
- *   isActive:      true
- *   minTicketPrice: 0.0       (minimum price to apply)
- * }
- */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 public class DiscountRepository {
 
     private static final String COLLECTION_DISCOUNTS = "discount_codes";
@@ -42,11 +49,11 @@ public class DiscountRepository {
         this.db = db;
     }
 
-    // ── Result wrapper ──────────────────────────────────────────
+    
     public static class DiscountResult {
         public final boolean valid;
         public final String message;
-        public final String discountType;    // "percentage" or "fixed"
+        public final String discountType;    
         public final double discountValue;
         public final double finalPrice;
         public final String discountId;
@@ -71,19 +78,19 @@ public class DiscountRepository {
         }
     }
 
-    // ── Callback ────────────────────────────────────────────────
+    
     public interface OnDiscountValidatedListener {
         void onResult(DiscountResult result);
     }
 
-    /**
-     * Validate a discount/referral code against an event's ticket price.
-     *
-     * @param code          The code entered by the user (case-insensitive)
-     * @param eventId       The event being purchased
-     * @param originalPrice The original ticket price before discount
-     * @param listener      Callback with validation result
-     */
+    
+
+
+
+
+
+
+
     public void validateAndApply(String code, String eventId,
                                  double originalPrice,
                                  OnDiscountValidatedListener listener) {
@@ -107,7 +114,7 @@ public class DiscountRepository {
                     var doc = querySnapshot.getDocuments().get(0);
                     String discountId = doc.getId();
 
-                    // ── Check active ────────────────────────
+                    
                     Boolean isActive = doc.getBoolean("isActive");
                     if (isActive == null || !isActive) {
                         listener.onResult(
@@ -115,7 +122,7 @@ public class DiscountRepository {
                         return;
                     }
 
-                    // ── Check event scope ───────────────────
+                    
                     String codeEventId = doc.getString("eventId");
                     if (codeEventId != null && !codeEventId.equals(eventId)) {
                         listener.onResult(
@@ -123,7 +130,7 @@ public class DiscountRepository {
                         return;
                     }
 
-                    // ── Check date validity ─────────────────
+                    
                     Timestamp validFrom = doc.getTimestamp("validFrom");
                     Timestamp validUntil = doc.getTimestamp("validUntil");
                     Date now = new Date();
@@ -139,7 +146,7 @@ public class DiscountRepository {
                         return;
                     }
 
-                    // ── Check usage limit ───────────────────
+                    
                     Long maxUses = doc.getLong("maxUses");
                     Long currentUses = doc.getLong("currentUses");
                     if (maxUses != null && currentUses != null && currentUses >= maxUses) {
@@ -148,7 +155,7 @@ public class DiscountRepository {
                         return;
                     }
 
-                    // ── Check minimum price ─────────────────
+                    
                     Double minPrice = doc.getDouble("minTicketPrice");
                     if (minPrice != null && originalPrice < minPrice) {
                         listener.onResult(DiscountResult.failure(
@@ -156,7 +163,7 @@ public class DiscountRepository {
                         return;
                     }
 
-                    // ── Calculate discount ──────────────────
+                    
                     String discountType = doc.getString("discountType");
                     Double discountValue = doc.getDouble("discountValue");
 
@@ -178,7 +185,7 @@ public class DiscountRepository {
                         return;
                     }
 
-                    // Round to 2 decimal places
+                    
                     finalPrice = Math.round(finalPrice * 100.0) / 100.0;
 
                     listener.onResult(DiscountResult.success(
@@ -189,10 +196,10 @@ public class DiscountRepository {
                                 "Failed to validate code: " + e.getMessage())));
     }
 
-    /**
-     * Increment the usage counter for a discount code after successful
-     * ticket generation. Called by TKT-A upon approval.
-     */
+    
+
+
+
     public void incrementUsage(String discountId) {
         if (discountId == null) return;
 
@@ -201,9 +208,9 @@ public class DiscountRepository {
                 .update("currentUses", FieldValue.increment(1));
     }
 
-    /**
-     * Create a new discount code (organizer action).
-     */
+    
+
+
     public void createDiscountCode(String code, String discountType,
                                    double discountValue, int maxUses,
                                    String eventId, Date validFrom,

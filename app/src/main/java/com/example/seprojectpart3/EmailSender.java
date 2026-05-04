@@ -1,3 +1,10 @@
+/*
+ * This file defines EmailSender, a supporting Java class used by the Scene app.
+ * It contains email delivery support for OTP and notification-style messages.
+ * Its functions include sendOtpEmail, sendPlainEmail, getPasswordAuthentication to load data, handle user actions, validate input, and save results.
+ * It connects this feature to the Scene app's UI, data, navigation, and verification flow.
+ */
+
 package com.example.seprojectpart3;
 
 import java.util.Properties;
@@ -10,9 +17,9 @@ import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
-// This class handles sending OTP emails for password reset functionality. It uses JavaMail API to send an email from a predefined sender's Gmail account.
-// The `sendOtpEmail` method takes the recipient's email and the generated OTP as parameters, then configures the email session, authenticates the sender, 
-// and sends the OTP email with a subject and message body. The email is sent via Gmail's SMTP server with TLS encryption enabled.
+
+
+
 
 public class EmailSender {
     private static final String SENDER_EMAIL = "mirhuzaifa230@gmail.com";

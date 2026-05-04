@@ -1,3 +1,10 @@
+/*
+ * This file defines Sprint4M3Tests, a supporting Java class used by the Scene app.
+ * It contains supporting Scene app logic used by the related feature area.
+ * Its functions include setUp, validateDiscount_nullCode_returnsFailure, validateDiscount_emptyCode_returnsFailure, discountResult_success_hasCorrectFields to load data, handle user actions, validate input, and save results.
+ * It connects this feature to the Scene app's UI, data, navigation, and verification flow.
+ */
+
 package com.example.seprojectpart3;
 
 import org.junit.Before;
@@ -10,13 +17,13 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import static org.junit.Assert.*;
 
-/**
- * Unit tests for M3 Sprint 4 stories:
- *  - #33  DiscountRepository
- *  - #34  IdempotencyManager
- *  - TKT-A TicketGenerationService
- *  - ORG-A PaymentQRRepository
- */
+
+
+
+
+
+
+
 @RunWith(MockitoJUnitRunner.class)
 public class Sprint4M3Tests {
 
@@ -35,7 +42,7 @@ public class Sprint4M3Tests {
         paymentQRRepo = new PaymentQRRepository(mockDb);
     }
 
-    // ═══ #33 — Discount Code Tests ════════════════════════════
+    
 
     @Test
     public void validateDiscount_nullCode_returnsFailure() {
@@ -75,7 +82,7 @@ public class Sprint4M3Tests {
         assertEquals(0, result.discountValue, 0.01);
     }
 
-    // ═══ #34 — Idempotency Tests ══════════════════════════════
+    
 
     @Test
     public void idempotency_nullSubmissionId_returnsFailure() {
@@ -111,7 +118,7 @@ public class Sprint4M3Tests {
                 });
     }
 
-    // ═══ TKT-A — Ticket Generation Tests ══════════════════════
+    
 
     @Test
     public void generateTicket_nullSubmissionId_returnsFailure() {
@@ -145,7 +152,7 @@ public class Sprint4M3Tests {
                 });
     }
 
-    // ═══ ORG-A — Payment QR Repository Tests ══════════════════
+    
 
     @Test
     public void saveQR_nullEventId_returnsFailure() {

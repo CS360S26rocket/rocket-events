@@ -179,6 +179,7 @@
 
             <!-- Payment -->
             <TextView
+                android:id="@+id/tvPaymentLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
@@ -242,6 +243,7 @@
                             android:fontFamily="@font/poppins_bold" />
 
                         <TextView
+                            android:id="@+id/tvStudentPassMeta"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="2dp"
@@ -314,6 +316,7 @@
                             android:fontFamily="@font/poppins_bold" />
 
                         <TextView
+                            android:id="@+id/tvGeneralPassMeta"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="2dp"
@@ -402,7 +405,7 @@
                     android:background="@drawable/bg_input_dark"
                     android:fontFamily="@font/poppins_regular"
                     android:hint="Sales start"
-                    android:inputType="date"
+                    android:inputType="none"
                     android:paddingStart="14dp"
                     android:paddingEnd="14dp"
                     android:textColor="@color/text_primary"
@@ -417,7 +420,7 @@
                     android:background="@drawable/bg_input_dark"
                     android:fontFamily="@font/poppins_regular"
                     android:hint="Time"
-                    android:inputType="time"
+                    android:inputType="none"
                     android:paddingStart="14dp"
                     android:paddingEnd="14dp"
                     android:textColor="@color/text_primary"
@@ -441,7 +444,7 @@
                     android:background="@drawable/bg_input_dark"
                     android:fontFamily="@font/poppins_regular"
                     android:hint="Sales end"
-                    android:inputType="date"
+                    android:inputType="none"
                     android:paddingStart="14dp"
                     android:paddingEnd="14dp"
                     android:textColor="@color/text_primary"
@@ -456,7 +459,7 @@
                     android:background="@drawable/bg_input_dark"
                     android:fontFamily="@font/poppins_regular"
                     android:hint="Time"
-                    android:inputType="time"
+                    android:inputType="none"
                     android:paddingStart="14dp"
                     android:paddingEnd="14dp"
                     android:textColor="@color/text_primary"

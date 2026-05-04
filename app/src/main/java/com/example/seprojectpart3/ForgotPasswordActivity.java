@@ -1,3 +1,10 @@
+/*
+ * This file defines ForgotPasswordActivity, an Android activity used by the Scene app.
+ * It contains password recovery and reset support.
+ * Its functions include onCreate, sendOtp, onSuccess, onFailure to load data, handle user actions, validate input, and save results.
+ * It connects this feature to the Scene app's UI, data, navigation, and verification flow.
+ */
+
 package com.example.seprojectpart3;
 
 import android.os.Bundle;

@@ -1,3 +1,10 @@
+/*
+ * This file defines CampusLoginActivity, an Android activity used by the Scene app.
+ * It contains campus user sign-in and navigation into the campus event flow.
+ * Its functions include onCreate, onSuccess, onFailure, showError to load data, handle user actions, validate input, and save results.
+ * It connects this feature to the Scene app's UI, data, navigation, and verification flow.
+ */
+
 package com.example.seprojectpart3;
 
 import android.content.Intent;
@@ -24,10 +31,10 @@ public class CampusLoginActivity extends AppCompatActivity {
         tvError    = findViewById(R.id.tvError);
         authRepo   = new AuthRepository();
 
-        // Back button
+        
         findViewById(R.id.btnBack).setOnClickListener(v -> finish());
 
-        // Log In
+        
         findViewById(R.id.btnLogin).setOnClickListener(v -> {
             String email = etEmail.getText().toString().trim();
             String password = etPassword.getText().toString().trim();
@@ -40,7 +47,7 @@ public class CampusLoginActivity extends AppCompatActivity {
             authRepo.loginUser(email, password, new AuthRepository.AuthCallback() {
                 @Override
                 public void onSuccess(String token, String uid) {
-                    // Check role — campus users stay here, organizers redirect
+                    
                     FirebaseFirestore.getInstance()
                             .collection("users")
                             .document(uid)
@@ -48,14 +55,14 @@ public class CampusLoginActivity extends AppCompatActivity {
                             .addOnSuccessListener(doc -> {
                                 String role = doc.getString("role");
                                 if ("organizer".equals(role)) {
-                                    // Organizer trying campus login — redirect
+                                    
                                     Intent intent = new Intent(CampusLoginActivity.this,
                                             OrganizerDashboardActivity.class);
                                     intent.putExtra("uid", uid);
                                     startActivity(intent);
                                     finish();
                                 } else {
-                                    // Campus user — TODO: navigate to Home when Discovery is built
+                                    
                                     Intent intent = new Intent(CampusLoginActivity.this, CampusHomeActivity.class);
                                     intent.putExtra("uid", uid);
                                     startActivity(intent);
@@ -72,11 +79,11 @@ public class CampusLoginActivity extends AppCompatActivity {
             });
         });
 
-        // Sign up link → CampusRegisterActivity
+        
         findViewById(R.id.tvSignUp).setOnClickListener(v ->
                 startActivity(new Intent(this, CampusRegisterActivity.class)));
 
-        // Forgot password
+        
         findViewById(R.id.tvForgotPassword).setOnClickListener(v ->
                 startActivity(new Intent(this, ForgotPasswordActivity.class)));
     }

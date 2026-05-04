@@ -1,3 +1,10 @@
+/*
+ * This file defines EditEventActivity, an Android activity used by the Scene app.
+ * It contains the organizer edit-event screen, event status controls, sales timing updates, and attendee update actions.
+ * Its functions include onCreate, loadEvent, onSuccess, onFailure to load data, handle user actions, validate input, and save results.
+ * It connects this feature to the Scene app's UI, data, navigation, and verification flow.
+ */
+
 package com.example.seprojectpart3;
 
 import android.content.Intent;
