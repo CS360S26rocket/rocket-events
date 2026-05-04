@@ -98,4 +98,37 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
+    tasks.register<Javadoc>("generateRocketJavaDocs") {
+        val localPropertiesFile = rootProject.file("local.properties")
+
+        val sdkDir = if (localPropertiesFile.exists()) {
+            localPropertiesFile.readText()
+                .lines()
+                .firstOrNull { it.startsWith("sdk.dir=") }
+                ?.substringAfter("sdk.dir=")
+                ?.replace("\\:", ":")
+                ?.replace("\\\\", "\\")
+        } else {
+            null
+        } ?: System.getenv("ANDROID_HOME")
+        ?: System.getenv("ANDROID_SDK_ROOT")
+        ?: "C:\\Users\\nadsa\\AppData\\Local\\Android\\Sdk"
+
+        val androidJar = file("$sdkDir\\platforms\\android-36\\android.jar")
+
+        source = fileTree("src/main/java") {
+            include("**/*.java")
+        }
+
+        classpath = files(androidJar) + configurations.getByName("debugCompileClasspath")
+
+        destinationDir = file("$projectDir/javadocs_rocketevents")
+        isFailOnError = false
+
+        options.encoding = "UTF-8"
+        (options as org.gradle.external.javadoc.StandardJavadocDocletOptions)
+            .addStringOption("Xdoclint:none", "-quiet")
+    }
+
 }
+

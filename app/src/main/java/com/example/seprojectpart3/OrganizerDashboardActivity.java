@@ -22,6 +22,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Organizer home screen for managing events, payments, dashboard stats, and profile settings.
+ *
+ * This activity loads the current organizer's events from Firestore and separates the organizer
+ * workflow into four sections: dashboard, event management, payment verification, and profile.
+ */
+
 public class OrganizerDashboardActivity extends AppCompatActivity {
 
     private String organizerUid;
@@ -35,6 +42,10 @@ public class OrganizerDashboardActivity extends AppCompatActivity {
     private ScrollView sectionDashboard, sectionEvents, sectionProofs, sectionProfile;
     private LinearLayout listDashboardStats, listDashboardEvents, listManagedEvents, listProofEvents;
 
+    /**
+     * Initializes the organizer dashboard, binds UI views/actions, loads organizer profile data,
+     * and fetches the organizer's events.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,12 +64,18 @@ public class OrganizerDashboardActivity extends AppCompatActivity {
         loadOrganizerEvents();
     }
 
+    /**
+     * Refreshes organizer events whenever the dashboard becomes visible again.
+     */
     @Override
     protected void onResume() {
         super.onResume();
         loadOrganizerEvents();
     }
 
+    /**
+     * Connects XML layout views to activity fields.
+     */
     private void bindViews() {
         tvPortalTitle = findViewById(R.id.tvPortalTitle);
         tvPortalSubtitle = findViewById(R.id.tvPortalSubtitle);
@@ -106,6 +123,11 @@ public class OrganizerDashboardActivity extends AppCompatActivity {
         findViewById(R.id.btnSaveProfile).setOnClickListener(v -> saveProfile());
     }
 
+    /**
+     * Shows the selected organizer portal section and updates the page title/subtitle.
+     *
+     * @param section section key: dashboard, events, proofs, or profile
+     */
     private void showSection(String section) {
         sectionDashboard.setVisibility("dashboard".equals(section) ? View.VISIBLE : View.GONE);
         sectionEvents.setVisibility("events".equals(section) ? View.VISIBLE : View.GONE);
@@ -132,6 +154,12 @@ public class OrganizerDashboardActivity extends AppCompatActivity {
         setNavActive(navProfile, "profile".equals(section));
     }
 
+    /**
+     * Updates the visual state of a bottom navigation item.
+     *
+     * @param nav navigation TextView to update
+     * @param active true when this tab is currently selected
+     */
     private void setNavActive(TextView nav, boolean active) {
         int iconColor = getColor(active ? R.color.text_primary : R.color.text_secondary);
         nav.setTextColor(iconColor);
@@ -139,6 +167,9 @@ public class OrganizerDashboardActivity extends AppCompatActivity {
         nav.setBackgroundResource(active ? R.drawable.bg_nav_item_active : 0);
     }
 
+    /**
+     * Loads all events created by the current organizer and refreshes all dashboard lists.
+     */
     private void loadOrganizerEvents() {
         eventRepo.getOrganizerEvents(organizerUid, new EventRepository.EventListCallback() {
             @Override public void onSuccess(List<Map<String, Object>> events) {
@@ -160,6 +191,9 @@ public class OrganizerDashboardActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Renders dashboard summary stats and recent organizer events.
+     */
     private void renderDashboard() {
         listDashboardStats.removeAllViews();
         listDashboardEvents.removeAllViews();
@@ -185,6 +219,9 @@ public class OrganizerDashboardActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Renders the event management list where organizers can edit existing events.
+     */
     private void renderEventManagement() {
         listManagedEvents.removeAllViews();
         if (organizerEvents.isEmpty()) {
@@ -435,6 +472,9 @@ public class OrganizerDashboardActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Converts density-independent pixels to actual pixels for programmatic layout sizing.
+     */
     private int dp(int value) {
         return (int) (value * getResources().getDisplayMetrics().density + 0.5f);
     }

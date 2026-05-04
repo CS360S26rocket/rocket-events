@@ -16,6 +16,25 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
+/**
+ * Repository for ticketing, RSVP, waitlist, ticket-tier, and ticket-status operations.
+ *
+ * <p>This class coordinates Firestore writes across event capacity, ticket tiers,
+ * registrations, waitlists, proof submissions, and issued tickets. Most methods are
+ * asynchronous and return results through callback interfaces.</p>
+ *
+ * <p>Implemented backlog coverage includes:</p>
+ * <ul>
+ *     <li>#5 Ticket selection</li>
+ *     <li>#8 View user's RSVP'd and ticketed events</li>
+ *     <li>#11 Create/update ticket type</li>
+ *     <li>#12 Update event capacity</li>
+ *     <li>#32 Cancel RSVP before deadline and restore capacity</li>
+ *     <li>#41 Multiple ticket tiers</li>
+ *     <li>USR-C View ticket status</li>
+ * </ul>
+ */
+
 public class TicketRepository {
 
     private static final String EVENTS_COLLECTION         = "events";
@@ -30,10 +49,21 @@ public class TicketRepository {
     // Existing callbacks
     // -------------------------------------------------------------------------
 
+    /**
+     * Callback for ticket setup and capacity operations that return a status message.
+     */
+
     public interface TicketCallback {
         void onSuccess(String message);
         void onFailure(String error);
     }
+
+    /**
+     * Callback for registration operations.
+     *
+     * <p>A registration may be confirmed immediately or placed on the waitlist if
+     * capacity or ticket-tier limits are reached.</p>
+     */
 
     public interface RegistrationCallback {
         void onConfirmed(String ticketId);
@@ -46,42 +76,54 @@ public class TicketRepository {
     // -------------------------------------------------------------------------
 
     /** #8 — list of event maps for a user's RSVPs and tickets */
+    /**
+     * Callback for loading a user's registered, ticketed, and waitlisted events.
+     */
     public interface UserEventsCallback {
         void onSuccess(List<Map<String, Object>> events);
         void onFailure(String error);
     }
 
     /** #32 — simple success/failure for RSVP cancellation */
+    /**
+     * Callback for RSVP cancellation operations.
+     */
+
     public interface CancelCallback {
         void onSuccess(String message);
         void onFailure(String error);
     }
 
     /** USRC — ticket / proof-submission status */
+    /**
+     * Callback for retrieving a user's ticket or proof-submission status.
+     */
+
     public interface TicketStatusCallback {
         void onSuccess(String status);   // e.g. "confirmed", "pending", "approved", "rejected", "waitlisted"
         void onFailure(String error);
     }
 
     /** #5/#41 — available ticket tiers for one event */
+    /**
+     * Callback for loading ticket tiers configured for a specific event.
+     */
+
     public interface TicketTypesCallback {
         void onSuccess(List<Map<String, Object>> ticketTypes);
         void onFailure(String error);
     }
 
-    // =========================================================================
-    // Story #8 — View user's RSVP'd and ticketed events  (Low, Day 1)
-    // =========================================================================
-    // Queries the "registrations" collection for all records belonging to
-    // attendeeUid (confirmed + waitlisted).  Each result map includes the raw
-    // registration fields plus "registrationId" for easy reference.
-    //
-    // Usage:
-    //   ticketRepo.getUserEvents(uid, new TicketRepository.UserEventsCallback() {
-    //       public void onSuccess(List<Map<String,Object>> events) { … }
-    //       public void onFailure(String error) { … }
-    //   });
-    // =========================================================================
+    /**
+     * Loads all registrations and waitlist entries for a user.
+     *
+     * <p>The returned maps include registration/waitlist fields plus enriched event
+     * metadata such as event title, date, venue, banner URL, and status when available.</p>
+     *
+     * @param attendeeUid Firebase UID of the campus user.
+     * @param callback callback receiving user-scoped event records or an error.
+     */
+
     public void getUserEvents(@NonNull String attendeeUid,
                               @NonNull UserEventsCallback callback) {
 
@@ -118,27 +160,17 @@ public class TicketRepository {
                 .addOnFailureListener(e -> callback.onFailure(msg(e)));
     }
 
-    // =========================================================================
-    // Story #32 — Cancel RSVP before deadline — restore capacity  (Med, Day 1)
-    // =========================================================================
-    // 1. Reads the registration document to get eventId and current status.
-    // 2. Checks that the event's cancellation deadline has not passed.
-    //    The deadline is read from events/{eventId}.cancelDeadline (ISO-8601 string).
-    //    If the field is absent, cancellation is always allowed.
-    // 3. In a transaction:
-    //    - Marks the registration as "cancelled".
-    //    - If the registration was "confirmed", decrements the event's soldCount
-    //      and the ticketType's sold counter (restoring capacity).
-    //    - Promotes the next waitlisted attendee to confirmed (best-effort, outside
-    //      the transaction to avoid complexity — a Cloud Function is the production
-    //      solution, but this keeps the story fully independent).
-    //
-    // Usage:
-    //   ticketRepo.cancelRsvp(registrationId, new TicketRepository.CancelCallback() {
-    //       public void onSuccess(String msg) { … }
-    //       public void onFailure(String error) { … }
-    //   });
-    // =========================================================================
+    /**
+     * Cancels a user's RSVP or ticket registration before the cancellation deadline.
+     *
+     * <p>If the registration was confirmed, this method restores capacity by decrementing
+     * the event sold count and, for paid tiers, the selected ticket tier's sold count.
+     * If capacity opens up, the method also attempts a best-effort waitlist promotion.</p>
+     *
+     * @param registrationId Firestore document ID from the registrations collection.
+     * @param callback callback receiving a success message or error.
+     */
+
     public void cancelRsvp(@NonNull String registrationId,
                            @NonNull CancelCallback callback) {
 
@@ -245,10 +277,16 @@ public class TicketRepository {
     }
 
     /**
-     * Best-effort: promotes the earliest waitlisted attendee for an event to
-     * "confirmed".  Called after a confirmed cancellation restores capacity.
-     * Failures are silently swallowed — a production app would use a Cloud Function.
+     * Best-effort waitlist promotion after a confirmed cancellation.
+     *
+     * <p>This promotes the earliest waitlisted user for the event into a confirmed
+     * registration and creates a valid ticket document. Failures are intentionally not
+     * surfaced because the cancellation itself has already completed.</p>
+     *
+     * @param eventId event whose waitlist should be checked.
+     * @param ticketTypeId ticket tier to restore/promote, if applicable.
      */
+
     private void promoteFromWaitlist(String eventId, String ticketTypeId) {
         db.collection(WAITLIST_COLLECTION)
                 .whereEqualTo("eventId", eventId)
@@ -301,23 +339,19 @@ public class TicketRepository {
                 });
     }
 
-    // =========================================================================
-    // USRC — View ticket status: pending / approved / rejected  (Low, Day 1)
-    // =========================================================================
-    // Looks up a user's latest proof_submission record for a given event and
-    // returns its status string.  Falls back to the registration/waitlist status
-    // if no proof_submission record exists (covers the "confirmed" / "waitlisted"
-    // states that don't require proof).
-    //
-    // proof_submissions document shape (written elsewhere when user submits proof):
-    //   { userId, eventId, status: "pending"|"approved"|"rejected", submittedAt }
-    //
-    // Usage:
-    //   ticketRepo.getTicketStatus(uid, eventId, new TicketRepository.TicketStatusCallback() {
-    //       public void onSuccess(String status) { … }
-    //       public void onFailure(String error) { … }
-    //   });
-    // =========================================================================
+    /**
+     * Returns the user's current status for an event.
+     *
+     * <p>The lookup checks payment proof submissions first because they provide the
+     * pending/approved/rejected state for manual payment. If no proof submission exists,
+     * the method falls back to registrations and then waitlist entries.</p>
+     *
+     * @param userId Firebase UID of the campus user.
+     * @param eventId event document ID.
+     * @param callback callback receiving status such as pending, approved, rejected,
+     *                 confirmed, or waitlisted.
+     */
+
     public void getTicketStatus(@NonNull String userId,
                                 @NonNull String eventId,
                                 @NonNull TicketStatusCallback callback) {
@@ -380,9 +414,13 @@ public class TicketRepository {
                 .addOnFailureListener(e -> callback.onFailure(msg(e)));
     }
 
-    // =========================================================================
-    // Existing stories (unchanged)
-    // =========================================================================
+    /**
+     * Adds event metadata to registration and waitlist records.
+     *
+     * @param results registration/waitlist maps to enrich.
+     * @param callback callback receiving enriched records once all event reads finish.
+     */
+
 
     private void attachEventDetails(List<Map<String, Object>> results,
                                     UserEventsCallback callback) {
@@ -450,6 +488,20 @@ public class TicketRepository {
                     });
         }
     }
+
+    /**
+     * Registers a user for a free RSVP event.
+     *
+     * <p>If the event has available capacity, a confirmed registration is created and
+     * RSVP/sold counters are incremented. If the event is full, a waitlist record is
+     * created instead.</p>
+     *
+     * @param eventId event document ID.
+     * @param attendeeUid Firebase UID of the campus user.
+     * @param attendeeName display name of the attendee.
+     * @param attendeeEmail email address of the attendee.
+     * @param callback callback receiving the registration ID or waitlist ID.
+     */
 
     public void registerFreeRsvp(@NonNull String eventId,
                                  @NonNull String attendeeUid,
@@ -846,6 +898,10 @@ public class TicketRepository {
 
     private enum ResultType { CONFIRMED, WAITLISTED }
 
+    /**
+     * Internal transaction result containing the result type and generated document ID.
+     */
+
     private static class Result {
         ResultType type;
         String id;
@@ -855,9 +911,25 @@ public class TicketRepository {
         }
     }
 
+    /**
+     * Safely extracts an exception message for callback errors.
+     *
+     * @param e exception from Firebase or local validation.
+     * @return readable error message.
+     */
+
     private String msg(Exception e) {
         return (e == null || e.getMessage() == null) ? "Unknown error" : e.getMessage();
     }
+
+    /**
+     * Reads a numeric Firestore field as a double.
+     *
+     * @param snap Firestore document snapshot.
+     * @param field field name to read.
+     * @return numeric value, or 0 if missing.
+     */
+
 
     private double readDouble(DocumentSnapshot snap, String field) {
         Double asDouble = snap.getDouble(field);

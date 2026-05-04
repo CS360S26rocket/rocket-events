@@ -14,23 +14,41 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-// This class handles event-related operations in Firebase Firestore, including creating events,
-// setting ticket sales time, retrieving attendee details, and filtering/searching events.
-//
-// #10  createEvent       — Add a new event to Firestore
-// #13  setSalesTime      — Update ticket sales start/end time
-// #14  getAttendees      — Retrieve RSVP count and attendee list
-// #26  searchEvents      — Keyword search on event title / description (Low risk, Day 1)
-// #24  filterByDateRange — Filter events by date range (Low risk, Day 1)
-// #25  filterByPrice     — Filter events by free vs paid (Low risk, Day 1)
-// #23  getUpcomingEvents — Sorted upcoming home feed query
-// #4   getEventDetail    — Single event detail read
-
+/**
+ * Repository for event-related Firestore operations.
+ *
+ * <p>This class owns the app's event creation, discovery queries, organizer event
+ * lookup, event metadata updates, cancellation flow, ticket sales timing, and
+ * attendee list retrieval. All operations are asynchronous and report results
+ * through callback interfaces defined at the bottom of the class.</p>
+ *
+ * <p>Implemented backlog coverage includes:</p>
+ * <ul>
+ *     <li>#10 Create event</li>
+ *     <li>#13 Set ticket sales start/end time</li>
+ *     <li>#14 View RSVP count and attendee list</li>
+ *     <li>#23 List upcoming events</li>
+ *     <li>#4 View event detail</li>
+ *     <li>#26 Keyword search on event title/description</li>
+ *     <li>#24 Filter events by date range</li>
+ *     <li>#25 Filter events by price</li>
+ *     <li>#44 Cancel event and notify registered users</li>
+ * </ul>
+ */
 public class EventRepository {
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-    // Story #10 — Create event
-    // isFree: true when ticketMode is "free_rsvp", false when "paid_tickets" / "external_link"
+    /**
+     * Creates a new event document in Firestore.
+     *
+     * @param organizerUid UID of the organizer creating the event.
+     * @param title event title; required.
+     * @param description event description; optional.
+     * @param date event date stored as a {@code yyyy-MM-dd} style string; required.
+     * @param venue event venue; required.
+     * @param isFree true for free RSVP events, false for paid/manual-payment events.
+     * @param callback callback receiving the new event document ID or an error message.
+     */
     public void createEvent(String organizerUid, String title, String description,
                             String date, String venue, boolean isFree,
                             EventCallback callback) {
@@ -48,12 +66,12 @@ public class EventRepository {
         event.put("venue", venue);
         event.put("status", "published");
         event.put("rsvpCount", 0);
-        event.put("ticketsSold", 0);           // M4 needs this for #50
-        event.put("ticketSalesOpen", false);    // M4 needs this for #50
-        event.put("ticketSalesStart", null);    // set by story #13
-        event.put("ticketSalesEnd", null);      // set by story #13
-        event.put("capacity", null);            // set by M3's story #12
-        event.put("isFree", isFree);            // used by story #25
+        event.put("ticketsSold", 0);
+        event.put("ticketSalesOpen", false);
+        event.put("ticketSalesStart", null);
+        event.put("ticketSalesEnd", null);
+        event.put("capacity", null);
+        event.put("isFree", isFree);
         event.put("priceSummary", isFree ? "Free RSVP" : "Paid ticket");
         event.put("minTicketPrice", isFree ? 0 : null);
         event.put("paymentQrUrl", "");
@@ -64,14 +82,31 @@ public class EventRepository {
                 .addOnFailureListener(e -> callback.onFailure(e.getMessage()));
     }
 
-    // Overload kept for backward-compat with existing callers that don't pass isFree yet.
-    // Defaults to false (paid) so existing behaviour is unchanged.
+    /**
+     * Backward-compatible event creation overload for older callers.
+     *
+     * <p>Defaults {@code isFree} to {@code false}, preserving the previous paid-event behavior.</p>
+     *
+     * @param organizerUid UID of the organizer creating the event.
+     * @param title event title.
+     * @param description event description.
+     * @param date event date.
+     * @param venue event venue.
+     * @param callback callback receiving the new event ID or an error.
+     */
     public void createEvent(String organizerUid, String title, String description,
                             String date, String venue, EventCallback callback) {
         createEvent(organizerUid, title, description, date, venue, false, callback);
     }
 
-    // Campus discovery home — list all active events.
+    /**
+     * Returns all events visible to campus users.
+     *
+     * <p>Visibility is intentionally checked client-side so both legacy {@code active}
+     * events and current {@code published} events are supported.</p>
+     *
+     * @param callback callback receiving visible event maps. Each map includes {@code eventId}.
+     */
     public void getActiveEvents(EventListCallback callback) {
         db.collection("events")
                 .get()
@@ -90,9 +125,14 @@ public class EventRepository {
                 .addOnFailureListener(e -> callback.onFailure(e.getMessage()));
     }
 
-    // Story #23 — List all upcoming events for the campus home feed.
-    // Dates are stored as ISO-like strings in this project, so Firestore can sort
-    // them lexicographically in the same order users expect chronologically.
+    /**
+     * Returns upcoming visible events sorted by date ascending.
+     *
+     * <p>Dates are stored as strings, so this method compares {@code yyyy-MM-dd}
+     * formatted values lexicographically.</p>
+     *
+     * @param callback callback receiving upcoming event maps. Each map includes {@code eventId}.
+     */
     public void getUpcomingEvents(EventListCallback callback) {
         String today = new SimpleDateFormat("yyyy-MM-dd", Locale.US).format(new Date());
 
@@ -121,7 +161,12 @@ public class EventRepository {
                 .addOnFailureListener(e -> callback.onFailure(e.getMessage()));
     }
 
-    // Story #4 — Event detail read: date, time, venue, price, capacity and QR info.
+    /**
+     * Loads a single event and its configured ticket tiers.
+     *
+     * @param eventId Firestore document ID from the {@code events} collection.
+     * @param callback callback receiving an event map with {@code eventId} and {@code ticketTypes}.
+     */
     public void getEventDetail(String eventId, EventDetailCallback callback) {
         if (eventId == null || eventId.trim().isEmpty()) {
             callback.onFailure("Event ID is required");
@@ -163,6 +208,13 @@ public class EventRepository {
                 .addOnFailureListener(e -> callback.onFailure(e.getMessage()));
     }
 
+    /**
+     * Applies arbitrary metadata updates to an event document.
+     *
+     * @param eventId event document ID.
+     * @param updates map of Firestore fields to update.
+     * @param callback callback receiving the event ID on success.
+     */
     public void updateEventMetadata(String eventId, Map<String, Object> updates,
                                     EventCallback callback) {
         if (eventId == null || eventId.trim().isEmpty()) {
@@ -180,6 +232,16 @@ public class EventRepository {
                 .addOnFailureListener(e -> callback.onFailure(e.getMessage()));
     }
 
+    /**
+     * Updates an event status after validating supported status values.
+     *
+     * <p>Passing {@code cancelled} routes through {@link #cancelEventAndNotify(String, EventCallback)}
+     * so registered users are notified.</p>
+     *
+     * @param eventId event document ID.
+     * @param status one of {@code draft}, {@code published}, {@code cancelled}, or {@code sold_out}.
+     * @param callback callback receiving the event ID or an error.
+     */
     public void updateEventStatus(String eventId, String status, EventCallback callback) {
         if (eventId == null || eventId.trim().isEmpty()) {
             callback.onFailure("Event ID is required");
@@ -205,7 +267,12 @@ public class EventRepository {
         updateEventMetadata(eventId, updates, callback);
     }
 
-    // Story #44 — cancel event and notify registered users.
+    /**
+     * Cancels an event and creates notifications for registered users.
+     *
+     * @param eventId event document ID.
+     * @param callback callback receiving the event ID after cancellation and notification dispatch.
+     */
     public void cancelEventAndNotify(String eventId, EventCallback callback) {
         if (eventId == null || eventId.trim().isEmpty()) {
             callback.onFailure("Event ID is required");
@@ -254,7 +321,14 @@ public class EventRepository {
         return "active".equals(status) || "published".equals(status);
     }
 
-    // Story #13 — Set ticket sales start and end time
+    /**
+     * Updates ticket sales start and end timestamps for an event.
+     *
+     * @param eventId event document ID.
+     * @param salesStart sales start value stored by the caller.
+     * @param salesEnd sales end value stored by the caller.
+     * @param callback callback receiving the event ID or an error.
+     */
     public void setSalesTime(String eventId, String salesStart,
                              String salesEnd, EventCallback callback) {
 
@@ -268,7 +342,12 @@ public class EventRepository {
                 .addOnFailureListener(e -> callback.onFailure(e.getMessage()));
     }
 
-    // Story #14 — View RSVP count and attendee list
+    /**
+     * Retrieves RSVP count and attendee names/emails for an event.
+     *
+     * @param eventId event document ID.
+     * @param callback callback receiving a formatted attendee list string.
+     */
     public void getAttendees(String eventId, AttendeesCallback callback) {
         db.collection("events").document(eventId)
                 .get()
@@ -279,7 +358,6 @@ public class EventRepository {
                     }
                     long rsvpCount = doc.getLong("rsvpCount") != null
                             ? doc.getLong("rsvpCount") : 0;
-                    // fetch attendees sub-collection
                     db.collection("events").document(eventId)
                             .collection("attendees")
                             .get()
@@ -299,16 +377,12 @@ public class EventRepository {
                 .addOnFailureListener(e -> callback.onFailure(e.getMessage()));
     }
 
-    // -------------------------------------------------------------------------
-    // Story #26 — Keyword search on event title / description  (Low, Day 1)
-    // -------------------------------------------------------------------------
-    // Strategy: Firestore does not support full-text search, so we use a
-    // prefix-range query on the "title" field (case-sensitive) combined with
-    // client-side filtering on "description".  This is the standard lightweight
-    // approach before a dedicated search service is wired up.
-    //
-    // Usage:  searchEvents("hackathon", callback)
-    // -------------------------------------------------------------------------
+    /**
+     * Searches visible events by keyword in title or description.
+     *
+     * @param keyword non-empty keyword to match case-insensitively.
+     * @param callback callback receiving matching event maps.
+     */
     public void searchEvents(String keyword, EventListCallback callback) {
         if (keyword == null || keyword.trim().isEmpty()) {
             callback.onFailure("Search keyword cannot be empty");
@@ -317,8 +391,6 @@ public class EventRepository {
 
         String kw = keyword.trim().toLowerCase();
 
-        // Pull all active events then filter client-side.
-        // For large datasets this should be replaced by a search index (e.g. Algolia).
         db.collection("events")
                 .get()
                 .addOnSuccessListener(snap -> {
@@ -344,14 +416,13 @@ public class EventRepository {
                 .addOnFailureListener(e -> callback.onFailure(e.getMessage()));
     }
 
-    // -------------------------------------------------------------------------
-    // Story #24 — Filter events by date range  (Low, Day 1)
-    // -------------------------------------------------------------------------
-    // Expects dates stored in the "date" field as ISO-8601 strings
-    // (e.g. "2025-06-01") so lexicographic ordering equals chronological order.
-    //
-    // Usage:  filterByDateRange("2025-06-01", "2025-06-30", callback)
-    // -------------------------------------------------------------------------
+    /**
+     * Filters visible events by inclusive date range.
+     *
+     * @param startDate start date as a sortable string such as {@code yyyy-MM-dd}.
+     * @param endDate end date as a sortable string such as {@code yyyy-MM-dd}.
+     * @param callback callback receiving matching event maps.
+     */
     public void filterByDateRange(String startDate, String endDate,
                                   EventListCallback callback) {
 
@@ -379,16 +450,12 @@ public class EventRepository {
                 .addOnFailureListener(e -> callback.onFailure(e.getMessage()));
     }
 
-    // -------------------------------------------------------------------------
-    // Story #25 — Filter events by price: free vs paid  (Low, Day 1)
-    // -------------------------------------------------------------------------
-    // Reads the boolean "isFree" field written by createEvent().
-    // Pass isFree = true  → returns free/RSVP events.
-    // Pass isFree = false → returns paid-ticket events.
-    //
-    // Usage:  filterByPrice(true, callback)   // free events only
-    //         filterByPrice(false, callback)  // paid events only
-    // -------------------------------------------------------------------------
+    /**
+     * Filters visible events by free versus paid status.
+     *
+     * @param isFree true for free RSVP events, false for paid ticket events.
+     * @param callback callback receiving matching event maps.
+     */
     public void filterByPrice(boolean isFree, EventListCallback callback) {
         db.collection("events")
                 .whereEqualTo("isFree", isFree)
@@ -405,6 +472,13 @@ public class EventRepository {
                 })
                 .addOnFailureListener(e -> callback.onFailure(e.getMessage()));
     }
+
+    /**
+     * Returns events owned by a specific organizer.
+     *
+     * @param organizerUid organizer UID.
+     * @param callback callback receiving event maps owned by that organizer.
+     */
     public void getOrganizerEvents(String organizerUid, EventListCallback callback) {
         if (organizerUid == null || organizerUid.trim().isEmpty()) {
             callback.onFailure("Organizer user not found.");
@@ -428,27 +502,33 @@ public class EventRepository {
                 .addOnFailureListener(e -> callback.onFailure(e.getMessage()));
     }
 
-
-    // -------------------------------------------------------------------------
-    // Callbacks
-    // -------------------------------------------------------------------------
-
+    /**
+     * Callback for operations that return or update a single event ID.
+     */
     public interface EventCallback {
         void onSuccess(String eventId);
         void onFailure(String error);
     }
 
+    /**
+     * Callback for attendee-list retrieval.
+     */
     public interface AttendeesCallback {
         void onSuccess(String attendeeList);
         void onFailure(String error);
     }
 
-    /** Callback for query methods that return a list of event maps. */
+    /**
+     * Callback for query methods that return a list of event maps.
+     */
     public interface EventListCallback {
         void onSuccess(List<Map<String, Object>> events);
         void onFailure(String error);
     }
 
+    /**
+     * Callback for event detail retrieval.
+     */
     public interface EventDetailCallback {
         void onSuccess(Map<String, Object> event);
         void onFailure(String error);

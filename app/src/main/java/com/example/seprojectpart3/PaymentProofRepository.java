@@ -12,15 +12,27 @@ import com.google.firebase.storage.StorageReference;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Handles payment proof uploads for paid campus events.
+ *
+ * This repository uploads the user's selected proof image to Firebase Storage,
+ * then creates a Firestore record in the {@code proof_submissions} collection
+ * with status {@code pending}. Organizers can later approve or reject that
+ * submission.
+ */
 public class PaymentProofRepository {
 
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
     private final FirebaseStorage storage = FirebaseStorage.getInstance();
-
+    /**
+     * Callback used after a payment proof upload attempt finishes.
+     */
     public interface ProofCallback {
         void onSuccess(String proofSubmissionId);
         void onFailure(String error);
     }
+
+
 
     public void uploadPaymentProof(@NonNull Uri proofImageUri,
                                    @NonNull String userId,

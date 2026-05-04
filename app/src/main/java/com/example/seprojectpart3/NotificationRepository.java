@@ -15,7 +15,13 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
-
+/**
+ * Handles in-app and email notification workflows for campus users.
+ *
+ * This repository stores notification records in Firestore and supports event
+ * reminders, organizer broadcasts, ticket approval notices, and cancellation
+ * notices for registered attendees.
+ */
 public class NotificationRepository {
 
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -25,11 +31,19 @@ public class NotificationRepository {
         void onFailure(String error);
     }
 
+    /**
+     * Callback for notification actions that return a status message.
+     */
     public interface NotificationListCallback {
         void onSuccess(List<Map<String, Object>> notifications);
         void onFailure(String error);
     }
-
+    /**
+     * Loads all notifications for a user, newest first.
+     *
+     * @param userId Firebase UID of the campus user
+     * @param callback returns notification maps with notificationId included
+     */
     public void getUserNotifications(@NonNull String userId,
                                      @NonNull NotificationListCallback callback) {
         if (userId.trim().isEmpty()) {
@@ -119,6 +133,7 @@ public class NotificationRepository {
                 })
                 .addOnFailureListener(e -> callback.onFailure(message(e)));
     }
+
 
     public void broadcastUpdateToAttendees(@NonNull String eventId,
                                            @NonNull String organizerUid,
