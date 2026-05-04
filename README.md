@@ -526,5 +526,21 @@ UML Diagram
 ![part3_5](https://github.com/CS360S26rocket/rocket-events/raw/main/part3_5.jpg)
 ![part3_6](https://github.com/CS360S26rocket/rocket-events/raw/main/part3_6.jpg)
 
+### Project Part 4:
 
+### Figma Screens:
+
+## Screenshots:
+
+![screen1](https://github.com/CS360S26rocket/rocket-events/raw/main/screen1.png)
+![screen2](https://github.com/CS360S26rocket/rocket-events/raw/main/screen2.png)
+![screen3](https://github.com/CS360S26rocket/rocket-events/raw/main/screen3.png)
+![screen4](https://github.com/CS360S26rocket/rocket-events/raw/main/screen4.png)
+![screen5](https://github.com/CS360S26rocket/rocket-events/raw/main/screen5.png)
+![screen6](https://github.com/CS360S26rocket/rocket-events/raw/main/screen6.png)
+![screen7](https://github.com/CS360S26rocket/rocket-events/raw/main/screen7.png)
+
+## Figma Design:
+
+You can view the Figma design here: [Figma Design - SE Final](https://www.figma.com/design/rx4vi28kSmVNDDd72xOksN/SE_Final?node-id=0-1&t=kq3dxjKO7FGnEdhA-1)
 
