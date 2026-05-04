@@ -528,7 +528,33 @@ UML Diagram
 
 ### Project Part 4:
 
+### Project Setup Meeting – 28 March, 2026
+- made a full sprint for project part 4 , divided the work sprint vise and member vise.
 
+#### Attendance
+- Mir Huzaifa Gujjar  
+- Muhammad Mahad Bhatti  
+- Aliza Khan  
+- Eman Anwer Qureshi  
+
+### Project Setup Meeting – 3 April, 2026
+Merged and integrated our whole sprint divided work for each member and further then everyone worked on inegrated code to add multiple features
+
+#### Attendance
+- Mir Huzaifa Gujjar  
+- Muhammad Mahad Bhatti  
+- Aliza Khan  
+- Eman Anwer Qureshi  
+
+### TA Evaluation Meeting – 28 March, 2026
+TA saw work and suggested improvements and liked it 
+
+#### Attendance
+- Mir Huzaifa Gujjar  
+- Muhammad Mahad Bhatti  
+- Aliza Khan  
+- Eman Anwer Qureshi
+- 
 ### Product Backlog:
 
 #### User Stories
