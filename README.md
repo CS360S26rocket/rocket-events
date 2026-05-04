@@ -528,6 +528,21 @@ UML Diagram
 
 ### Project Part 4:
 
+## Wireframe Screens:
+
+### Wireframe Screenshots:
+
+![wireframescreen1](https://github.com/CS360S26rocket/rocket-events/raw/main/wireframescreen1.png)
+![wireframescreen2](https://github.com/CS360S26rocket/rocket-events/raw/main/wireframescreen2.png)
+![wireframescreen3](https://github.com/CS360S26rocket/rocket-events/raw/main/wireframescreen3.png)
+![wireframescreen4](https://github.com/CS360S26rocket/rocket-events/raw/main/wireframescreen4.png)
+![wireframescreen5](https://github.com/CS360S26rocket/rocket-events/raw/main/wireframescreen5.png)
+![wireframescreen6](https://github.com/CS360S26rocket/rocket-events/raw/main/wireframescreen6.png)
+
+### Wireframe Design:
+
+You can view the Wireframe design here: [Figma Design - Final Wireframes](https://www.figma.com/design/mVHnJlF7U5icCjmud5gkbz/final_wireframes?node-id=0-1&t=y7BTFHz4GISNIyDN-1)
+
 ### Figma Screens:
 
 ## Screenshots:
