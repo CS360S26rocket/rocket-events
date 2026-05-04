@@ -531,7 +531,6 @@ UML Diagram
 ### Figma Screens:
 
 ## Screenshots:
-
 ![screen1](https://github.com/CS360S26rocket/rocket-events/raw/main/screen1.png)
 ![screen2](https://github.com/CS360S26rocket/rocket-events/raw/main/screen2.png)
 ![screen3](https://github.com/CS360S26rocket/rocket-events/raw/main/screen3.png)
