@@ -528,6 +528,36 @@ UML Diagram
 
 ### Project Part 4:
 
+
+### Product Backlog:
+
+#### User Stories
+
+| **ID** | **User Story**                                                                                             | **Epic**                | **Status** | **Risk Level** | **Priority Level** |
+|--------|------------------------------------------------------------------------------------------------------------|-------------------------|------------|----------------|--------------------|
+| #1     | As a user, I want to choose between Campus User and Organizer so that I can access the correct section.    | Onboarding              | Done       | Low            | High               |
+| #2     | As a campus user, I want to log in with my university email so that I can browse campus events.            | Onboarding              | Done       | Medium         | High               |
+| #3     | As a campus user, I want to browse published/active events and filter them by category so that I can find relevant events. | Campus User Flow        | Done       | Medium         | High               |
+| #4     | As a campus user, I want to register for free events or reserve paid tickets so that I can attend them.     | Campus Event Flow       | Done       | High           | High               |
+| #5     | As an organizer, I want to create an event with a title, venue, and ticket setup so that I can manage event details. | Organizer Event Management | Done       | High           | High               |
+| #6     | As an organizer, I want to edit an event’s details like title, date, and venue to keep it up-to-date.        | Organizer Event Management | Done       | High           | High               |
+| #7     | As an organizer, I want to track payments for my events to ensure all payments are verified and recorded.     | Payments & Analytics     | Done       | Medium         | High               |
+| #8     | As a campus user, I want to receive notifications for event updates, cancellations, or live changes.          | Campus Notifications    | Done       | Low            | Medium             |
+| #9     | As an organizer, I want to send updates about venue changes, event time changes, or custom messages to event attendees. | Organizer Event Updates | Done       | Medium         | High               |
+| #10    | As a user, I want to use an AI assistant to recommend events based on my preferences (e.g., price, category).  | AI Assistant            | In Progress| Medium         | High               |
+| #11    | As a user, I want to view event details including venue, date, description, and ticket availability so that I can decide whether to attend. | Event Detail Screen     | Done       | Low            | High               |
+| #12    | As a user, I want to be able to sign in to my profile and update my information (e.g., name, password).      | Profile Management      | Done       | Low            | Medium             |
+| #13    | As a user, I want to access a clean and simple success screen after registering or purchasing tickets.       | Success Screens         | Done       | Low            | Medium             |
+| #14    | As an organizer, I want to manage event status (draft, published, cancelled, sold out) to control event visibility. | Event Status Control    | Done       | Medium         | High               |
+| #15    | As an organizer, I want to upload a banner for events so that they are visually appealing to users.          | Event Creation          | Done       | Low            | Medium             |
+| #16    | As an organizer, I want to upload a payment QR code and approve payment proofs submitted by users.           | Payment Flow            | In Progress| High           | High               |
+| #17    | As a user, I want to upload payment proof to the app to complete my ticket purchase, which will be verified using a mock Paymo API. | Mock Paymo Service      | In Progress| High           | Medium             |
+| #18    | As an organizer, I want to approve or reject payment proof submitted by users, which will trigger ticket generation via the mock Paymo service. | Mock Paymo Service      | In Progress| High           | High               |
+| #19    | As a user, I want to view my ticket status (pending, approved, rejected) after submitting proof.             | Ticket Status           | In Progress| Low            | Medium             |
+| #20    | As an organizer, I want to view the list of all pending proof submissions for my events.                    | Proof Submission Review | In Progress| Low            | High               |
+| #21    | As a user, I want to view my ticket status (pending, approved, rejected) after submitting proof.             | Ticket Status           | In Progress| Low            | Medium             |
+| #22    | As an organizer, I want to handle payment proof submissions in a secure and organized way.                   | Payment Security        | In Progress| High           | High               |
+
 ## Wireframe Screens:
 
 ### Wireframe Screenshots:
