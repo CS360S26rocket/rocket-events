@@ -558,6 +558,14 @@ UML Diagram
 | #21    | As a user, I want to view my ticket status (pending, approved, rejected) after submitting proof.             | Ticket Status           | In Progress| Low            | Medium             |
 | #22    | As an organizer, I want to handle payment proof submissions in a secure and organized way.                   | Payment Security        | In Progress| High           | High               |
 
+## Class Diagram
+
+![Class Diagram](https://github.com/CS360S26rocket/rocket-events/raw/main/Class_Diagram.png)
+
+## Use Case Diagram
+
+![Use Case Diagram](https://github.com/CS360S26rocket/rocket-events/raw/main/UseCase_Diagram.png)
+
 ## Wireframe Screens:
 
 ### Wireframe Screenshots:
